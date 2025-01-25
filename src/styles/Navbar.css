@@ -4,19 +4,16 @@
   padding: 10px;
 
   display: flex;
-  justify-content: flex-end;
-  gap: 10px;
+  justify-content: space-between;
 }
 
-.login-area {
+.logo-icon {
+  width: 80px;
+}
+
+.nav-buttons {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.login-area h6 {
-  margin: 0;
+  gap: 10px;
 }
 
 .row {

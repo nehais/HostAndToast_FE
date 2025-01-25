@@ -42,7 +42,10 @@ export default function SignUpModal({ show, onHide }) {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter"> User Sign Up</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">
+          {" "}
+          Register User
+        </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>

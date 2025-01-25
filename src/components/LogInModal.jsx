@@ -48,7 +48,9 @@ export default function LogInModal({ show, onHide }) {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Log In User</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Log In User
+        </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
