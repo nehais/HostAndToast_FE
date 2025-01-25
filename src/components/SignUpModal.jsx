@@ -28,8 +28,8 @@ export default function SignUpModal({ show, onHide }) {
       console.log("New user", data);
       onHide();
     } catch (error) {
-      console.log("Error Signing Up the details", error);
-      setError(error);
+      console.log("Error Signing Up the details", error.response.data.message);
+      setError(error.response.data.message);
     }
   }
 
@@ -42,10 +42,7 @@ export default function SignUpModal({ show, onHide }) {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          {" "}
-          User Sign Up
-        </Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter"> User Sign Up</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>

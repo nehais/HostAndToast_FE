@@ -22,14 +22,14 @@ const AuthWrapper = ({ children }) => {
           headers: { authorization: `Bearer ${theToken}` },
         });
         console.log("Session valid");
-        setUser(data.currentUser.username); //Check with Franzi
+        setUser(data.username); //Check with Franzi
         setIsLoading(false);
         setIsLoggedIn(true);
       } catch (error) {
         setUser(null);
         setIsLoading(false);
         setIsLoggedIn(false);
-        console.log("Error Authenticating", error);
+        console.log("Error Authenticating", error.response.data.message);
       }
     } else {
       setUser(null);
@@ -40,9 +40,7 @@ const AuthWrapper = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, isLoading, isLoggedIn, authenticateUser }}
-    >
+    <AuthContext.Provider value={{ user, isLoading, isLoggedIn, authenticateUser }}>
       {children}
     </AuthContext.Provider>
   );

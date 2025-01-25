@@ -27,15 +27,15 @@ export default function LogInModal({ show, onHide }) {
     e.preventDefault();
 
     try {
-      //const { data } = await axios.post(`${API_URL}/auth/login`, formData);
-      //console.log("New user", data);
-      //localStorage.setItem("authToken", data.authToken);
+      const { data } = await axios.post(`${API_URL}/auth/login`, formData);
+      console.log("New user", data);
+      localStorage.setItem("authToken", data.authToken);
       await authenticateUser();
       onHide();
       nav("/profile");
     } catch (error) {
-      console.log("Error Signing Up the details", error);
-      setError(error);
+      console.log("Error Signing Up the details", error.response.data.message);
+      setError(error.response.data.message);
     }
   }
 
@@ -48,9 +48,7 @@ export default function LogInModal({ show, onHide }) {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Log In User
-        </Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">Log In User</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
