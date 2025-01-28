@@ -8,6 +8,7 @@ import PageNotFound from "./pages/PageNotFound";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
+import AllMealsPage from "./pages/AllMealsPage";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <div className="main-content">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/all-meals" element={<AllMealsPage />} />
           <Route
             path="/profile"
             element={
