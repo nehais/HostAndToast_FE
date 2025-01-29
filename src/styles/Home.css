@@ -1,5 +1,117 @@
-.address {
+/*Address Search*/
+.address-container {
   background-color: #003459;
+  background-image: url("../assets/headerImage.jpg");
   width: 100vw;
-  height: 40%;
+  height: 30%;
+
+  display: flex;
+  align-items: center;
+}
+
+/*Tablet Screen 820*/
+@media only screen and (max-device-width: 820px) {
+  .address-container {
+    height: 25%;
+  }
+}
+
+.search-control-container {
+  padding: 10px;
+  margin: 0 auto;
+  width: 40%;
+}
+
+.search-control {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background-image: url("../assets/pin.png");
+  background-size: 22px;
+  background-repeat: no-repeat;
+  background-position: left 2px center;
+  text-indent: 25px;
+}
+
+.address-drop-down {
+  list-style-type: none;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  margin-top: 5px;
+  width: 39%;
+  max-height: 200px;
+  overflow-y: auto;
+  color: white;
+  background-color: #2334408f;
+  position: absolute;
+  z-index: 1000;
+
+  li {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+  }
+}
+
+.address-drop-down::-webkit-scrollbar {
+  width: 10px;
+}
+.address-drop-down::-webkit-scrollbar-thumb {
+  background-color: #b1b8bc;
+  border-radius: 10px;
+}
+
+/*Tablet Screen 820*/
+@media only screen and (max-device-width: 820px) {
+  .search-control-container {
+    width: 90%;
+  }
+  .address-drop-down {
+    width: 88%;
+  }
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .address-drop-down {
+    width: 85%;
+  }
+}
+
+/*How it Works*/
+.works-container {
+  margin: 0 auto;
+  height: 70%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  color: #ffb45e;
+  background-color: #003459;
+
+  h2 {
+    font-size: 3em;
+    font-weight: 700;
+  }
+}
+
+.slider {
+  text-align: center;
+}
+
+.img-slide {
+  width: 300px;
+  border-radius: 20px;
+}
+
+.slide-desc {
+  padding-top: 5px;
+  font-family: "Poppins", serif;
+  font-style: italic;
+  color: white;
 }

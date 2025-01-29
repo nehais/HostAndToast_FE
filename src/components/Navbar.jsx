@@ -8,6 +8,9 @@ import SignUpModal from "./SignUpModal.jsx";
 import LogInModal from "./LogInModal.jsx";
 import { AuthContext } from "../contexts/auth.context";
 
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
+
 const Navbar = () => {
   const [modalShowSignUp, setModalShowSignUp] = useState(false);
   const [modalShowLogIn, setModalShowLogIn] = useState(false);
@@ -27,23 +30,51 @@ const Navbar = () => {
       <div className="nav-buttons">
         {!isLoggedIn && (
           <>
-            <Button variant="primary" onClick={() => setModalShowSignUp(true)}>
-              Register User
-            </Button>
-            <Button variant="secondary" onClick={() => setModalShowLogIn(true)}>
-              Log In
-            </Button>
+            <OverlayTrigger
+              placement="bottom"
+              overlay={
+                <Tooltip id="register-tooltip">
+                  Register your User profile
+                </Tooltip>
+              }
+            >
+              <Button
+                variant="secondary"
+                onClick={() => setModalShowSignUp(true)}
+              >
+                Register User
+              </Button>
+            </OverlayTrigger>
+            <OverlayTrigger
+              placement="bottom"
+              overlay={
+                <Tooltip id="login-tooltip">
+                  Login with your User details
+                </Tooltip>
+              }
+            >
+              <Button variant="primary" onClick={() => setModalShowLogIn(true)}>
+                Log In
+              </Button>
+            </OverlayTrigger>
           </>
         )}
         {isLoggedIn && (
-          <Button
-            variant="primary"
-            onClick={() => {
-              logOut();
-            }}
+          <OverlayTrigger
+            placement="bottom"
+            overlay={
+              <Tooltip id="logout-tooltip">Logout of your User Profile</Tooltip>
+            }
           >
-            Log Out
-          </Button>
+            <Button
+              variant="primary"
+              onClick={() => {
+                logOut();
+              }}
+            >
+              Log Out
+            </Button>
+          </OverlayTrigger>
         )}
       </div>
       <SignUpModal

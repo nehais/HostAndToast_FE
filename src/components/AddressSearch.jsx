@@ -1,11 +1,30 @@
-import React, { useState } from "react";
-import { OpenStreetMapProvider } from "leaflet-geosearch";
 import "leaflet-geosearch/dist/geosearch.css";
+
+import { useContext, useRef, useEffect, useState } from "react";
+import { OpenStreetMapProvider } from "leaflet-geosearch";
+import { AddressContext } from "../contexts/address.context";
 
 const AddressSearch = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [suggestions, setSuggestions] = useState([]);
+  const [suggestions, setSuggestions] = useState([]); //Holds the suggested address Drop Down
   const [showDropdown, setShowDropdown] = useState(false);
+  const { setAddress } = useContext(AddressContext);
+  const ref = useRef();
+
+  useEffect(() => {
+    //onClick outside of element close the DD
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setShowDropdown(false); // Close the dropdown
+      }
+    }
+    // Bind
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      // Clean up on unmount
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref]);
 
   const provider = new OpenStreetMapProvider({
     params: {
@@ -24,7 +43,10 @@ const AddressSearch = () => {
         setSuggestions(results);
         setShowDropdown(true);
       } catch (error) {
-        console.error("Error fetching autocomplete suggestions:", error);
+        console.error(
+          "Error fetching autocomplete address suggestions:",
+          error
+        );
       }
     } else {
       setSuggestions([]); // Clear suggestions for short input
@@ -34,59 +56,44 @@ const AddressSearch = () => {
 
   const handleSuggestionClick = (suggestion) => {
     setSearchTerm(suggestion.label); // Set the selected suggestion in the input field
+    setAddress({
+      label: suggestion.label,
+      lat: suggestion.raw.lat,
+      lon: suggestion.raw.lon,
+    });
     setShowDropdown(false); // Close the dropdown
-    console.log("Selected address:", suggestion); // You can handle further actions here
   };
 
   return (
-    <div style={{ padding: "20px", maxWidth: "500px", margin: "0 auto" }}>
-      <input
-        type="text"
-        value={searchTerm}
-        onChange={handleInputChange}
-        placeholder="Search for an address..."
-        style={{
-          width: "100%",
-          padding: "10px",
-          fontSize: "16px",
-          borderRadius: "8px",
-          border: "1px solid #ccc",
-        }}
-        onFocus={() => setShowDropdown(true)} // Show dropdown on focus
-      />
+    <div className="address-container">
+      <div className="search-control-container">
+        <input
+          type="text"
+          value={searchTerm}
+          onChange={handleInputChange}
+          placeholder="Search for an address..."
+          className="search-control"
+          onFocus={() => setShowDropdown(true)} // Show dropdown on focus
+        />
 
-      {showDropdown && suggestions.length > 0 && (
-        <ul
-          style={{
-            listStyleType: "none",
-            padding: "10px",
-            border: "1px solid #ddd",
-            borderRadius: "8px",
-            marginTop: "5px",
-            maxHeight: "200px",
-            overflowY: "auto",
-            color: "white",
-            backgroundColor: "transparent",
-            position: "absolute",
-            zIndex: 1000,
-          }}
-        >
-          {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              onClick={() => handleSuggestionClick(suggestion)}
-              style={{
-                padding: "10px",
-                cursor: "pointer",
-                borderBottom: "1px solid #eee",
-              }}
-              onMouseDown={(e) => e.preventDefault()} // Prevent blur on click
-            >
-              {suggestion.label}
-            </li>
-          ))}
-        </ul>
-      )}
+        {showDropdown && suggestions.length > 0 && (
+          <ul className="address-drop-down">
+            {suggestions.map((suggestion, index) => (
+              <li
+                key={index}
+                onClick={() => handleSuggestionClick(suggestion)}
+                onBlur={(e) => {
+                  e.preventDefault();
+                  setShowDropdown(false);
+                }} // Prevent blur on click
+                ref={ref}
+              >
+                {suggestion.label}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   );
 };
