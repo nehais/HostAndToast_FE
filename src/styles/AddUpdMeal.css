@@ -1,0 +1,16 @@
+.meal-form-container {
+  height: 85vh;
+
+  background-color: #003459;
+  background-image: url("../assets/work-background.png");
+
+  display: flex;
+  justify-content: center;
+}
+
+.meal-form {
+  width: 50vw;
+  label {
+    color: white;
+  }
+}
