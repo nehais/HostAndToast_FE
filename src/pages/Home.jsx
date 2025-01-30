@@ -6,7 +6,9 @@ import HowItWorks from "../components/HowItWorks";
 const Home = () => {
   return (
     <div>
-      <AddressSearch />
+      <div className="address-container">
+        <AddressSearch componentId="home" />
+      </div>
       <HowItWorks />
     </div>
   );

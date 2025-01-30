@@ -10,24 +10,58 @@ import { AuthContext } from "../contexts/auth.context";
 
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import ProfileButton from "./ProfileButton.jsx";
+import AddressSearch from "./AddressSearch.jsx";
+import CartButton from "./CartButton.jsx";
 
 const Navbar = () => {
   const [modalShowSignUp, setModalShowSignUp] = useState(false);
   const [modalShowLogIn, setModalShowLogIn] = useState(false);
   const { isLoggedIn, authenticateUser } = useContext(AuthContext);
+  const nav = useNavigate();
+  const loc = useLocation();
 
   async function logOut() {
     localStorage.removeItem("authToken");
     await authenticateUser();
   }
 
+  function addMeal() {
+    if (!isLoggedIn) {
+      setModalShowLogIn(true);
+    } else {
+      nav("/add-meal");
+    }
+  }
+
   return (
     <div className="navbar">
       <div>
-        <img src={logoIcon} alt="Website Logo & Icon" className="logo-icon" />
+        <Link to="/">
+          <img src={logoIcon} alt="Website Logo & Icon" className="logo-icon" />
+        </Link>
       </div>
 
+      {/*Address Bar is shown in Navbar when not on HomePage*/}
+      {loc.pathname !== "/" && (
+        <AddressSearch componentId="navbar" className="navbar-adr" />
+      )}
+
       <div className="nav-buttons">
+        <OverlayTrigger
+          placement="bottom"
+          overlay={
+            <Tooltip id="register-tooltip">
+              List your meal for others to book and savor.
+            </Tooltip>
+          }
+        >
+          <Button variant="secondary" onClick={() => addMeal()}>
+            + List Your Meal
+          </Button>
+        </OverlayTrigger>
+
         {!isLoggedIn && (
           <>
             <OverlayTrigger
@@ -42,9 +76,10 @@ const Navbar = () => {
                 variant="secondary"
                 onClick={() => setModalShowSignUp(true)}
               >
-                Register User
+                Sign up
               </Button>
             </OverlayTrigger>
+
             <OverlayTrigger
               placement="bottom"
               overlay={
@@ -59,28 +94,37 @@ const Navbar = () => {
             </OverlayTrigger>
           </>
         )}
+
         {isLoggedIn && (
-          <OverlayTrigger
-            placement="bottom"
-            overlay={
-              <Tooltip id="logout-tooltip">Logout of your User Profile</Tooltip>
-            }
-          >
-            <Button
-              variant="primary"
-              onClick={() => {
-                logOut();
-              }}
+          <>
+            <ProfileButton />
+            <OverlayTrigger
+              placement="bottom"
+              overlay={
+                <Tooltip id="logout-tooltip">
+                  Logout of your User Profile
+                </Tooltip>
+              }
             >
-              Log Out
-            </Button>
-          </OverlayTrigger>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  logOut();
+                }}
+              >
+                Log Out
+              </Button>
+            </OverlayTrigger>
+            <CartButton />
+          </>
         )}
       </div>
+
       <SignUpModal
         show={modalShowSignUp}
         onHide={() => setModalShowSignUp(false)}
       />
+
       <LogInModal
         show={modalShowLogIn}
         onHide={() => setModalShowLogIn(false)}

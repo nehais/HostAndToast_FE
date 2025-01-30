@@ -9,6 +9,16 @@
 
 .logo-icon {
   width: 80px;
+  animation: rotateY360 3s ease-in-out; /* Apply animation on load */
+}
+
+@keyframes rotateY360 {
+  from {
+    transform: rotateY(0deg); /* Start at 0 degrees */
+  }
+  to {
+    transform: rotateY(360deg); /* End at 360 degrees */
+  }
 }
 
 .nav-buttons {
@@ -34,4 +44,34 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
+}
+
+.cart-button {
+  border: none;
+  background-color: transparent;
+  background-image: url(../assets/cart.png);
+  background-size: 50px;
+  background-repeat: no-repeat;
+  width: 50px;
+
+  position: relative;
+}
+
+.cart-counter {
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: white;
+  padding-right: 6px;
+
+  font-size: 1em;
+  font-weight: bolder;
+}
+
+.align-counter {
+  padding-right: 3px;
+}
+
+.navbar-adr {
+  width: 50%;
 }
