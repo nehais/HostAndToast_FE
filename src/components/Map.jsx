@@ -7,20 +7,35 @@ import "../styles/Map.css";
 
 const Map = () => {
   const markers = [
-    //berlin
-    {
-      geocode: [52.52, 13.405],
-      popUp: "Berlin",
-    },
-    //hannover
+    //hannover 1
     {
       geocode: [52.375, 9.732],
-      popUp: "Hannover",
+      popUp: "Hannover 1",
     },
-    //munich
+    //hannover 2
+    {
+      geocode: [52.365, 9.722],
+      popUp: "Hannover 2",
+    },
+    //hannover 3
+    {
+      geocode: [52.39, 9.71],
+      popUp: "Hannover 3",
+    },
+    // munich 1
     {
       geocode: [48.137, 11.575],
-      popUp: "Munich",
+      popUp: "Munich 1",
+    },
+    // munich 2
+    {
+      geocode: [48.128, 11.52],
+      popUp: "Munich 2",
+    },
+    //munich 3
+    {
+      geocode: [48.11, 11.58],
+      popUp: "Munich 3",
     },
   ];
 
