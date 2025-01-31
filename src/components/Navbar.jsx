@@ -18,14 +18,9 @@ import CartButton from "./CartButton.jsx";
 const Navbar = () => {
   const [modalShowSignUp, setModalShowSignUp] = useState(false);
   const [modalShowLogIn, setModalShowLogIn] = useState(false);
-  const { isLoggedIn, authenticateUser } = useContext(AuthContext);
+  const { isLoggedIn } = useContext(AuthContext);
   const nav = useNavigate();
   const loc = useLocation();
-
-  async function logOut() {
-    localStorage.removeItem("authToken");
-    await authenticateUser();
-  }
 
   function addMeal() {
     if (!isLoggedIn) {
@@ -98,23 +93,6 @@ const Navbar = () => {
         {isLoggedIn && (
           <>
             <ProfileButton />
-            <OverlayTrigger
-              placement="bottom"
-              overlay={
-                <Tooltip id="logout-tooltip">
-                  Logout of your User Profile
-                </Tooltip>
-              }
-            >
-              <Button
-                variant="primary"
-                onClick={() => {
-                  logOut();
-                }}
-              >
-                Log Out
-              </Button>
-            </OverlayTrigger>
             <CartButton />
           </>
         )}

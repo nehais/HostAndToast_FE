@@ -8,9 +8,71 @@
   justify-content: center;
 }
 
+.meal-form-heading {
+  padding: 25px 0 0 0;
+  color: #ffb45e;
+  font-family: "Satisfy", serif;
+  margin: 0;
+}
+
+.add-spoon-img {
+  height: 20px;
+  width: 180px;
+
+  animation: rotateX360 3s ease-in-out; /* Apply animation on load */
+}
+
+@keyframes rotateX360 {
+  from {
+    transform: rotateX(0deg); /* Start at 0 degrees */
+  }
+  to {
+    transform: rotateX(360deg); /* End at 360 degrees */
+  }
+}
+
 .meal-form {
+  background-color: #003459cd;
+
   width: 50vw;
+  padding-top: 25px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+
   label {
     color: white;
   }
+}
+
+.col-fields {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+}
+
+.col-field {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.meal-input {
+  border-radius: 5px;
+  border: 2px solid white;
+  height: 40px;
+}
+
+.meal-submit-button {
+  width: 100px;
+  border-radius: 5px;
+  font-weight: bolder;
+}
+
+.meal-submit-button:hover {
+  transform: scale(1.1);
 }

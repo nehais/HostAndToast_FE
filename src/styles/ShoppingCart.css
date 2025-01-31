@@ -1,0 +1,9 @@
+.shopping-cart-container {
+  height: 85vh;
+
+  background-color: #003459;
+  background-image: url("../assets/work-background.png");
+
+  display: flex;
+  justify-content: center;
+}

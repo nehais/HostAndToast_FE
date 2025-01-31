@@ -46,6 +46,60 @@
   gap: 10px;
 }
 
+.profile-button {
+  background-color: transparent;
+  border: none;
+  position: relative;
+}
+
+.profile-img {
+  padding: 1px;
+  width: 35px;
+  border-radius: 50%;
+  border: 2px solid #003459;
+}
+
+.profile-drop-down {
+  border-radius: 8px;
+  margin-top: 5px;
+  width: 130px;
+  max-height: 200px;
+  overflow-y: auto;
+  color: white;
+  background-color: #233440be;
+  position: absolute;
+  left: -30px;
+  top: 33px;
+  z-index: 1000;
+
+  p {
+    margin: 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.8em;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 5px;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  li {
+    cursor: pointer;
+    border-top: 1px dashed #eee;
+    padding-bottom: 5px;
+  }
+
+  li:first-child {
+    border: none;
+  }
+  li:hover {
+    transform: scale(1.1);
+    color: #ffb45e;
+  }
+}
+
 .cart-button {
   border: none;
   background-color: transparent;

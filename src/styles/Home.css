@@ -92,9 +92,9 @@
 
   background-color: #003459;
   background-image: url("../assets/work-background.png");
+  color: #ffb45e;
 
   h2 {
-    color: #ffb45e;
     font-family: "Satisfy", serif;
     font-size: 3em;
     font-weight: 700;
@@ -115,8 +115,8 @@
 .slide-desc {
   padding-top: 5px;
   font-family: "Poppins", serif;
-  color: white;
   font-size: 1.3em;
+  font-weight: bold;
 }
 
 /*Tablet Screen 820*/
