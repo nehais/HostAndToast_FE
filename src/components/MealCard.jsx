@@ -2,8 +2,7 @@ import { Link } from "react-router-dom";
 import "../styles/MealCard.css";
 
 const MealCard = ({ meal }) => {
-  const imageUrl =
-    meal.imageUrl || "https://cdn.midjourney.com/1671c6ab-9fde-4fd0-a475-344758cc84d2/0_1.png";
+  const imageUrl = meal.imageUrl;
 
   // Function to truncate description
   const truncateText = (text, limit) => {
@@ -57,7 +56,7 @@ const MealCard = ({ meal }) => {
         {/* Back Side */}
         <div className="meal-card-back" style={{ backgroundImage: `url(${imageUrl})` }}>
           <div className="meal-card-back-overlay">
-            <h3>More Information</h3>
+            <h3>{meal.title}</h3>
             <p>{truncateText(meal.description, 100) || "N/A"}</p>
             <div>
               <p>
