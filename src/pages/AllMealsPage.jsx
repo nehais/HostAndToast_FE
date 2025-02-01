@@ -4,8 +4,6 @@ import "../styles/AllMealsPage.css";
 import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
 import Map from "../components/Map.jsx";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 
 const AllMealsPage = () => {
   const [meals, setMeals] = useState([]);
@@ -13,14 +11,12 @@ const AllMealsPage = () => {
   const [markers, setMarkers] = useState([]);
   const [filters, setFilters] = useState({
     price: 20, // initial price value (will be adjusted once meals load)
-    cuisine: [], // selected cuisines; on initial load, all available cuisines will be set
-    pickupDay: "", // in "yyyy-MM-dd" format
+    cuisine: [], // selected cuisines; on initial load, all cuisines will be selected
   });
-  const [selectAll, setSelectAll] = useState(true);
   // This flag ensures we set the cuisine filter only once on initial load.
   const [initialCuisineSet, setInitialCuisineSet] = useState(false);
 
-  // Fetch meals from the API
+  // --- Fetch Meals ---
   useEffect(() => {
     async function getMeals() {
       try {
@@ -33,87 +29,61 @@ const AllMealsPage = () => {
     getMeals();
   }, []);
 
-  // --- Derive available filter options based on meals and current filters ---
+  // --- Global Values (Fixed: All Meals) ---
 
-  // 1. For the price slider: compute the maximum price from meals that pass the other filters (excluding price)
-  const availableMealsForPrice = useMemo(() => {
-    return meals.filter((meal) => {
-      // Apply cuisine and pickup day filters (but not price)
-      if (filters.cuisine.length && !filters.cuisine.includes(meal.cuisine)) return false;
-      if (filters.pickupDay && meal.pickupTime.split("T")[0] !== filters.pickupDay) return false;
-      return true;
-    });
-  }, [meals, filters.cuisine, filters.pickupDay]);
+  // All cuisines from all meals.
+  const allCuisines = useMemo(() => {
+    return [...new Set(meals.map((meal) => meal.cuisine))];
+  }, [meals]);
 
-  const computedMaxPrice = useMemo(() => {
-    return availableMealsForPrice.reduce((max, meal) => Math.max(max, meal.price), 0);
-  }, [availableMealsForPrice]);
+  // Maximum price from all meals.
+  const allMaxPrice = useMemo(() => {
+    return meals.reduce((max, meal) => Math.max(max, meal.price), 0);
+  }, [meals]);
 
-  // 2. For the cuisine filter: compute available cuisines from meals filtered by price and pickupDay
+  // --- Derived Values Based on the Price Filter Only ---
+
+  // Compute the meals that satisfy the current price filter.
   const availableMealsForCuisine = useMemo(() => {
-    return meals.filter((meal) => {
-      if (filters.price && meal.price > filters.price) return false;
-      if (filters.pickupDay && meal.pickupTime.split("T")[0] !== filters.pickupDay) return false;
-      return true;
-    });
-  }, [meals, filters.price, filters.pickupDay]);
+    return meals.filter((meal) => meal.price <= filters.price);
+  }, [meals, filters.price]);
 
-  const availableCuisines = useMemo(() => {
+  // From those meals, determine which cuisines are available.
+  const availableCuisinesFromPrice = useMemo(() => {
     return [...new Set(availableMealsForCuisine.map((meal) => meal.cuisine))];
   }, [availableMealsForCuisine]);
 
-  // 3. For the pickup day filter: compute available pickup days from meals filtered by price and cuisine
-  const availableMealsForPickupDay = useMemo(() => {
-    return meals.filter((meal) => {
-      if (filters.price && meal.price > filters.price) return false;
-      // If no cuisine is selected or the meal's cuisine is not among the selected ones, exclude it.
-      if (filters.cuisine.length === 0 || !filters.cuisine.includes(meal.cuisine)) return false;
-      return true;
-    });
-  }, [meals, filters.price, filters.cuisine]);
-
-  const availablePickupDays = useMemo(() => {
-    return [...new Set(availableMealsForPickupDay.map((meal) => meal.pickupTime.split("T")[0]))];
-  }, [availableMealsForPickupDay]);
-
-  // --- Set the initial cuisine filter once meals have loaded ---
+  // --- Initialize the Cuisine Filter ---
+  // On first load, select all cuisines.
   useEffect(() => {
     if (meals.length > 0 && !initialCuisineSet) {
-      // On initial load, select all available cuisines (based on the current price and pickupDay filters)
-      setFilters((prev) => ({ ...prev, cuisine: availableCuisines }));
+      setFilters((prev) => ({ ...prev, cuisine: allCuisines }));
       setInitialCuisineSet(true);
     }
-  }, [meals, availableCuisines, initialCuisineSet]);
+  }, [meals, allCuisines, initialCuisineSet]);
 
-  // --- Synchronize the cuisine filter when available cuisines change ---
+  // --- Update the Selected Cuisines When the Price Filter Changes ---
+  // Keep only those cuisines in the current selection that have at least one meal matching the price range.
   useEffect(() => {
     setFilters((prev) => ({
       ...prev,
-      cuisine: prev.cuisine.filter((cuisine) => availableCuisines.includes(cuisine)),
+      cuisine: prev.cuisine.filter((cuisine) => availableCuisinesFromPrice.includes(cuisine)),
     }));
-  }, [availableCuisines]);
+  }, [availableCuisinesFromPrice]);
 
-  // --- Update the filtered meals based on current filters ---
+  // --- Update the Filtered Meals Based on Current Filters ---
   useEffect(() => {
     const filtered = meals.filter((meal) => {
       // Price filter
-      if (filters.price && meal.price > filters.price) {
-        return false;
-      }
-      // Cuisine filter: if no cuisine is selected, filter out all meals.
-      if (filters.cuisine.length === 0 || !filters.cuisine.includes(meal.cuisine)) {
-        return false;
-      }
-      // Pickup day filter
-      if (filters.pickupDay && meal.pickupTime.split("T")[0] !== filters.pickupDay) {
-        return false;
-      }
+      if (meal.price > filters.price) return false;
+      // Cuisine filter: meal's cuisine must be among the selected cuisines.
+      if (filters.cuisine.length === 0 || !filters.cuisine.includes(meal.cuisine)) return false;
       return true;
     });
     setFilteredMeals(filtered);
   }, [filters, meals]);
 
-  // --- Update the markers for the map based on the filtered meals ---
+  // --- Update Map Markers Based on Filtered Meals ---
   useEffect(() => {
     const allMarkers = filteredMeals.map((meal) => ({
       geocode: [meal.user.address.lat, meal.user.address.long],
@@ -131,52 +101,34 @@ const AllMealsPage = () => {
     setMarkers(allMarkers);
   }, [filteredMeals]);
 
-  // --- Handle Date changes ---
-  const handleDateChange = (date) => {
-    const formattedDate = date ? date.toISOString().split("T")[0] : "";
-    setFilters((prev) => ({ ...prev, pickupDay: formattedDate }));
-  };
+  // --- Determine the Button Label and Functionality for Cuisines ---
+  // The rendered checkboxes always show all cuisines (from allCuisines).
+  // However, when clicking "Show All" / "Uncheck All," we want to work only with the cuisines available under the current price filter.
+  const areAllAvailableChecked = useMemo(() => {
+    return (
+      availableCuisinesFromPrice.length > 0 &&
+      availableCuisinesFromPrice.every((cuisine) => filters.cuisine.includes(cuisine)) &&
+      filters.cuisine.length === availableCuisinesFromPrice.length
+    );
+  }, [availableCuisinesFromPrice, filters.cuisine]);
 
-  // --- Handle Check/Uncheck All for cuisines ---
   const handleCheckAllCuisines = () => {
-    if (selectAll) {
-      // "Uncheck All" → clear the cuisine filter (so no meal is shown)
+    if (areAllAvailableChecked) {
+      // Uncheck all: remove all cuisines that are available under current price.
       setFilters((prev) => ({ ...prev, cuisine: [] }));
     } else {
-      // "Check All" → set the cuisine filter to the currently available cuisines
-      setFilters((prev) => ({ ...prev, cuisine: availableCuisines }));
+      // Show all: select all cuisines that are available under current price.
+      setFilters((prev) => ({ ...prev, cuisine: availableCuisinesFromPrice }));
     }
-    setSelectAll(!selectAll);
   };
 
-  // --- When the computed maximum price changes, adjust the price filter if needed ---
-  useEffect(() => {
-    if (filters.price > computedMaxPrice) {
-      setFilters((prev) => ({ ...prev, price: computedMaxPrice }));
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [computedMaxPrice]);
-
-  // --- Prepare highlighted dates for the DatePicker (only highlight available pickup days) ---
-  const highlightDates = useMemo(() => {
-    const dates = availablePickupDays.map((dateStr) => new Date(dateStr));
-    // Ensure that the selected date is always included.
-    if (filters.pickupDay) {
-      const selectedDate = new Date(filters.pickupDay);
-      const found = dates.some(
-        (d) =>
-          d.getFullYear() === selectedDate.getFullYear() &&
-          d.getMonth() === selectedDate.getMonth() &&
-          d.getDate() === selectedDate.getDate()
-      );
-      if (!found) {
-        dates.push(selectedDate);
-      }
-    }
-    // Sort the dates in chronological order.
-    dates.sort((a, b) => a - b);
-    return dates;
-  }, [availablePickupDays, filters.pickupDay]);
+  // --- Reset Filters Button ---
+  const resetFilters = () => {
+    setFilters({
+      price: allMaxPrice,
+      cuisine: allCuisines,
+    });
+  };
 
   return (
     <>
@@ -190,12 +142,12 @@ const AllMealsPage = () => {
             <form>
               {/* Price Filter */}
               <label>
-                <legend>Maximal price</legend>
+                <legend>Maximal Price</legend>
                 <input
                   type="range"
                   name="price"
                   min="0"
-                  max={computedMaxPrice}
+                  max={allMaxPrice}
                   step="1"
                   value={filters.price}
                   onChange={(e) =>
@@ -212,7 +164,7 @@ const AllMealsPage = () => {
               <div style={{ marginTop: "10px" }}>
                 <fieldset style={{ border: "none", padding: 0 }}>
                   <legend>Cuisine</legend>
-                  {availableCuisines.map((cuisine, index) => (
+                  {allCuisines.map((cuisine, index) => (
                     <div key={index}>
                       <input
                         type="checkbox"
@@ -220,17 +172,13 @@ const AllMealsPage = () => {
                         value={cuisine}
                         checked={filters.cuisine.includes(cuisine)}
                         onChange={() => {
-                          const newCuisines = [...filters.cuisine];
+                          let newCuisines = [...filters.cuisine];
                           if (newCuisines.includes(cuisine)) {
-                            const idx = newCuisines.indexOf(cuisine);
-                            newCuisines.splice(idx, 1);
+                            newCuisines = newCuisines.filter((c) => c !== cuisine);
                           } else {
                             newCuisines.push(cuisine);
                           }
-                          setFilters((prev) => ({
-                            ...prev,
-                            cuisine: newCuisines,
-                          }));
+                          setFilters((prev) => ({ ...prev, cuisine: newCuisines }));
                         }}
                       />
                       <label>{cuisine}</label>
@@ -238,22 +186,15 @@ const AllMealsPage = () => {
                   ))}
                 </fieldset>
                 <button type="button" onClick={handleCheckAllCuisines}>
-                  {selectAll ? "Uncheck All" : "Check All"}
+                  {areAllAvailableChecked ? "Uncheck All" : "Show All"}
                 </button>
               </div>
 
-              {/* Pickup Day Filter */}
+              {/* Reset Filters Button */}
               <div style={{ marginTop: "10px" }}>
-                <label>
-                  <legend>Pickup date</legend>
-                  <DatePicker
-                    selected={filters.pickupDay ? new Date(filters.pickupDay) : null}
-                    onChange={handleDateChange}
-                    dateFormat="yyyy-MM-dd"
-                    highlightDates={highlightDates}
-                    inline
-                  />
-                </label>
+                <button type="button" onClick={resetFilters}>
+                  Reset Filters
+                </button>
               </div>
             </form>
           </div>
