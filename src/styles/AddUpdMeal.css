@@ -1,11 +1,119 @@
-.meal-form-container {
+.add-meal-container {
   height: 85vh;
 
   background-color: #003459;
   background-image: url("../assets/work-background.png");
 
   display: flex;
-  justify-content: center;
+}
+
+.add-meal-button {
+  border-radius: 5px;
+  border: 1px solid rgb(245, 171, 124);
+}
+
+.add-meal-button:hover {
+  transform: scale(1.1);
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header-area {
+  display: flex;
+  justify-content: space-between;
+
+  h4 {
+    color: #ffb45e;
+    font-family: "Satisfy", serif;
+    padding: 5px 0 0 10px;
+    margin: 0;
+  }
+}
+
+.collapse-bar {
+  width: 25px;
+  height: 25px;
+  background-color: rgb(203, 217, 222);
+  background-image: url("../assets/collapse-icon.png");
+  background-size: 15px;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+}
+
+.expand-bar {
+  width: 25px;
+  height: 25px;
+  background-color: rgb(203, 217, 222);
+  background-image: url("../assets/expand-icon.png");
+  background-size: 15px;
+  background-repeat: no-repeat;
+  background-position: center;
+  cursor: pointer;
+}
+
+.side-bar-prevmeal {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.side-bar-prevmeal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.side-bar-prevmeal::-webkit-scrollbar-thumb {
+  background-color: #b1b8bc;
+  border-radius: 10px;
+}
+
+.prevmeal-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  h6 {
+    color: white;
+    margin: 0;
+  }
+}
+
+.prev-meal-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  img {
+    width: 100px;
+    height: 100px;
+    border-radius: 5px;
+    border: 1px solid rgb(245, 171, 124);
+  }
+}
+
+.use-meal-button {
+  width: 120px;
+  background-color: rgb(146, 158, 81);
+}
+
+.meal-form-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.meal-form-header {
+  width: 50vw;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .meal-form-heading {
@@ -31,10 +139,22 @@
   }
 }
 
+.load-prevmeal-button {
+  width: 200px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  background-color: rgb(146, 158, 81);
+}
+
+.reuse-img {
+  width: 35px;
+}
+
 .meal-form {
+  width: 50vw;
   background-color: #003459cd;
 
-  width: 50vw;
   padding-top: 25px;
 
   display: flex;
@@ -68,11 +188,6 @@
 }
 
 .meal-submit-button {
-  width: 100px;
-  border-radius: 5px;
-  font-weight: bolder;
-}
-
-.meal-submit-button:hover {
-  transform: scale(1.1);
+  padding: 5px 10px;
+  background-color: rgb(203, 217, 222);
 }
