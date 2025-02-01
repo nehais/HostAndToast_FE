@@ -44,7 +44,7 @@
   max-height: 200px;
   overflow-y: auto;
   color: white;
-  background-color: #2334408f;
+  background-color: #233440ba;
   position: absolute;
   z-index: 1000;
 
@@ -52,6 +52,10 @@
     padding: 10px;
     cursor: pointer;
     border-bottom: 1px solid #eee;
+  }
+
+  li:last-child {
+    border-bottom: none;
   }
 }
 

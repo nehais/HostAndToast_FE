@@ -1,10 +1,17 @@
 import "../styles/AddUpdMeal.css";
 import SpoonIcon from "../assets/spoon.png";
+import ReuseIcon from "../assets/reuse.png";
+
+import axios from "axios";
+import { API_URL } from "../config/apiConfig.js";
 
 import { useState } from "react";
+import PrevMealCard from "../components/PrevMealCard.jsx";
 
 const AddMeal = () => {
+  const [sideBarOpen, setSideBarOpen] = useState(true);
   const [mealFormData, setMealFormData] = useState({ title: null });
+  const [meals, setMeals] = useState([]);
 
   function handleChange(e) {
     setFormData((prev) => {
@@ -16,11 +23,58 @@ const AddMeal = () => {
     e.preventDefault();
   }
 
+  async function getAllMeals() {
+    try {
+      const { data } = await axios.get(`${API_URL}/api/meals`);
+      setMeals(data);
+    } catch (error) {
+      console.log("Error fetching meals", error.response.data.message);
+    }
+  }
+
   return (
-    <div className="meal-form-container">
-      <section>
-        <h2 className="meal-form-heading">Meal Details</h2>
-        <img src={SpoonIcon} alt="" className="add-spoon-img" />
+    <div className="add-meal-container">
+      {meals.length > 0 && sideBarOpen && (
+        <div className="sidebar">
+          <div className="sidebar-header-area">
+            <h4>Previous Creations</h4>
+            <div
+              className="collapse-bar"
+              onClick={() => setSideBarOpen((prev) => !prev)}
+            ></div>
+          </div>
+
+          <section className="side-bar-prevmeal">
+            {/* Render Previous meals */}
+            {meals.map((meal) => (
+              <PrevMealCard key={meal._id} meal={meal} />
+            ))}
+          </section>
+        </div>
+      )}
+
+      {meals.length > 0 && !sideBarOpen && (
+        <div
+          className="expand-bar"
+          onClick={() => setSideBarOpen((prev) => !prev)}
+        ></div>
+      )}
+
+      <section className="meal-form-container">
+        <div className="meal-form-header">
+          <div>
+            <h2 className="meal-form-heading">Meal Details</h2>
+            <img src={SpoonIcon} alt="" className="add-spoon-img" />
+          </div>
+
+          <button
+            className="load-prevmeal-button add-meal-button"
+            onClick={() => getAllMeals()}
+          >
+            <img src={ReuseIcon} alt="" className="reuse-img" />
+            Load Previous Meals
+          </button>
+        </div>
 
         <form onSubmit={handleSubmit} className="meal-form">
           <div className="col-fields">
@@ -120,9 +174,9 @@ const AddMeal = () => {
           <button
             type="submit"
             variant="primary"
-            className="meal-submit-button"
+            className="meal-submit-button add-meal-button"
           >
-            Submit
+            List You Meal
           </button>
         </form>
       </section>
