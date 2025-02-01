@@ -3,6 +3,7 @@ import "leaflet-geosearch/dist/geosearch.css";
 import { useContext, useRef, useEffect, useState } from "react";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import { AddressContext } from "../contexts/address.context";
+import { useNavigate } from "react-router-dom";
 
 const AddressSearch = ({ componentId }) => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -10,6 +11,7 @@ const AddressSearch = ({ componentId }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const { address, setAddress } = useContext(AddressContext);
   const ref = useRef();
+  const nav = useNavigate();
 
   useEffect(() => {
     async function fillSuggestions(searchStr) {
@@ -57,10 +59,7 @@ const AddressSearch = ({ componentId }) => {
         setSuggestions(results);
         setShowDropdown(true);
       } catch (error) {
-        console.error(
-          "Error fetching autocomplete address suggestions:",
-          error
-        );
+        console.error("Error fetching autocomplete address suggestions:", error);
       }
     } else {
       setSuggestions([]); // Clear suggestions for short input
@@ -76,6 +75,9 @@ const AddressSearch = ({ componentId }) => {
       lon: suggestion.raw.lon,
     });
     setShowDropdown(false); // Close the dropdown
+    if (componentId === "home") {
+      nav("/all-meals");
+    }
   };
 
   return (
@@ -92,11 +94,7 @@ const AddressSearch = ({ componentId }) => {
       {showDropdown && suggestions.length > 0 && (
         <ul className="address-drop-down">
           {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              onClick={() => handleSuggestionClick(suggestion)}
-              ref={ref}
-            >
+            <li key={index} onClick={() => handleSuggestionClick(suggestion)} ref={ref}>
               {suggestion.label}
             </li>
           ))}

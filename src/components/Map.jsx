@@ -5,7 +5,7 @@ import "leaflet/dist/leaflet.css";
 import "../styles/Map.css";
 // import markerIcon from "../assets/marker-icon.png";
 
-const Map = ({ markers }) => {
+const Map = ({ markers, lat, long, zoom }) => {
   // const customMarkerIcon = new Icon({
   //   iconUrl: markerIcon,
   //   iconSize: [38, 38],
@@ -21,7 +21,7 @@ const Map = ({ markers }) => {
 
   return (
     // <div>Map</div>
-    <MapContainer center={[51.76088, 10.25032]} zoom={5}>
+    <MapContainer center={[lat, long]} zoom={zoom}>
       <TileLayer
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

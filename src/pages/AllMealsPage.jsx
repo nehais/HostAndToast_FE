@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import MealCard from "../components/MealCard";
 import "../styles/AllMealsPage.css";
 import axios from "axios";
@@ -6,6 +6,7 @@ import { API_URL } from "../config/apiConfig.js";
 import Map from "../components/Map.jsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { AddressContext } from "../contexts/address.context.jsx";
 
 const AllMealsPage = () => {
   const [meals, setMeals] = useState([]);
@@ -17,6 +18,20 @@ const AllMealsPage = () => {
     pickupDate: null, // selected pickup date; null means no date filter
   });
   const [initialCuisineSet, setInitialCuisineSet] = useState(false);
+
+  const { address } = useContext(AddressContext);
+  console.log(address);
+  const [lat, setLat] = useState(51.16423);
+  const [long, setLong] = useState(10.45412);
+  const [zoom, setZoom] = useState(5);
+
+  useEffect(() => {
+    if (address) {
+      setLat(address.lat);
+      setLong(address.long);
+      setZoom(11);
+    }
+  }, [address]);
 
   // Helper: Compare two dates ignoring time.
   const isSameDay = (d1, d2) => {
@@ -72,8 +87,6 @@ const AllMealsPage = () => {
   }, [availableMealsForCuisine]);
 
   // --- Derived Values for Pickup Date Highlights ---
-  // For the DatePicker, we compute all available pickup dates based on price and selected cuisines.
-  // Note that we do not restrict the available dates when a pickup date is chosen.
   const availableMealsForPickupDates = useMemo(() => {
     return meals.filter((meal) => {
       if (meal.price > filters.price) return false;
@@ -146,7 +159,6 @@ const AllMealsPage = () => {
   }, [filteredMeals]);
 
   // --- "Show All"/"Uncheck All" Button ---
-  // Here we base the toggle on all cuisines from the raw data.
   const areAllChecked = useMemo(() => {
     return (
       allCuisines.length > 0 && allCuisines.every((cuisine) => filters.cuisine.includes(cuisine))
@@ -157,7 +169,6 @@ const AllMealsPage = () => {
     if (areAllChecked) {
       setFilters((prev) => ({ ...prev, cuisine: [] }));
     } else {
-      // When setting all, note that the auto-uncheck effect will remove any with 0 count.
       setFilters((prev) => ({ ...prev, cuisine: allCuisines }));
     }
   };
@@ -242,7 +253,6 @@ const AllMealsPage = () => {
                     selected={filters.pickupDate}
                     onChange={(date) => setFilters((prev) => ({ ...prev, pickupDate: date }))}
                     placeholderText="Select a pickup date"
-                    // Always highlight all available pickup dates based on price and cuisine.
                     highlightDates={availablePickupDates}
                     isClearable
                   />
@@ -261,7 +271,7 @@ const AllMealsPage = () => {
 
         <div id="right-column">
           <div id="map">
-            <Map markers={markers} />
+            <Map markers={markers} lat={lat} long={long} zoom={zoom} />
           </div>
           <div id="all-cards">
             {filteredMeals.map((meal) => (
