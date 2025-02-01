@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MealCard from "../components/MealCard";
 import "../styles/AllMealsPage.css";
 import axios from "axios";
@@ -11,16 +11,16 @@ const AllMealsPage = () => {
   const [meals, setMeals] = useState([]);
   const [filteredMeals, setFilteredMeals] = useState([]);
   const [markers, setMarkers] = useState([]);
-  const [maxPrice, setMaxPrice] = useState(20);
-  const [cuisines, setCuisines] = useState([]);
   const [filters, setFilters] = useState({
-    price: maxPrice, // Initially set to max price
-    cuisine: [], // Initially empty, will be updated with selected cuisines
-    pickupDay: "", // Ensure this is a string in "yyyy-MM-dd" format
+    price: 20, // initial price value (will be adjusted once meals load)
+    cuisine: [], // selected cuisines; on initial load, all available cuisines will be set
+    pickupDay: "", // in "yyyy-MM-dd" format
   });
-  const [pickupDays, setPickupDays] = useState([]); // Store unique pickup days from meals
-  const [selectAll, setSelectAll] = useState(true); // Track if all cuisines are selected
+  const [selectAll, setSelectAll] = useState(true);
+  // This flag ensures we set the cuisine filter only once on initial load.
+  const [initialCuisineSet, setInitialCuisineSet] = useState(false);
 
+  // Fetch meals from the API
   useEffect(() => {
     async function getMeals() {
       try {
@@ -31,55 +31,90 @@ const AllMealsPage = () => {
       }
     }
     getMeals();
-  }, []); // Fetch meals only once on initial load
+  }, []);
 
+  // --- Derive available filter options based on meals and current filters ---
+
+  // 1. For the price slider: compute the maximum price from meals that pass the other filters (excluding price)
+  const availableMealsForPrice = useMemo(() => {
+    return meals.filter((meal) => {
+      // Apply cuisine and pickup day filters (but not price)
+      if (filters.cuisine.length && !filters.cuisine.includes(meal.cuisine)) return false;
+      if (filters.pickupDay && meal.pickupTime.split("T")[0] !== filters.pickupDay) return false;
+      return true;
+    });
+  }, [meals, filters.cuisine, filters.pickupDay]);
+
+  const computedMaxPrice = useMemo(() => {
+    return availableMealsForPrice.reduce((max, meal) => Math.max(max, meal.price), 0);
+  }, [availableMealsForPrice]);
+
+  // 2. For the cuisine filter: compute available cuisines from meals filtered by price and pickupDay
+  const availableMealsForCuisine = useMemo(() => {
+    return meals.filter((meal) => {
+      if (filters.price && meal.price > filters.price) return false;
+      if (filters.pickupDay && meal.pickupTime.split("T")[0] !== filters.pickupDay) return false;
+      return true;
+    });
+  }, [meals, filters.price, filters.pickupDay]);
+
+  const availableCuisines = useMemo(() => {
+    return [...new Set(availableMealsForCuisine.map((meal) => meal.cuisine))];
+  }, [availableMealsForCuisine]);
+
+  // 3. For the pickup day filter: compute available pickup days from meals filtered by price and cuisine
+  const availableMealsForPickupDay = useMemo(() => {
+    return meals.filter((meal) => {
+      if (filters.price && meal.price > filters.price) return false;
+      // If no cuisine is selected or the meal's cuisine is not among the selected ones, exclude it.
+      if (filters.cuisine.length === 0 || !filters.cuisine.includes(meal.cuisine)) return false;
+      return true;
+    });
+  }, [meals, filters.price, filters.cuisine]);
+
+  const availablePickupDays = useMemo(() => {
+    return [...new Set(availableMealsForPickupDay.map((meal) => meal.pickupTime.split("T")[0]))];
+  }, [availableMealsForPickupDay]);
+
+  // --- Set the initial cuisine filter once meals have loaded ---
   useEffect(() => {
-    const maxPriceFound = meals.reduce((max, meal) => {
-      return meal.price > max ? meal.price : max;
-    }, 0);
-    setMaxPrice(maxPriceFound);
+    if (meals.length > 0 && !initialCuisineSet) {
+      // On initial load, select all available cuisines (based on the current price and pickupDay filters)
+      setFilters((prev) => ({ ...prev, cuisine: availableCuisines }));
+      setInitialCuisineSet(true);
+    }
+  }, [meals, availableCuisines, initialCuisineSet]);
 
-    const cuisinesFound = meals.reduce((cuisines, meal) => {
-      if (!cuisines.includes(meal.cuisine)) {
-        cuisines.push(meal.cuisine);
-      }
-      return cuisines;
-    }, []);
-    setCuisines(cuisinesFound);
-
-    // Set all cuisines as initially selected
-    setFilters((prevFilters) => ({
-      ...prevFilters,
-      cuisine: cuisinesFound, // Select all cuisines by default
+  // --- Synchronize the cuisine filter when available cuisines change ---
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      cuisine: prev.cuisine.filter((cuisine) => availableCuisines.includes(cuisine)),
     }));
-  }, [meals]);
+  }, [availableCuisines]);
 
+  // --- Update the filtered meals based on current filters ---
   useEffect(() => {
     const filtered = meals.filter((meal) => {
-      // Filter by price
+      // Price filter
       if (filters.price && meal.price > filters.price) {
         return false;
       }
-      // Filter by cuisine
-      if (filters.cuisine.length && !filters.cuisine.includes(meal.cuisine)) {
+      // Cuisine filter: if no cuisine is selected, filter out all meals.
+      if (filters.cuisine.length === 0 || !filters.cuisine.includes(meal.cuisine)) {
         return false;
       }
-      // Filter by pickup day
+      // Pickup day filter
       if (filters.pickupDay && meal.pickupTime.split("T")[0] !== filters.pickupDay) {
         return false;
       }
       return true;
     });
-    setFilteredMeals(filtered); // Update the filtered meals state
-  }, [filters, meals]); // This effect runs when filters or meals change
+    setFilteredMeals(filtered);
+  }, [filters, meals]);
 
+  // --- Update the markers for the map based on the filtered meals ---
   useEffect(() => {
-    const uniquePickupDays = [...new Set(meals.map((meal) => meal.pickupTime.split("T")[0]))];
-    setPickupDays(uniquePickupDays); // Get unique pickup days (only date part of pickupTime)
-  }, [meals]);
-
-  useEffect(() => {
-    // Update markers based on filtered meals
     const allMarkers = filteredMeals.map((meal) => ({
       geocode: [meal.user.address.lat, meal.user.address.long],
       popUp: (
@@ -93,32 +128,55 @@ const AllMealsPage = () => {
         </>
       ),
     }));
-    setMarkers(allMarkers); // Set the markers for the filtered meals
-  }, [filteredMeals]); // Update markers whenever filteredMeals changes
+    setMarkers(allMarkers);
+  }, [filteredMeals]);
 
+  // --- Handle Date changes ---
   const handleDateChange = (date) => {
     const formattedDate = date ? date.toISOString().split("T")[0] : "";
-    setFilters({ ...filters, pickupDay: formattedDate });
+    setFilters((prev) => ({ ...prev, pickupDay: formattedDate }));
   };
 
-  // Handle the check/uncheck all button
+  // --- Handle Check/Uncheck All for cuisines ---
   const handleCheckAllCuisines = () => {
     if (selectAll) {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        cuisine: [], // Uncheck all cuisines
-      }));
+      // "Uncheck All" → clear the cuisine filter (so no meal is shown)
+      setFilters((prev) => ({ ...prev, cuisine: [] }));
     } else {
-      setFilters((prevFilters) => ({
-        ...prevFilters,
-        cuisine: cuisines, // Check all cuisines
-      }));
+      // "Check All" → set the cuisine filter to the currently available cuisines
+      setFilters((prev) => ({ ...prev, cuisine: availableCuisines }));
     }
-    setSelectAll(!selectAll); // Toggle the selectAll state
+    setSelectAll(!selectAll);
   };
 
-  // Custom date function to highlight the available pickup days
-  const highlightDates = pickupDays.map((date) => new Date(date));
+  // --- When the computed maximum price changes, adjust the price filter if needed ---
+  useEffect(() => {
+    if (filters.price > computedMaxPrice) {
+      setFilters((prev) => ({ ...prev, price: computedMaxPrice }));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [computedMaxPrice]);
+
+  // --- Prepare highlighted dates for the DatePicker (only highlight available pickup days) ---
+  const highlightDates = useMemo(() => {
+    const dates = availablePickupDays.map((dateStr) => new Date(dateStr));
+    // Ensure that the selected date is always included.
+    if (filters.pickupDay) {
+      const selectedDate = new Date(filters.pickupDay);
+      const found = dates.some(
+        (d) =>
+          d.getFullYear() === selectedDate.getFullYear() &&
+          d.getMonth() === selectedDate.getMonth() &&
+          d.getDate() === selectedDate.getDate()
+      );
+      if (!found) {
+        dates.push(selectedDate);
+      }
+    }
+    // Sort the dates in chronological order.
+    dates.sort((a, b) => a - b);
+    return dates;
+  }, [availablePickupDays, filters.pickupDay]);
 
   return (
     <>
@@ -128,71 +186,75 @@ const AllMealsPage = () => {
       <div id="all-meals-page">
         <div id="left-column">
           <div id="filter">
-            Filters
+            <h3>Filters</h3>
             <form>
-              {/* Max Price */}
+              {/* Price Filter */}
               <label>
-                Max Price:
+                <legend>Maximal price</legend>
                 <input
                   type="range"
                   name="price"
                   min="0"
-                  max={maxPrice}
+                  max={computedMaxPrice}
                   step="1"
                   value={filters.price}
-                  onChange={(e) => setFilters({ ...filters, price: e.target.value })}
+                  onChange={(e) =>
+                    setFilters((prev) => ({
+                      ...prev,
+                      price: Number(e.target.value),
+                    }))
+                  }
                 />
-                <span>{filters.price || maxPrice} €</span>
+                <span>{filters.price} €</span>
               </label>
 
-              {/* Check/Uncheck All Button for Cuisines */}
-              <button
-                type="button"
-                onClick={handleCheckAllCuisines}
-                style={{ marginBottom: "10px" }}
-              >
-                {selectAll ? "Uncheck All" : "Check All"}
-              </button>
+              {/* Cuisine Filter */}
+              <div style={{ marginTop: "10px" }}>
+                <fieldset style={{ border: "none", padding: 0 }}>
+                  <legend>Cuisine</legend>
+                  {availableCuisines.map((cuisine, index) => (
+                    <div key={index}>
+                      <input
+                        type="checkbox"
+                        name="cuisine"
+                        value={cuisine}
+                        checked={filters.cuisine.includes(cuisine)}
+                        onChange={() => {
+                          const newCuisines = [...filters.cuisine];
+                          if (newCuisines.includes(cuisine)) {
+                            const idx = newCuisines.indexOf(cuisine);
+                            newCuisines.splice(idx, 1);
+                          } else {
+                            newCuisines.push(cuisine);
+                          }
+                          setFilters((prev) => ({
+                            ...prev,
+                            cuisine: newCuisines,
+                          }));
+                        }}
+                      />
+                      <label>{cuisine}</label>
+                    </div>
+                  ))}
+                </fieldset>
+                <button type="button" onClick={handleCheckAllCuisines}>
+                  {selectAll ? "Uncheck All" : "Check All"}
+                </button>
+              </div>
 
-              {/* Cuisines */}
-              <label>
-                Cuisine:
-                {cuisines.map((cuisine, index) => (
-                  <div key={index}>
-                    <input
-                      type="checkbox"
-                      name="cuisine"
-                      value={cuisine}
-                      checked={filters.cuisine.includes(cuisine)}
-                      onChange={() => {
-                        const newCuisines = [...filters.cuisine];
-                        if (newCuisines.includes(cuisine)) {
-                          newCuisines.splice(newCuisines.indexOf(cuisine), 1);
-                        } else {
-                          newCuisines.push(cuisine);
-                        }
-                        setFilters((prevFilters) => ({
-                          ...prevFilters,
-                          cuisine: newCuisines,
-                        }));
-                      }}
-                    />
-                    <label>{cuisine}</label>
-                  </div>
-                ))}
-              </label>
-
-              {/* Pickup Day */}
-              <label>
-                Pickup Day:
-                <DatePicker
-                  selected={filters.pickupDay ? new Date(filters.pickupDay) : null} // Ensure it's a valid Date object
-                  onChange={handleDateChange}
-                  dateFormat="yyyy-MM-dd"
-                  highlightDates={highlightDates} // Highlight pickup days
-                  inline
-                />
-              </label>
+              {/* Pickup Day Filter */}
+              <div style={{ marginTop: "10px" }}>
+                <label>
+                  <legend>Pickup date</legend>
+                  <DatePicker
+                    selected={filters.pickupDay ? new Date(filters.pickupDay) : null}
+                    onChange={handleDateChange}
+                    dateFormat="yyyy-MM-dd"
+                    highlightDates={highlightDates}
+                    inline
+                  />
+                </label>
+              </div>
             </form>
           </div>
         </div>
@@ -202,7 +264,6 @@ const AllMealsPage = () => {
             <Map markers={markers} />
           </div>
           <div id="all-cards">
-            {/* Render filtered meals */}
             {filteredMeals.map((meal) => (
               <MealCard key={meal._id} meal={meal} />
             ))}
