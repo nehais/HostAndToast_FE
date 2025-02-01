@@ -7,7 +7,7 @@
 
 #all-meals-page {
   display: flex;
-  align-items: start;
+  align-items: stretch;
   justify-content: center;
   width: 100%;
 }
@@ -24,27 +24,85 @@
 #left-column {
   margin: 20px;
   padding: 20px;
+  background-color: rgba(203, 217, 222, 0.9);
 }
 
 #map {
   width: 100%;
   height: 450px;
-  background-color: khaki;
 }
 
 .leaflet-container {
   height: 100%;
 }
 
-/* #all-cards {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 30px;
-} */
-
 #all-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 10px;
+  gap: 25px 15px;
   margin-top: 30px;
+}
+
+#filter {
+  legend {
+    font-size: 1.2rem;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  label {
+    padding: 3px;
+    width: 100%;
+  }
+
+  .price-label {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    input {
+      width: 90%;
+    }
+
+    span {
+      min-width: fit-content;
+      padding: 5px;
+      padding-left: 10px;
+    }
+  }
+
+  .filter-button {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #003459;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .reset-button {
+    margin-top: 30px;
+  }
+
+  .cuisine-label {
+    display: flex;
+
+    input {
+      margin-right: 5px;
+    }
+  }
+
+  .one-cuisine {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .number-of-meals {
+    text-align: right;
+    font-size: 0.9rem;
+  }
 }
