@@ -20,18 +20,6 @@ const AllMealsPage = () => {
   const [initialCuisineSet, setInitialCuisineSet] = useState(false);
 
   const { address } = useContext(AddressContext);
-  console.log(address);
-  const [lat, setLat] = useState(51.16423);
-  const [long, setLong] = useState(10.45412);
-  const [zoom, setZoom] = useState(5);
-
-  useEffect(() => {
-    if (address) {
-      setLat(address.lat);
-      setLong(address.long);
-      setZoom(11);
-    }
-  }, [address]);
 
   // Helper: Compare two dates ignoring time.
   const isSameDay = (d1, d2) => {
@@ -184,69 +172,72 @@ const AllMealsPage = () => {
 
   return (
     <>
-      <div>
-        <h1>All Meals Page</h1>
-      </div>
+      <div>{/* <h1>All Meals Page</h1> */}</div>
       <div id="all-meals-page">
         <div id="left-column">
           <div id="filter">
-            <h3>Filters</h3>
+            <h3>Filter Meals</h3>
             <form>
               {/* Price Filter */}
               <label>
                 <legend>Maximal Price</legend>
-                <input
-                  type="range"
-                  name="price"
-                  min="0"
-                  max={allMaxPrice}
-                  step="1"
-                  value={filters.price}
-                  onChange={(e) =>
-                    setFilters((prev) => ({
-                      ...prev,
-                      price: Number(e.target.value),
-                    }))
-                  }
-                />
-                <span>{filters.price} €</span>
+                <div className="price-label">
+                  <input
+                    type="range"
+                    name="price"
+                    min="0"
+                    max={allMaxPrice}
+                    step="1"
+                    value={filters.price}
+                    onChange={(e) =>
+                      setFilters((prev) => ({
+                        ...prev,
+                        price: Number(e.target.value),
+                      }))
+                    }
+                  />
+                  <span>{filters.price} €</span>
+                </div>
               </label>
 
               {/* Cuisine Filter */}
-              <div style={{ marginTop: "10px" }}>
-                <fieldset style={{ border: "none", padding: 0 }}>
+              <div>
+                <fieldset>
                   <legend>Cuisine</legend>
                   {/* Render all cuisines even if not available */}
                   {allCuisines.map((cuisine, index) => (
                     <div key={index}>
-                      <input
-                        type="checkbox"
-                        name="cuisine"
-                        value={cuisine}
-                        checked={filters.cuisine.includes(cuisine)}
-                        onChange={() => {
-                          let newCuisines = [...filters.cuisine];
-                          if (newCuisines.includes(cuisine)) {
-                            newCuisines = newCuisines.filter((c) => c !== cuisine);
-                          } else {
-                            newCuisines.push(cuisine);
-                          }
-                          setFilters((prev) => ({ ...prev, cuisine: newCuisines }));
-                        }}
-                      />
-                      <label>
-                        {cuisine} ({cuisineCounts[cuisine] || 0})
+                      <label className="cuisine-label">
+                        <input
+                          type="checkbox"
+                          name="cuisine"
+                          value={cuisine}
+                          checked={filters.cuisine.includes(cuisine)}
+                          onChange={() => {
+                            let newCuisines = [...filters.cuisine];
+                            if (newCuisines.includes(cuisine)) {
+                              newCuisines = newCuisines.filter((c) => c !== cuisine);
+                            } else {
+                              newCuisines.push(cuisine);
+                            }
+                            setFilters((prev) => ({ ...prev, cuisine: newCuisines }));
+                          }}
+                        />
+                        <span className="one-cuisine">
+                          {cuisine}
+                          <span className="number-of-meals">({cuisineCounts[cuisine] || 0})</span>
+                        </span>
                       </label>
                     </div>
                   ))}
                 </fieldset>
-                <button type="button" onClick={handleCheckAllCuisines}>
-                  {areAllChecked ? "Uncheck All" : "Show All"}
+                <button className="filter-button" type="button" onClick={handleCheckAllCuisines}>
+                  {areAllChecked ? "Uncheck All" : "Check All"}
                 </button>
               </div>
 
               {/* Pickup Date Filter */}
-              <div style={{ marginTop: "10px" }}>
+              <div>
                 <label>
                   <legend>Pickup Date</legend>
                   <DatePicker
@@ -260,8 +251,8 @@ const AllMealsPage = () => {
               </div>
 
               {/* Reset Filters Button */}
-              <div style={{ marginTop: "10px" }}>
-                <button type="button" onClick={resetFilters}>
+              <div>
+                <button className="filter-button reset-button" type="button" onClick={resetFilters}>
                   Reset Filters
                 </button>
               </div>
@@ -271,7 +262,7 @@ const AllMealsPage = () => {
 
         <div id="right-column">
           <div id="map">
-            <Map markers={markers} lat={lat} long={long} zoom={zoom} />
+            <Map markers={markers} />
           </div>
           <div id="all-cards">
             {filteredMeals.map((meal) => (
