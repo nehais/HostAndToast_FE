@@ -4,17 +4,28 @@ import "../styles/AllMealsPage.css";
 import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
 import Map from "../components/Map.jsx";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const AllMealsPage = () => {
   const [meals, setMeals] = useState([]);
   const [filteredMeals, setFilteredMeals] = useState([]);
   const [markers, setMarkers] = useState([]);
   const [filters, setFilters] = useState({
-    price: 20, // initial price value (will be adjusted once meals load)
-    cuisine: [], // selected cuisines; on initial load, all cuisines will be selected
+    price: 20, // initial price (will adjust once meals load)
+    cuisine: [], // selected cuisines; on initial load, all cuisines are selected
+    pickupDate: null, // selected pickup date; null means no date filter
   });
-  // This flag ensures we set the cuisine filter only once on initial load.
   const [initialCuisineSet, setInitialCuisineSet] = useState(false);
+
+  // Helper: Compare two dates ignoring time.
+  const isSameDay = (d1, d2) => {
+    return (
+      d1.getFullYear() === d2.getFullYear() &&
+      d1.getMonth() === d2.getMonth() &&
+      d1.getDate() === d2.getDate()
+    );
+  };
 
   // --- Fetch Meals ---
   useEffect(() => {
@@ -29,8 +40,8 @@ const AllMealsPage = () => {
     getMeals();
   }, []);
 
-  // --- Global Values (Fixed: All Meals) ---
-  // All cuisines from all meals.
+  // --- Global Values ---
+  // All cuisines from the raw meals data.
   const allCuisines = useMemo(() => {
     return [...new Set(meals.map((meal) => meal.cuisine))];
   }, [meals]);
@@ -40,18 +51,18 @@ const AllMealsPage = () => {
     return meals.reduce((max, meal) => Math.max(max, meal.price), 0);
   }, [meals]);
 
-  // --- Derived Values Based on the Price Filter Only ---
-  // Compute the meals that satisfy the current price filter.
+  // --- Derived Values for Cuisine Counts (Price & Pickup Date) ---
+  // For showing counts (and for auto-unchecking), filter meals by price and, if set, by pickup date.
   const availableMealsForCuisine = useMemo(() => {
-    return meals.filter((meal) => meal.price <= filters.price);
-  }, [meals, filters.price]);
+    return meals.filter((meal) => {
+      if (meal.price > filters.price) return false;
+      if (filters.pickupDate && !isSameDay(new Date(meal.pickupTime), filters.pickupDate))
+        return false;
+      return true;
+    });
+  }, [meals, filters.price, filters.pickupDate]);
 
-  // From those meals, determine which cuisines are available.
-  const availableCuisinesFromPrice = useMemo(() => {
-    return [...new Set(availableMealsForCuisine.map((meal) => meal.cuisine))];
-  }, [availableMealsForCuisine]);
-
-  // Compute counts for each cuisine based on the current price filter.
+  // Compute counts for each cuisine.
   const cuisineCounts = useMemo(() => {
     const counts = {};
     availableMealsForCuisine.forEach((meal) => {
@@ -59,6 +70,31 @@ const AllMealsPage = () => {
     });
     return counts;
   }, [availableMealsForCuisine]);
+
+  // --- Derived Values for Pickup Date Highlights ---
+  // For the DatePicker, we compute all available pickup dates based on price and selected cuisines.
+  // Note that we do not restrict the available dates when a pickup date is chosen.
+  const availableMealsForPickupDates = useMemo(() => {
+    return meals.filter((meal) => {
+      if (meal.price > filters.price) return false;
+      if (filters.cuisine.length === 0 || !filters.cuisine.includes(meal.cuisine)) return false;
+      return true;
+    });
+  }, [meals, filters.price, filters.cuisine]);
+
+  const availablePickupDates = useMemo(() => {
+    const datesSet = new Set();
+    availableMealsForPickupDates.forEach((meal) => {
+      const d = new Date(meal.pickupTime);
+      // Use a key based on year-month-day.
+      const key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+      datesSet.add(key);
+    });
+    return Array.from(datesSet).map((key) => {
+      const [year, month, day] = key.split("-").map(Number);
+      return new Date(year, month - 1, day);
+    });
+  }, [availableMealsForPickupDates]);
 
   // --- Initialize the Cuisine Filter ---
   // On first load, select all cuisines.
@@ -69,28 +105,29 @@ const AllMealsPage = () => {
     }
   }, [meals, allCuisines, initialCuisineSet]);
 
-  // --- Update the Selected Cuisines When the Price Filter Changes ---
-  // Remove any selected cuisine that is no longer available under the current price filter.
+  // --- Auto-Uncheck Cuisines Not Available ---
+  // If a cuisine’s available count becomes 0, remove it from the filter state.
   useEffect(() => {
     setFilters((prev) => ({
       ...prev,
-      cuisine: prev.cuisine.filter((cuisine) => availableCuisinesFromPrice.includes(cuisine)),
+      cuisine: prev.cuisine.filter((cuisine) => (cuisineCounts[cuisine] || 0) > 0),
     }));
-  }, [availableCuisinesFromPrice]);
+  }, [cuisineCounts]);
 
-  // --- Update the Filtered Meals Based on Current Filters ---
+  // --- Update Filtered Meals ---
+  // Apply all filters: price, selected cuisines, and (if set) the pickup date.
   useEffect(() => {
     const filtered = meals.filter((meal) => {
-      // Price filter: meal must be within the max price.
       if (meal.price > filters.price) return false;
-      // Cuisine filter: meal's cuisine must be among the selected cuisines.
       if (filters.cuisine.length === 0 || !filters.cuisine.includes(meal.cuisine)) return false;
+      if (filters.pickupDate && !isSameDay(new Date(meal.pickupTime), filters.pickupDate))
+        return false;
       return true;
     });
     setFilteredMeals(filtered);
   }, [filters, meals]);
 
-  // --- Update Map Markers Based on Filtered Meals ---
+  // --- Update Map Markers ---
   useEffect(() => {
     const allMarkers = filteredMeals.map((meal) => ({
       geocode: [meal.user.address.lat, meal.user.address.long],
@@ -108,31 +145,29 @@ const AllMealsPage = () => {
     setMarkers(allMarkers);
   }, [filteredMeals]);
 
-  // --- Determine Button Label and Functionality for Cuisines ---
-  // The button will work with cuisines available under the current price filter.
-  const areAllAvailableChecked = useMemo(() => {
+  // --- "Show All"/"Uncheck All" Button ---
+  // Here we base the toggle on all cuisines from the raw data.
+  const areAllChecked = useMemo(() => {
     return (
-      availableCuisinesFromPrice.length > 0 &&
-      availableCuisinesFromPrice.every((cuisine) => filters.cuisine.includes(cuisine)) &&
-      filters.cuisine.length === availableCuisinesFromPrice.length
+      allCuisines.length > 0 && allCuisines.every((cuisine) => filters.cuisine.includes(cuisine))
     );
-  }, [availableCuisinesFromPrice, filters.cuisine]);
+  }, [allCuisines, filters.cuisine]);
 
   const handleCheckAllCuisines = () => {
-    if (areAllAvailableChecked) {
-      // Uncheck all: remove all cuisines that are available under current price.
+    if (areAllChecked) {
       setFilters((prev) => ({ ...prev, cuisine: [] }));
     } else {
-      // Check all: select all cuisines that are available under current price.
-      setFilters((prev) => ({ ...prev, cuisine: availableCuisinesFromPrice }));
+      // When setting all, note that the auto-uncheck effect will remove any with 0 count.
+      setFilters((prev) => ({ ...prev, cuisine: allCuisines }));
     }
   };
 
-  // --- Reset Filters Button ---
+  // --- Reset Filters ---
   const resetFilters = () => {
     setFilters({
       price: allMaxPrice,
       cuisine: allCuisines,
+      pickupDate: null,
     });
   };
 
@@ -170,6 +205,7 @@ const AllMealsPage = () => {
               <div style={{ marginTop: "10px" }}>
                 <fieldset style={{ border: "none", padding: 0 }}>
                   <legend>Cuisine</legend>
+                  {/* Render all cuisines even if not available */}
                   {allCuisines.map((cuisine, index) => (
                     <div key={index}>
                       <input
@@ -194,8 +230,23 @@ const AllMealsPage = () => {
                   ))}
                 </fieldset>
                 <button type="button" onClick={handleCheckAllCuisines}>
-                  {areAllAvailableChecked ? "Uncheck All" : "Show All"}
+                  {areAllChecked ? "Uncheck All" : "Show All"}
                 </button>
+              </div>
+
+              {/* Pickup Date Filter */}
+              <div style={{ marginTop: "10px" }}>
+                <label>
+                  <legend>Pickup Date</legend>
+                  <DatePicker
+                    selected={filters.pickupDate}
+                    onChange={(date) => setFilters((prev) => ({ ...prev, pickupDate: date }))}
+                    placeholderText="Select a pickup date"
+                    // Always highlight all available pickup dates based on price and cuisine.
+                    highlightDates={availablePickupDates}
+                    isClearable
+                  />
+                </label>
               </div>
 
               {/* Reset Filters Button */}
