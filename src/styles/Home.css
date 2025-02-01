@@ -1,9 +1,8 @@
 /*Address Search*/
 .address-container {
-  background-color: #003459;
   background-image: url("../assets/headerImage.jpg");
   width: 100vw;
-  height: 30%;
+  height: 25vh;
 
   display: flex;
   align-items: center;
@@ -12,7 +11,7 @@
 /*Tablet Screen 820*/
 @media only screen and (max-device-width: 820px) {
   .address-container {
-    height: 25%;
+    height: 20vh;
   }
 }
 
@@ -84,17 +83,19 @@
 /*How it Works*/
 .works-container {
   margin: 0 auto;
-  height: 70%;
+  height: 60vh;
 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
-  color: #ffb45e;
   background-color: #003459;
+  background-image: url("../assets/work-background.png");
+  color: #ffb45e;
 
   h2 {
+    font-family: "Satisfy", serif;
     font-size: 3em;
     font-weight: 700;
   }
@@ -105,13 +106,34 @@
 }
 
 .img-slide {
-  width: 300px;
+  width: 20vw;
   border-radius: 20px;
+
+  border: 3px solid white;
 }
 
 .slide-desc {
   padding-top: 5px;
   font-family: "Poppins", serif;
-  font-style: italic;
-  color: white;
+  font-size: 1.3em;
+  font-weight: bold;
+}
+
+/*Tablet Screen 820*/
+@media only screen and (max-device-width: 820px) {
+  .img-slide {
+    width: 60vw;
+  }
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .works-container {
+    h2 {
+      font-size: 2em;
+    }
+  }
+  .slide-desc {
+    font-size: 1em;
+  }
 }

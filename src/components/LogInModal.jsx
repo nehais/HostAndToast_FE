@@ -32,7 +32,6 @@ export default function LogInModal({ show, onHide }) {
       localStorage.setItem("authToken", data.authToken);
       await authenticateUser();
       onHide();
-      nav("/profile");
     } catch (error) {
       console.log("Error Signing Up the details", error.response.data.message);
       setError(error.response.data.message);

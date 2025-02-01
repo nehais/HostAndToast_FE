@@ -4,18 +4,32 @@ import { useContext, useRef, useEffect, useState } from "react";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import { AddressContext } from "../contexts/address.context";
 
-const AddressSearch = () => {
+const AddressSearch = ({ componentId }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]); //Holds the suggested address Drop Down
   const [showDropdown, setShowDropdown] = useState(false);
-  const { setAddress } = useContext(AddressContext);
+  const { address, setAddress } = useContext(AddressContext);
   const ref = useRef();
+
+  useEffect(() => {
+    async function fillSuggestions(searchStr) {
+      const results = await provider.search({ query: searchStr });
+      setSuggestions(results);
+    }
+
+    if (address.label) {
+      setSearchTerm(address.label);
+      fillSuggestions(address.label); //Pre-fill the Dropdown
+    }
+  }, [address]);
 
   useEffect(() => {
     //onClick outside of element close the DD
     function handleClickOutside(event) {
       if (ref.current && !ref.current.contains(event.target)) {
-        setShowDropdown(false); // Close the dropdown
+        if (document.activeElement.dataset.componentId === componentId) {
+          setShowDropdown(false); // Close the dropdown
+        }
       }
     }
     // Bind
@@ -65,35 +79,29 @@ const AddressSearch = () => {
   };
 
   return (
-    <div className="address-container">
-      <div className="search-control-container">
-        <input
-          type="text"
-          value={searchTerm}
-          onChange={handleInputChange}
-          placeholder="Search for an address..."
-          className="search-control"
-          onFocus={() => setShowDropdown(true)} // Show dropdown on focus
-        />
+    <div className="search-control-container">
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={handleInputChange}
+        placeholder="Search for an address..."
+        className="search-control"
+        onFocus={() => setShowDropdown(true)} // Show dropdown on focus
+      />
 
-        {showDropdown && suggestions.length > 0 && (
-          <ul className="address-drop-down">
-            {suggestions.map((suggestion, index) => (
-              <li
-                key={index}
-                onClick={() => handleSuggestionClick(suggestion)}
-                onBlur={(e) => {
-                  e.preventDefault();
-                  setShowDropdown(false);
-                }} // Prevent blur on click
-                ref={ref}
-              >
-                {suggestion.label}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      {showDropdown && suggestions.length > 0 && (
+        <ul className="address-drop-down">
+          {suggestions.map((suggestion, index) => (
+            <li
+              key={index}
+              onClick={() => handleSuggestionClick(suggestion)}
+              ref={ref}
+            >
+              {suggestion.label}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 };
