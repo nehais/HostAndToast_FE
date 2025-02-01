@@ -30,7 +30,6 @@ const AllMealsPage = () => {
   }, []);
 
   // --- Global Values (Fixed: All Meals) ---
-
   // All cuisines from all meals.
   const allCuisines = useMemo(() => {
     return [...new Set(meals.map((meal) => meal.cuisine))];
@@ -42,7 +41,6 @@ const AllMealsPage = () => {
   }, [meals]);
 
   // --- Derived Values Based on the Price Filter Only ---
-
   // Compute the meals that satisfy the current price filter.
   const availableMealsForCuisine = useMemo(() => {
     return meals.filter((meal) => meal.price <= filters.price);
@@ -51,6 +49,15 @@ const AllMealsPage = () => {
   // From those meals, determine which cuisines are available.
   const availableCuisinesFromPrice = useMemo(() => {
     return [...new Set(availableMealsForCuisine.map((meal) => meal.cuisine))];
+  }, [availableMealsForCuisine]);
+
+  // Compute counts for each cuisine based on the current price filter.
+  const cuisineCounts = useMemo(() => {
+    const counts = {};
+    availableMealsForCuisine.forEach((meal) => {
+      counts[meal.cuisine] = (counts[meal.cuisine] || 0) + 1;
+    });
+    return counts;
   }, [availableMealsForCuisine]);
 
   // --- Initialize the Cuisine Filter ---
@@ -63,7 +70,7 @@ const AllMealsPage = () => {
   }, [meals, allCuisines, initialCuisineSet]);
 
   // --- Update the Selected Cuisines When the Price Filter Changes ---
-  // Keep only those cuisines in the current selection that have at least one meal matching the price range.
+  // Remove any selected cuisine that is no longer available under the current price filter.
   useEffect(() => {
     setFilters((prev) => ({
       ...prev,
@@ -74,7 +81,7 @@ const AllMealsPage = () => {
   // --- Update the Filtered Meals Based on Current Filters ---
   useEffect(() => {
     const filtered = meals.filter((meal) => {
-      // Price filter
+      // Price filter: meal must be within the max price.
       if (meal.price > filters.price) return false;
       // Cuisine filter: meal's cuisine must be among the selected cuisines.
       if (filters.cuisine.length === 0 || !filters.cuisine.includes(meal.cuisine)) return false;
@@ -101,9 +108,8 @@ const AllMealsPage = () => {
     setMarkers(allMarkers);
   }, [filteredMeals]);
 
-  // --- Determine the Button Label and Functionality for Cuisines ---
-  // The rendered checkboxes always show all cuisines (from allCuisines).
-  // However, when clicking "Show All" / "Uncheck All," we want to work only with the cuisines available under the current price filter.
+  // --- Determine Button Label and Functionality for Cuisines ---
+  // The button will work with cuisines available under the current price filter.
   const areAllAvailableChecked = useMemo(() => {
     return (
       availableCuisinesFromPrice.length > 0 &&
@@ -117,7 +123,7 @@ const AllMealsPage = () => {
       // Uncheck all: remove all cuisines that are available under current price.
       setFilters((prev) => ({ ...prev, cuisine: [] }));
     } else {
-      // Show all: select all cuisines that are available under current price.
+      // Check all: select all cuisines that are available under current price.
       setFilters((prev) => ({ ...prev, cuisine: availableCuisinesFromPrice }));
     }
   };
@@ -181,7 +187,9 @@ const AllMealsPage = () => {
                           setFilters((prev) => ({ ...prev, cuisine: newCuisines }));
                         }}
                       />
-                      <label>{cuisine}</label>
+                      <label>
+                        {cuisine} ({cuisineCounts[cuisine] || 0})
+                      </label>
                     </div>
                   ))}
                 </fieldset>
