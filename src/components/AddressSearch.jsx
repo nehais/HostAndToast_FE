@@ -59,7 +59,10 @@ const AddressSearch = ({ componentId }) => {
         setSuggestions(results);
         setShowDropdown(true);
       } catch (error) {
-        console.error("Error fetching autocomplete address suggestions:", error);
+        console.error(
+          "Error fetching autocomplete address suggestions:",
+          error
+        );
       }
     } else {
       setSuggestions([]); // Clear suggestions for short input
@@ -81,7 +84,11 @@ const AddressSearch = ({ componentId }) => {
   };
 
   return (
-    <div className="search-control-container">
+    <div
+      className={`search-control-container ${
+        componentId === "navbar" ? "navbar-adr" : " "
+      }`}
+    >
       <input
         type="text"
         value={searchTerm}
@@ -94,7 +101,11 @@ const AddressSearch = ({ componentId }) => {
       {showDropdown && suggestions.length > 0 && (
         <ul className="address-drop-down">
           {suggestions.map((suggestion, index) => (
-            <li key={index} onClick={() => handleSuggestionClick(suggestion)} ref={ref}>
+            <li
+              key={index}
+              onClick={() => handleSuggestionClick(suggestion)}
+              ref={ref}
+            >
               {suggestion.label}
             </li>
           ))}

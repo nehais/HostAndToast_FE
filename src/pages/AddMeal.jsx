@@ -7,11 +7,26 @@ import { API_URL } from "../config/apiConfig.js";
 
 import { useState } from "react";
 import PrevMealCard from "../components/PrevMealCard.jsx";
+import { uploadToCloudinary } from "../utils/cloudinaryUpload";
+
+import Select from "react-select";
+import { Dropdown } from "react-bootstrap";
 
 const AddMeal = () => {
   const [sideBarOpen, setSideBarOpen] = useState(true);
-  const [mealFormData, setMealFormData] = useState({ title: null });
+  const [mealFormData, setMealFormData] = useState({
+    title: "",
+    cuisine: "",
+    description: "",
+    imageUrl: "",
+    allergies: [],
+    plates: 1,
+    pickupTime: "",
+    hosted: false,
+    price: 1,
+  });
   const [meals, setMeals] = useState([]);
+  const [useMealID, setUseMealID] = useState("");
 
   function handleChange(e) {
     setFormData((prev) => {
@@ -23,6 +38,24 @@ const AddMeal = () => {
     e.preventDefault();
   }
 
+  async function handleFileUpload(e) {
+    const file = e.target.files[0];
+
+    try {
+      // Upload the image to Cloudinary
+      console.log("Uploading the Image...");
+      const uploadedUrl = await uploadToCloudinary(file, "Image"); // Upload to Cloudinary
+
+      if (uploadedUrl) {
+        setMealFormData((prev) => {
+          return { ...prev, imageUrl: uploadedUrl };
+        });
+      }
+    } catch (error) {
+      console.error("File upload failed:", error);
+    }
+  }
+
   async function getAllMeals() {
     try {
       const { data } = await axios.get(`${API_URL}/api/meals`);
@@ -30,6 +63,22 @@ const AddMeal = () => {
     } catch (error) {
       console.log("Error fetching meals", error.response.data.message);
     }
+  }
+
+  function useMeal(meal) {
+    setUseMealID(meal._id);
+
+    setMealFormData({
+      title: meal.title || "",
+      cuisine: meal.cuisine || "",
+      description: meal.description || "",
+      imageUrl: meal.imageUrl || "",
+      allergies: meal.allergies || [],
+      plates: meal.plates || 1,
+      pickupTime: meal.pickupTime || "",
+      hosted: false,
+      price: meal.price || 1,
+    });
   }
 
   return (
@@ -47,7 +96,7 @@ const AddMeal = () => {
           <section className="side-bar-prevmeal">
             {/* Render Previous meals */}
             {meals.map((meal) => (
-              <PrevMealCard key={meal._id} meal={meal} />
+              <PrevMealCard key={meal._id} meal={meal} useMeal={useMeal} />
             ))}
           </section>
         </div>
@@ -79,96 +128,180 @@ const AddMeal = () => {
         <form onSubmit={handleSubmit} className="meal-form">
           <div className="col-fields">
             <div className="col-field">
+              {/*Title Field */}
               <label htmlFor="title">Title</label>
               <input
                 type="text"
                 name="title"
                 required
+                disabled={useMealID ? true : false}
                 value={mealFormData.title}
                 onChange={handleChange}
+                placeholder="The Meal title"
+                className={`meal-input ${useMealID ? "input-disabled" : ""}`}
+              ></input>
+
+              {/*Description Field */}
+              <label htmlFor="description">Description</label>
+              <textarea
+                value={mealFormData.description}
+                placeholder="Describe the Meal"
+                onChange={handleChange}
+                className="meal-input-desc"
+              />
+            </div>
+
+            <div className="col-field col-field-img">
+              {/*Image Field */}
+              <label htmlFor="imageUrl">Meal Images</label>
+              <input
+                type="file"
+                accept="image/*"
+                name="imageUrl"
+                required
+                onChange={handleFileUpload}
+                className="meal-input meal-input-img"
+              ></input>
+
+              <div className="meal-images-containter">
+                {mealFormData.imageUrl && (
+                  <div className="meal-image-containter">
+                    <img
+                      src={mealFormData.imageUrl}
+                      alt="Uploaded Meal Images"
+                      className="form-meal-img"
+                    />
+                    <p>X</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="col-fields">
+            <div className="col-field">
+              {/*Cuisine Field */}
+              <label htmlFor="cuisine">Cuisine</label>
+              <Dropdown
+                onSelect={(selectedValue) =>
+                  setMealFormData((prev) => ({
+                    ...prev,
+                    cuisine: selectedValue,
+                  }))
+                }
+              >
+                <Dropdown.Toggle
+                  variant="warning"
+                  id="cuisine-dropdown"
+                  className="meal-input"
+                >
+                  {mealFormData.cuisine || "Select Cuisine"}
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item eventKey="Italian">Italian</Dropdown.Item>
+                  <Dropdown.Item eventKey="Mexican">Mexican</Dropdown.Item>
+                  <Dropdown.Item eventKey="Indian">Indian</Dropdown.Item>
+                  <Dropdown.Item eventKey="Chinese">Chinese</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+
+            <div className="col-field">
+              {/*Allergies Field */}
+              <label htmlFor="allergies" className="col25">
+                Allergies
+              </label>
+
+              <Select
+                options={[
+                  { value: "Peanuts", label: "Peanuts 🥜" },
+                  { value: "Shellfish", label: "Shellfish 🦐" },
+                  { value: "Dairy", label: "Dairy 🥛" },
+                  { value: "Gluten", label: "Gluten 🍞" },
+                ]}
+                isMulti
+                value={mealFormData.allergies?.map((allergy) => ({
+                  value: allergy,
+                  label: allergy,
+                }))}
+                onChange={(selectedOptions) =>
+                  setMealFormData((prev) => ({
+                    ...prev,
+                    allergies: selectedOptions.map((option) => option.value),
+                  }))
+                }
+                placeholder="Select Allergies"
+                styles={{ padding: "0 !important" }}
+              />
+            </div>
+          </div>
+
+          <div className="col-fields">
+            <div className="col-field">
+              <label htmlFor="plates" className="col25">
+                Plates
+              </label>
+              <input
+                type="number"
+                name="plates"
+                required
+                value={mealFormData.plates}
+                onChange={handleChange}
                 className="meal-input"
+                min={1}
               ></input>
             </div>
 
             <div className="col-field">
-              <label htmlFor="cuisine">Cuisine</label>
+              <label htmlFor="price" className="col25">
+                Price
+              </label>
               <input
-                type="text"
-                name="cuisine"
+                type="number"
+                name="price"
                 required
-                value={mealFormData.cuisine}
+                value={mealFormData.price}
                 onChange={handleChange}
                 className="meal-input"
+                min={1}
               ></input>
             </div>
           </div>
 
           <div className="col-fields">
             <div className="col-field">
-              <label htmlFor="description">Description</label>
+              <label htmlFor="pickupTime" className="col25">
+                Date
+              </label>
               <input
-                type="text"
-                name="description"
+                type="datetime-local"
+                name="pickupTime"
                 required
-                value={mealFormData.description}
+                value={mealFormData.pickupTime}
                 onChange={handleChange}
                 className="meal-input"
               ></input>
             </div>
 
             <div className="col-field">
-              <label htmlFor="imageUrl">Image</label>
+              <label htmlFor="hosted" className="col25">
+                To Be Hosted
+              </label>
+
               <input
-                type="file"
-                name="imageUrl"
-                required
-                value={mealFormData.imageUrl}
-                onChange={handleChange}
-                className="meal-input"
+                type="checkbox"
+                name="hosted"
+                checked={mealFormData.hosted}
+                onChange={(e) =>
+                  setMealFormData((prev) => ({
+                    ...prev,
+                    hosted: e.target.checked,
+                  }))
+                }
+                className="meal-input meal-input-checkbox"
               ></input>
             </div>
-          </div>
-
-          <div className="row">
-            <label htmlFor="allergies" className="col25">
-              Allergies
-            </label>
-            <input
-              type="text"
-              name="allergies"
-              value={mealFormData.allergies}
-              onChange={handleChange}
-              className="col75 meal-input"
-            ></input>
-          </div>
-
-          <div className="row">
-            <label htmlFor="plates" className="col25">
-              Plates
-            </label>
-            <input
-              type="number"
-              name="plates"
-              required
-              value={mealFormData.plates}
-              onChange={handleChange}
-              className="col75 meal-input"
-              min={1}
-            ></input>
-          </div>
-
-          <div className="row">
-            <label htmlFor="date" className="col25">
-              Date
-            </label>
-            <input
-              type="date"
-              name="date"
-              required
-              value={mealFormData.date}
-              onChange={handleChange}
-              className="col75 meal-input"
-            ></input>
           </div>
 
           <button

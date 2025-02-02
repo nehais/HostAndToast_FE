@@ -1,13 +1,16 @@
-const PrevMealCard = ({ meal }) => {
+const PrevMealCard = ({ meal, useMeal }) => {
   return (
     <div className="prevmeal-container">
+      <img src={meal.imageUrl} alt="Previous Meal Image" />
       <div className="prev-meal-card">
-        <img src={meal.imageUrl} alt="" />{" "}
-        <button className="use-meal-button add-meal-button">
+        <h6 id="prev-meal-title">{meal.title}</h6>
+        <button
+          className="use-meal-button add-meal-button"
+          onClick={() => useMeal(meal)}
+        >
           Use this Meal
         </button>
       </div>
-      <h6>{meal.title}</h6>
     </div>
   );
 };

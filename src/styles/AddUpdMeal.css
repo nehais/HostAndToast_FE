@@ -7,9 +7,17 @@
   display: flex;
 }
 
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .add-meal-container {
+    flex-direction: column;
+  }
+}
+
 .add-meal-button {
   border-radius: 5px;
   border: 1px solid rgb(245, 171, 124);
+  background-color: rgb(146, 158, 81);
 }
 
 .add-meal-button:hover {
@@ -24,12 +32,21 @@
 .sidebar-header-area {
   display: flex;
   justify-content: space-between;
+  text-align: center;
 
   h4 {
     color: #ffb45e;
     font-family: "Satisfy", serif;
     padding: 5px 0 0 10px;
     margin: 0;
+    width: 90%;
+  }
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .sidebar-header-area {
+    flex-direction: row-reverse;
   }
 }
 
@@ -55,6 +72,14 @@
   cursor: pointer;
 }
 
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .collapse-bar,
+  .expand-bar {
+    transform: rotate(90deg);
+  }
+}
+
 .side-bar-prevmeal {
   padding: 15px;
   display: flex;
@@ -74,17 +99,18 @@
   border-radius: 10px;
 }
 
-.prevmeal-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  h6 {
-    color: white;
-    margin: 0;
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .side-bar-prevmeal {
+    padding: 5px;
+    flex-direction: row;
+
+    overflow-y: hidden;
+    overflow-x: auto;
   }
 }
 
-.prev-meal-card {
+.prevmeal-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -97,9 +123,40 @@
   }
 }
 
+.prev-meal-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  h6 {
+    color: white;
+    margin: 0;
+  }
+}
+
 .use-meal-button {
   width: 120px;
-  background-color: rgb(146, 158, 81);
+  margin-top: 5px;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .prevmeal-container {
+    flex-direction: column;
+    gap: 5px;
+    img {
+      width: 80px;
+      height: 80px;
+    }
+  }
+
+  #prev-meal-title {
+    font-size: 0.8em;
+  }
+
+  .use-meal-button {
+    font-size: 0.8em;
+    width: 100px;
+  }
 }
 
 .meal-form-container {
@@ -141,14 +198,29 @@
 
 .load-prevmeal-button {
   width: 200px;
-  height: 50px;
+  height: 40px;
   display: flex;
   align-items: center;
-  background-color: rgb(146, 158, 81);
 }
 
 .reuse-img {
   width: 35px;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .meal-form-header {
+    width: 90vw;
+  }
+
+  .add-spoon-img {
+    width: 120px;
+  }
+
+  .load-prevmeal-button {
+    font-size: 0.8em;
+    width: 170px;
+  }
 }
 
 .meal-form {
@@ -168,6 +240,13 @@
   }
 }
 
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .meal-form {
+    width: 90vw;
+  }
+}
+
 .col-fields {
   width: 100%;
   display: flex;
@@ -175,10 +254,37 @@
 }
 
 .col-field {
-  width: 100%;
+  width: 50%;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+}
+
+.col-field-img {
+  border: 1px dashed white;
+  border-radius: 5px;
+  padding: 0 5px;
+
+  background-color: transparent;
+  background-image: url("../assets//image.png");
+  background-size: 50px;
+  background-repeat: no-repeat;
+  background-position: right 10px top 10px;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .col-fields {
+    flex-direction: column;
+  }
+
+  .col-field {
+    width: 100%;
+  }
+}
+
+.input-disabled {
+  color: white;
 }
 
 .meal-input {
@@ -187,7 +293,63 @@
   height: 40px;
 }
 
+.meal-input-desc {
+  border-radius: 5px;
+  border: 2px solid white;
+  height: 100px;
+}
+
+.meal-input-img {
+  color: transparent;
+  border: none;
+}
+
+.meal-input-checkbox {
+  border: none;
+  align-self: flex-start;
+}
+
+.meal-input:focus,
+.meal-input-desc:focus {
+  outline: none; /* Remove default focus outline */
+  border-color: #007bff; /* Border color on focus */
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5); /* Optional: Add glow effect */
+}
+
+.form-meal-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 5px;
+}
+
+.meal-images-containter {
+  display: flex;
+  gap: 10px;
+
+  overflow-y: hidden;
+  overflow-x: auto;
+}
+
+.meal-image-containter {
+  position: relative;
+
+  p {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+
+    width: 25px;
+    height: 25px;
+    text-align: center;
+    border-radius: 50%;
+    background-color: #003459c4;
+    color: white;
+    font-weight: bolder;
+
+    cursor: pointer;
+  }
+}
+
 .meal-submit-button {
   padding: 5px 10px;
-  background-color: rgb(203, 217, 222);
 }

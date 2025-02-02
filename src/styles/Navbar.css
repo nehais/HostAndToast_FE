@@ -7,6 +7,26 @@
   justify-content: space-between;
 }
 
+.navbar-adr {
+  width: 50%;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .navbar {
+    padding: 5px;
+  }
+
+  .navbar-adr {
+    width: 45%;
+    margin: 0;
+  }
+
+  #list-meal-button {
+    display: none; /*Button too big for mobile display*/
+  }
+}
+
 .logo-icon {
   width: 80px;
   animation: rotateY360 3s ease-in-out; /* Apply animation on load */
@@ -124,8 +144,4 @@
 
 .align-counter {
   padding-right: 3px;
-}
-
-.navbar-adr {
-  width: 50%;
 }

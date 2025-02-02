@@ -52,7 +52,11 @@ const Navbar = () => {
             </Tooltip>
           }
         >
-          <Button variant="secondary" onClick={() => addMeal()}>
+          <Button
+            id="list-meal-button"
+            variant="secondary"
+            onClick={() => addMeal()}
+          >
             + List Your Meal
           </Button>
         </OverlayTrigger>
