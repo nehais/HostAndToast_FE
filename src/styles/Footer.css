@@ -1,4 +1,19 @@
 .footer {
   height: 5%;
   width: 100vw;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.github-logo {
+  width: 45px;
+}
+
+/* Mobile Screen */
+@media screen and (max-device-width: 425px) {
+  .github-logo {
+    width: 35px;
+  }
 }
