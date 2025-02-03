@@ -4,12 +4,14 @@ import { useContext, useRef, useEffect, useState } from "react";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import { AddressContext } from "../contexts/address.context";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/auth.context";
 
 const AddressSearch = ({ componentId }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [suggestions, setSuggestions] = useState([]); //Holds the suggested address Drop Down
   const [showDropdown, setShowDropdown] = useState(false);
   const { address, setAddress } = useContext(AddressContext);
+  const { profileData } = useContext(AuthContext);
   const ref = useRef();
   const nav = useNavigate();
 
@@ -24,6 +26,16 @@ const AddressSearch = ({ componentId }) => {
       fillSuggestions(address.label); //Pre-fill the Dropdown
     }
   }, [address]);
+
+  useEffect(() => {
+    if (
+      componentId === "meal-form" &&
+      profileData.address &&
+      profileData.address.displayName
+    ) {
+      setSearchTerm(profileData.address.displayName);
+    }
+  }, [profileData.address]);
 
   useEffect(() => {
     //onClick outside of element close the DD
@@ -72,12 +84,17 @@ const AddressSearch = ({ componentId }) => {
 
   const handleSuggestionClick = (suggestion) => {
     setSearchTerm(suggestion.label); // Set the selected suggestion in the input field
-    setAddress({
-      label: suggestion.label,
-      lat: suggestion.raw.lat,
-      lon: suggestion.raw.lon,
-    });
+    if (componentId !== "meal-form") {
+      setAddress({
+        label: suggestion.label,
+        lat: suggestion.raw.lat,
+        lon: suggestion.raw.lon,
+      });
+    }
+
     setShowDropdown(false); // Close the dropdown
+
+    //If Address added on home page then navigate to All meals
     if (componentId === "home") {
       nav("/all-meals");
     }
@@ -86,7 +103,11 @@ const AddressSearch = ({ componentId }) => {
   return (
     <div
       className={`search-control-container ${
-        componentId === "navbar" ? "navbar-adr" : " "
+        componentId === "navbar"
+          ? "navbar-adr"
+          : componentId === "meal-form"
+          ? "meal-form-adr-cont"
+          : " "
       }`}
     >
       <input
@@ -94,7 +115,10 @@ const AddressSearch = ({ componentId }) => {
         value={searchTerm}
         onChange={handleInputChange}
         placeholder="Search for an address..."
-        className="search-control"
+        disabled={componentId === "meal-form" ? true : false}
+        className={`search-control ${
+          componentId === "meal-form" ? "meal-input input-disabled" : " "
+        }`}
         onFocus={() => setShowDropdown(true)} // Show dropdown on focus
       />
 

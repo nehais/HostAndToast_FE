@@ -260,6 +260,12 @@
   justify-content: flex-start;
 }
 
+.col-field-row {
+  width: 50%;
+  display: flex;
+  gap: 50px;
+}
+
 .col-field-img {
   border: 1px dashed white;
   border-radius: 5px;
@@ -281,6 +287,12 @@
   .col-field {
     width: 100%;
   }
+}
+
+.meal-form-adr-cont {
+  margin: 0;
+  padding: 0;
+  width: 100%;
 }
 
 .input-disabled {
@@ -348,6 +360,16 @@
 
     cursor: pointer;
   }
+}
+
+.meal-clear-button {
+  background-color: rgb(203, 217, 222);
+}
+
+.bottom-buttons {
+  margin-top: 10px;
+  display: flex;
+  gap: 20px;
 }
 
 .meal-submit-button {

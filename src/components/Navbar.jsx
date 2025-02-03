@@ -39,9 +39,7 @@ const Navbar = () => {
       </div>
 
       {/*Address Bar is shown in Navbar when not on HomePage*/}
-      {loc.pathname !== "/" && (
-        <AddressSearch componentId="navbar" className="navbar-adr" />
-      )}
+      {loc.pathname !== "/" && <AddressSearch componentId="navbar" />}
 
       <div className="nav-buttons">
         <OverlayTrigger

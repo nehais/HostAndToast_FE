@@ -47,7 +47,7 @@ const ProfileButton = () => {
         {showDropdownMenu && (
           <>
             <div className="profile-drop-down">
-              <p>Hello {user}!</p>
+              <p>Hello {user.username}!</p>
               <ul>
                 <li onClick={() => handleLogOut()} ref={ref}>
                   Profile

@@ -5,15 +5,19 @@ import ReuseIcon from "../assets/reuse.png";
 import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
 
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import AddressSearch from "../components/AddressSearch.jsx";
 import PrevMealCard from "../components/PrevMealCard.jsx";
 import { uploadToCloudinary } from "../utils/cloudinaryUpload";
+import { AuthContext } from "../contexts/auth.context.jsx";
 
 import Select from "react-select";
 import { Dropdown } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const AddMeal = () => {
   const [sideBarOpen, setSideBarOpen] = useState(true);
+  const [userAdr, setUserAdr] = useState("");
   const [mealFormData, setMealFormData] = useState({
     title: "",
     cuisine: "",
@@ -24,18 +28,34 @@ const AddMeal = () => {
     pickupTime: "",
     hosted: false,
     price: 1,
+    user: "",
   });
   const [meals, setMeals] = useState([]);
   const [useMealID, setUseMealID] = useState("");
+  const { profileData } = useContext(AuthContext);
+  const nav = useNavigate();
+
+  useEffect(() => {
+    setMealFormData((prev) => {
+      return { ...prev, user: profileData._id };
+    });
+    setUserAdr(profileData.address.displayName);
+  }, [profileData]);
 
   function handleChange(e) {
-    setFormData((prev) => {
+    setMealFormData((prev) => {
       return { ...prev, [e.target.name]: e.target.value };
     });
   }
 
   function handleSubmit(e) {
     e.preventDefault();
+
+    if (useMealID) {
+      updateMeal();
+    } else {
+      addNewMeal();
+    }
   }
 
   async function handleFileUpload(e) {
@@ -56,13 +76,59 @@ const AddMeal = () => {
     }
   }
 
-  async function getAllMeals() {
+  //Updated a existing User meal
+  async function updateMeal() {
     try {
-      const { data } = await axios.get(`${API_URL}/api/meals`);
+      const updatedMeal = await axios.put(
+        `${API_URL}/api/meals/${useMealID}`,
+        mealFormData
+      );
+      console.log("Meal updated", updatedMeal);
+      nav("/all-meals");
+    } catch (error) {
+      console.error("Update Meal Error:", error);
+    }
+  }
+
+  //Creates a new User meal
+  async function addNewMeal() {
+    try {
+      const newMeal = await axios.post(`${API_URL}/api/meals`, mealFormData);
+      console.log("Meal updated", newMeal);
+      nav("/all-meals");
+    } catch (error) {
+      console.error("Add Meal Error:", error);
+    }
+  }
+
+  //Gets all meals for the User
+  async function getUserMeals() {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/meals/user/${profileData._id}`
+      );
       setMeals(data);
     } catch (error) {
       console.log("Error fetching meals", error.response.data.message);
     }
+  }
+
+  async function clearMeal(e) {
+    e.preventDefault();
+
+    setUseMealID("");
+
+    setMealFormData({
+      title: "",
+      cuisine: "",
+      description: "",
+      imageUrl: "",
+      allergies: [],
+      plates: 1,
+      pickupTime: "",
+      hosted: false,
+      price: 1,
+    });
   }
 
   function useMeal(meal) {
@@ -118,7 +184,7 @@ const AddMeal = () => {
 
           <button
             className="load-prevmeal-button add-meal-button"
-            onClick={() => getAllMeals()}
+            onClick={() => getUserMeals()}
           >
             <img src={ReuseIcon} alt="" className="reuse-img" />
             Load Previous Meals
@@ -144,6 +210,7 @@ const AddMeal = () => {
               {/*Description Field */}
               <label htmlFor="description">Description</label>
               <textarea
+                name="description"
                 value={mealFormData.description}
                 placeholder="Describe the Meal"
                 onChange={handleChange}
@@ -158,7 +225,6 @@ const AddMeal = () => {
                 type="file"
                 accept="image/*"
                 name="imageUrl"
-                required
                 onChange={handleFileUpload}
                 className="meal-input meal-input-img"
               ></input>
@@ -239,6 +305,7 @@ const AddMeal = () => {
 
           <div className="col-fields">
             <div className="col-field">
+              {/*No. of Plates Field */}
               <label htmlFor="plates" className="col25">
                 Plates
               </label>
@@ -254,6 +321,7 @@ const AddMeal = () => {
             </div>
 
             <div className="col-field">
+              {/*Price Field */}
               <label htmlFor="price" className="col25">
                 Price
               </label>
@@ -271,46 +339,64 @@ const AddMeal = () => {
 
           <div className="col-fields">
             <div className="col-field">
+              {/*Address Field */}
               <label htmlFor="pickupTime" className="col25">
-                Date
+                Address
               </label>
-              <input
-                type="datetime-local"
-                name="pickupTime"
-                required
-                value={mealFormData.pickupTime}
-                onChange={handleChange}
-                className="meal-input"
-              ></input>
+
+              <AddressSearch componentId="meal-form" />
             </div>
 
-            <div className="col-field">
-              <label htmlFor="hosted" className="col25">
-                To Be Hosted
-              </label>
+            <div className="col-field-row">
+              <div className="col-field">
+                {/*Pickup Time Field */}
+                <label htmlFor="pickupTime">Date</label>
+                <input
+                  type="datetime-local"
+                  name="pickupTime"
+                  required
+                  value={mealFormData.pickupTime}
+                  onChange={handleChange}
+                  className="meal-input"
+                ></input>
+              </div>
 
-              <input
-                type="checkbox"
-                name="hosted"
-                checked={mealFormData.hosted}
-                onChange={(e) =>
-                  setMealFormData((prev) => ({
-                    ...prev,
-                    hosted: e.target.checked,
-                  }))
-                }
-                className="meal-input meal-input-checkbox"
-              ></input>
+              <div className="col-field">
+                <label htmlFor="hosted">Hosted</label>
+
+                <input
+                  type="checkbox"
+                  name="hosted"
+                  checked={mealFormData.hosted}
+                  onChange={(e) =>
+                    setMealFormData((prev) => ({
+                      ...prev,
+                      hosted: e.target.checked,
+                    }))
+                  }
+                  className="meal-input meal-input-checkbox"
+                ></input>
+              </div>
             </div>
           </div>
 
-          <button
-            type="submit"
-            variant="primary"
-            className="meal-submit-button add-meal-button"
-          >
-            List You Meal
-          </button>
+          <div className="bottom-buttons">
+            <button
+              type="submit"
+              variant="primary"
+              className="meal-clear-button add-meal-button"
+              onClick={clearMeal}
+            >
+              Clear The Meal
+            </button>
+            <button
+              type="submit"
+              variant="primary"
+              className="meal-submit-button add-meal-button"
+            >
+              List Your Meal
+            </button>
+          </div>
         </form>
       </section>
     </div>
