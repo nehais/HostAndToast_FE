@@ -1,14 +1,241 @@
-.single-meal {
-  background-color: rgba(203, 217, 222, 0.9);
-  height: 100%;
-  margin: 40px;
-  padding: 20px;
+.main-content {
+  display: block;
+  width: 100vw;
+  height: 85vh;
+  overflow-y: auto;
 }
 
-.images-container {
-  display: flex;
-  width: 100%;
-}
-.main-image {
-  width: 65%;
+.single-meal {
+  height: 100%;
+  margin: 40px;
+
+  .top-container {
+    background-color: rgba(203, 217, 222, 0.9);
+    padding: 20px;
+  }
+
+  .images-container {
+    display: flex;
+    width: 100%;
+    max-height: 500px;
+    margin: 20px 0;
+    align-items: stretch;
+  }
+
+  .main-image {
+    flex: 2;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    padding-right: 10px;
+  }
+
+  .main-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .small-images {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .small-images img {
+    width: 100%;
+    height: calc(50% - 5px);
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Container for the last small image with the overlay button */
+  .overlay-container {
+    position: relative;
+    width: 100%;
+    height: calc(50% - 5px);
+  }
+
+  /* Ensures the last small image takes up the full space */
+  .overlay-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Overlay button */
+  .show-more-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #003459;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    z-index: 10;
+  }
+
+  .show-more-btn:hover {
+    background-color: rgba(0, 0, 0, 0.9);
+  }
+
+  .all-images-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-content {
+    background: white;
+    padding: 20px;
+    width: 90%;
+    max-height: 90%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .modal-main-image {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .modal-main-image img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .modal-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(45%, 1fr));
+    gap: 10px;
+    width: 100%;
+  }
+
+  .modal-grid img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    background: rgba(203, 217, 222, 0.9);
+    color: #003459;
+    border: none;
+    padding: 10px 15px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 50%;
+  }
+
+  .close-btn:hover {
+    background: rgba(194, 199, 202, 0.9);
+  }
+
+  .info-container {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    margin-top: 30px;
+
+    p {
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+  }
+
+  .left-column {
+    background-color: rgba(203, 217, 222, 0.9);
+    width: 70%;
+    margin-right: 20px;
+    padding: 20px;
+    /* background-color: yellow; */
+    h2 {
+      background-color: rgb(242, 204, 22);
+      display: inline-block;
+      padding-inline: 5px;
+      margin-bottom: 10px;
+    }
+
+    .icon {
+      height: 1.5rem;
+      display: inline-block;
+      margin-right: 10px;
+    }
+  }
+
+  .icon {
+    height: 2rem;
+    display: inline-block;
+    margin-right: 10px;
+  }
+
+  .right-column {
+    background-color: rgba(203, 217, 222, 0.9);
+    width: 30%;
+    padding: 20px;
+    text-align: center;
+
+    h2 {
+      text-decoration: underline;
+    }
+
+    h3 {
+      background-color: rgb(242, 204, 22);
+      display: inline-block;
+      padding-inline: 5px;
+      margin-bottom: 10px;
+    }
+  }
+
+  .one-label {
+    background-color: rgba(242, 204, 22, 0.8);
+    display: inline-block;
+    padding: 5px 10px;
+    margin-inline: 5px;
+    border-radius: 20px;
+  }
+
+  .profile-image {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+    margin: 30px 0 20px;
+    /* padding: 10px; */
+    border: 1px solid black;
+  }
+
+  .cart-btn {
+    margin-top: 10px;
+    margin-left: 10px;
+    padding: 5px 10px;
+    background-color: #003459;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  input {
+    min-width: 50px;
+  }
 }
