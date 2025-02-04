@@ -110,7 +110,7 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal }) => {
   async function updateMeal() {
     try {
       const updatedMeal = await axios.put(
-        `${API_URL}/api/meals1/${useMealID}`,
+        `${API_URL}/api/meals/${useMealID}`,
         mealFormData
       );
       console.log("Meal updated", updatedMeal);
