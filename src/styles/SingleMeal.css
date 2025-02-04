@@ -1,0 +1,14 @@
+.single-meal {
+  background-color: rgba(203, 217, 222, 0.9);
+  height: 100%;
+  margin: 40px;
+  padding: 20px;
+}
+
+.images-container {
+  display: flex;
+  width: 100%;
+}
+.main-image {
+  width: 65%;
+}

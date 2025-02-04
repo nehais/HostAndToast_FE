@@ -11,6 +11,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import AllMealsPage from "./pages/AllMealsPage";
 import AddMeal from "./pages/AddMeal";
 import ShoppingCart from "./pages/ShoppingCart";
+import SingleMeal from "./pages/SingleMeal";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/meals/:mealId" element={<SingleMeal />} />
           <Route
             path="/shopping-cart"
             element={
