@@ -25,7 +25,7 @@ const AuthWrapper = ({ children }) => {
   useEffect(() => {
     async function getUserProfile() {
       try {
-        const { data } = await axios.get(`${API_URL}/auth/user/${user._id}`);
+        const { data } = await axios.get(`${API_URL}/auth/users/${user._id}`);
         setProfileData({
           _id: data._id || "",
           username: data.username || "",
@@ -82,9 +82,7 @@ const AuthWrapper = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, profileData, isLoading, isLoggedIn, authenticateUser }}
-    >
+    <AuthContext.Provider value={{ user, profileData, isLoading, isLoggedIn, authenticateUser }}>
       {children}
     </AuthContext.Provider>
   );
