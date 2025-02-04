@@ -1,29 +1,11 @@
-import { useState, useContext, useRef, useEffect } from "react";
+import { useState, useContext } from "react";
 import ProfileIcon from "../assets/profile.png";
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
 import { AuthContext } from "../contexts/auth.context";
 import { Link } from "react-router-dom";
 
 const ProfileButton = () => {
   const [showDropdownMenu, setShowDropdownMenu] = useState(false);
   const { user, authenticateUser } = useContext(AuthContext);
-  const ref = useRef();
-
-  useEffect(() => {
-    //onClick outside of element close the DD
-    function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        setShowDropdownMenu(false); // Close the dropdown
-      }
-    }
-    // Bind
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      // Clean up on unmount
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [ref]);
 
   const handleLogOut = () => {
     logOut();
@@ -39,7 +21,6 @@ const ProfileButton = () => {
     <>
       <button
         className="profile-button"
-        onClick={() => setShowDropdownMenu(true)}
         onMouseEnter={() => setShowDropdownMenu(true)}
         onMouseLeave={() => setShowDropdownMenu(false)}
       >
@@ -50,23 +31,15 @@ const ProfileButton = () => {
             <div className="profile-drop-down">
               <p>Hello {user.username}!</p>
               <ul>
-                <li onClick={() => handleLogOut()} ref={ref}>
-                  Profile
-                </li>
-                <li onClick={() => handleLogOut()} ref={ref}>
-                  Messages
-                </li>
-                <Link to="/meal-list" className="profile-menu-link">
-                  <li onClick={() => handleLogOut()} ref={ref}>
+                <li>Profile</li>
+                <li>Messages</li>
+                <li>
+                  <Link to="/meal-list" className="profile-menu-link">
                     Your Listings
-                  </li>
-                </Link>
-                <li onClick={() => handleLogOut()} ref={ref}>
-                  Your Favourites
+                  </Link>
                 </li>
-                <li onClick={() => handleLogOut()} ref={ref}>
-                  Log Out!
-                </li>
+                <li>Your Favourites</li>
+                <li onClick={() => handleLogOut()}>Log Out!</li>
               </ul>
             </div>
           </>

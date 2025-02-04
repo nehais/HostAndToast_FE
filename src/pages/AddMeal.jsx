@@ -9,7 +9,6 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddressSearch from "../components/AddressSearch.jsx";
 import PrevMealCard from "../components/PrevMealCard.jsx";
-import ErrorModal from "../components/ErrorModal";
 import { AuthContext } from "../contexts/auth.context.jsx";
 
 import Select from "react-select";
