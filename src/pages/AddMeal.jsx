@@ -6,23 +6,27 @@ import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
 
 import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AddressSearch from "../components/AddressSearch.jsx";
 import PrevMealCard from "../components/PrevMealCard.jsx";
-import { uploadToCloudinary } from "../utils/cloudinaryUpload";
+import ErrorModal from "../components/ErrorModal";
 import { AuthContext } from "../contexts/auth.context.jsx";
 
 import Select from "react-select";
 import { Dropdown } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 
 const AddMeal = () => {
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [sideBarOpen, setSideBarOpen] = useState(true);
-  const [userAdr, setUserAdr] = useState("");
+  const [imgError, setImgError] = useState(false);
   const [mealFormData, setMealFormData] = useState({
     title: "",
     cuisine: "",
     description: "",
-    imageUrl: "",
+    imageUrl: [],
     allergies: [],
     plates: 1,
     pickupTime: "",
@@ -36,13 +40,20 @@ const AddMeal = () => {
   const nav = useNavigate();
 
   useEffect(() => {
+    //Display the meal address as the user address
     setMealFormData((prev) => {
       return { ...prev, user: profileData._id };
     });
-    setUserAdr(profileData.address.displayName);
   }, [profileData]);
 
+  function handleError(logMsg, error) {
+    console.log(logMsg, error?.response?.data?.message);
+    setErrorMessage(logMsg + error?.response?.data?.message);
+    setShowErrorModal(true);
+  }
+
   function handleChange(e) {
+    //Form change value
     setMealFormData((prev) => {
       return { ...prev, [e.target.name]: e.target.value };
     });
@@ -51,32 +62,53 @@ const AddMeal = () => {
   function handleSubmit(e) {
     e.preventDefault();
 
+    if (mealFormData.imageUrl.length === 0) {
+      //Missing meal image validation
+      setImgError(true);
+
+      let errorTimeout = setTimeout(() => {
+        setImgError(false);
+        clearTimeout(errorTimeout);
+      }, 5000);
+      return;
+    }
+
     if (useMealID) {
-      updateMeal();
+      updateMeal(); //There is mealID so we update the meal
     } else {
-      addNewMeal();
+      addNewMeal(); //There is no mealID so add the meal
     }
   }
 
-  async function handleFileUpload(e) {
-    const file = e.target.files[0];
+  async function handleImageUpload(e) {
+    //prevent the form from reloading
+    e.preventDefault();
+
+    const addImages = Array.from(e.target.files);
+
+    //create formData for multer on the server
+    const myFormData = new FormData();
+    addImages.forEach((image) => {
+      myFormData.append("imageUrl", image);
+    });
 
     try {
-      // Upload the image to Cloudinary
-      console.log("Uploading the Image...");
-      const uploadedUrl = await uploadToCloudinary(file, "Image"); // Upload to Cloudinary
+      const { data } = await axios.post(
+        `${API_URL}/api/multiple-uploads`,
+        myFormData
+      );
+      console.log("image uploaded successfully", data);
 
-      if (uploadedUrl) {
-        setMealFormData((prev) => {
-          return { ...prev, imageUrl: uploadedUrl };
-        });
-      }
+      setMealFormData((prev) => {
+        const updatedImageUrls = [...prev.imageUrl, ...data.imageUrls];
+        return { ...prev, imageUrl: updatedImageUrls };
+      });
     } catch (error) {
-      console.error("File upload failed:", error);
+      handleError("File upload failed: ", error);
     }
   }
 
-  //Updated a existing User meal
+  //Updated an existing User meal
   async function updateMeal() {
     try {
       const updatedMeal = await axios.put(
@@ -86,7 +118,7 @@ const AddMeal = () => {
       console.log("Meal updated", updatedMeal);
       nav("/all-meals");
     } catch (error) {
-      console.error("Update Meal Error:", error);
+      handleError("Update Meal Error: ", error);
     }
   }
 
@@ -97,7 +129,7 @@ const AddMeal = () => {
       console.log("Meal updated", newMeal);
       nav("/all-meals");
     } catch (error) {
-      console.error("Add Meal Error:", error);
+      handleError("Add Meal Error: ", error);
     }
   }
 
@@ -109,10 +141,11 @@ const AddMeal = () => {
       );
       setMeals(data);
     } catch (error) {
-      console.log("Error fetching meals", error.response.data.message);
+      handleError("Error fetching meals: ", error);
     }
   }
 
+  //Clear the Meal Form
   async function clearMeal(e) {
     e.preventDefault();
 
@@ -122,12 +155,19 @@ const AddMeal = () => {
       title: "",
       cuisine: "",
       description: "",
-      imageUrl: "",
+      imageUrl: [],
       allergies: [],
       plates: 1,
       pickupTime: "",
       hosted: false,
       price: 1,
+    });
+  }
+
+  function clearImg(index) {
+    setMealFormData((prev) => {
+      const updatedImageUrls = prev.imageUrl.filter((_, i) => i !== index);
+      return { ...prev, imageUrl: updatedImageUrls };
     });
   }
 
@@ -138,7 +178,7 @@ const AddMeal = () => {
       title: meal.title || "",
       cuisine: meal.cuisine || "",
       description: meal.description || "",
-      imageUrl: meal.imageUrl || "",
+      imageUrl: meal.imageUrl || [],
       allergies: meal.allergies || [],
       plates: meal.plates || 1,
       pickupTime: meal.pickupTime || "",
@@ -181,14 +221,22 @@ const AddMeal = () => {
             <h2 className="meal-form-heading">Meal Details</h2>
             <img src={SpoonIcon} alt="" className="add-spoon-img" />
           </div>
-
-          <button
-            className="load-prevmeal-button add-meal-button"
-            onClick={() => getUserMeals()}
+          <OverlayTrigger
+            placement="top"
+            overlay={
+              <Tooltip id="register-tooltip">
+                Load your older meals to re-create the creation.
+              </Tooltip>
+            }
           >
-            <img src={ReuseIcon} alt="" className="reuse-img" />
-            Load Previous Meals
-          </button>
+            <button
+              className="load-prevmeal-button add-meal-button"
+              onClick={() => getUserMeals()}
+            >
+              <img src={ReuseIcon} alt="" className="reuse-img" />
+              Load Previous Meals
+            </button>
+          </OverlayTrigger>
         </div>
 
         <form onSubmit={handleSubmit} className="meal-form">
@@ -225,21 +273,27 @@ const AddMeal = () => {
                 type="file"
                 accept="image/*"
                 name="imageUrl"
-                onChange={handleFileUpload}
+                multiple
+                onChange={handleImageUpload}
                 className="meal-input meal-input-img"
               ></input>
 
+              {mealFormData.imageUrl.length === 0 && imgError && (
+                <p className="errors">Please upload at least one image.</p>
+              )}
+
               <div className="meal-images-containter">
-                {mealFormData.imageUrl && (
-                  <div className="meal-image-containter">
-                    <img
-                      src={mealFormData.imageUrl}
-                      alt="Uploaded Meal Images"
-                      className="form-meal-img"
-                    />
-                    <p>X</p>
-                  </div>
-                )}
+                {mealFormData.imageUrl &&
+                  mealFormData.imageUrl.map((image, index) => (
+                    <div className="meal-image-containter" key={index}>
+                      <img
+                        src={image}
+                        alt="Uploaded Meal Image"
+                        className="form-meal-img"
+                      />
+                      <p onClick={() => clearImg(index)}>X</p>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>
@@ -362,6 +416,7 @@ const AddMeal = () => {
               </div>
 
               <div className="col-field">
+                {/*Is the Meal hosted indicator*/}
                 <label htmlFor="hosted">Hosted</label>
 
                 <input
@@ -381,6 +436,7 @@ const AddMeal = () => {
           </div>
 
           <div className="bottom-buttons">
+            {/*Clear the Meal form*/}
             <button
               type="submit"
               variant="primary"
@@ -389,6 +445,8 @@ const AddMeal = () => {
             >
               Clear The Meal
             </button>
+
+            {/*Sumbit the Meal to List it on the Site*/}
             <button
               type="submit"
               variant="primary"
@@ -398,6 +456,13 @@ const AddMeal = () => {
             </button>
           </div>
         </form>
+
+        {/* Error Modal */}
+        <ErrorModal
+          show={showErrorModal}
+          handleClose={() => setShowErrorModal(false)}
+          errorMessage={errorMessage}
+        />
       </section>
     </div>
   );
