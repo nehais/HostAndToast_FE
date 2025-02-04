@@ -17,9 +17,7 @@ import { Dropdown } from "react-bootstrap";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-const AddMeal = () => {
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+const AddMeal = ({ setErrorMessage, setShowErrorModal }) => {
   const [sideBarOpen, setSideBarOpen] = useState(true);
   const [imgError, setImgError] = useState(false);
   const [mealFormData, setMealFormData] = useState({
@@ -112,7 +110,7 @@ const AddMeal = () => {
   async function updateMeal() {
     try {
       const updatedMeal = await axios.put(
-        `${API_URL}/api/meals/${useMealID}`,
+        `${API_URL}/api/meals1/${useMealID}`,
         mealFormData
       );
       console.log("Meal updated", updatedMeal);
@@ -456,13 +454,6 @@ const AddMeal = () => {
             </button>
           </div>
         </form>
-
-        {/* Error Modal */}
-        <ErrorModal
-          show={showErrorModal}
-          handleClose={() => setShowErrorModal(false)}
-          errorMessage={errorMessage}
-        />
       </section>
     </div>
   );

@@ -114,9 +114,15 @@
   li:first-child {
     border: none;
   }
+
   li:hover {
     transform: scale(1.1);
     color: #ffb45e;
+  }
+
+  a {
+    color: white;
+    border-top: 1px dashed #eee !important;
   }
 }
 

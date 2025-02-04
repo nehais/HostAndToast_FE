@@ -3,6 +3,7 @@ import ProfileIcon from "../assets/profile.png";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { AuthContext } from "../contexts/auth.context";
+import { Link } from "react-router-dom";
 
 const ProfileButton = () => {
   const [showDropdownMenu, setShowDropdownMenu] = useState(false);
@@ -13,7 +14,7 @@ const ProfileButton = () => {
     //onClick outside of element close the DD
     function handleClickOutside(event) {
       if (ref.current && !ref.current.contains(event.target)) {
-        setShowDropdown(false); // Close the dropdown
+        setShowDropdownMenu(false); // Close the dropdown
       }
     }
     // Bind
@@ -55,9 +56,11 @@ const ProfileButton = () => {
                 <li onClick={() => handleLogOut()} ref={ref}>
                   Messages
                 </li>
-                <li onClick={() => handleLogOut()} ref={ref}>
-                  Your Listings
-                </li>
+                <Link to="/meal-list" className="profile-menu-link">
+                  <li onClick={() => handleLogOut()} ref={ref}>
+                    Your Listings
+                  </li>
+                </Link>
                 <li onClick={() => handleLogOut()} ref={ref}>
                   Your Favourites
                 </li>

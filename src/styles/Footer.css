@@ -5,6 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .github-logo {
@@ -16,4 +17,14 @@
   .github-logo {
     width: 35px;
   }
+}
+
+.footer-toast {
+  position: absolute;
+  right: 0;
+  top: -15px;
+}
+
+.toast-text {
+  font-size: medium;
 }
