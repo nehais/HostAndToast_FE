@@ -2,18 +2,18 @@ import "../styles/Navbar.css";
 import logoIcon from "../assets/iconLogo.png";
 
 import { useContext, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
-import Button from "react-bootstrap/Button";
 import SignUpModal from "./SignUpModal.jsx";
 import LogInModal from "./LogInModal.jsx";
-import { AuthContext } from "../contexts/auth.context";
-
-import OverlayTrigger from "react-bootstrap/OverlayTrigger";
-import Tooltip from "react-bootstrap/Tooltip";
-import { Link, useLocation, useNavigate } from "react-router-dom";
 import ProfileButton from "./ProfileButton.jsx";
 import AddressSearch from "./AddressSearch.jsx";
 import CartButton from "./CartButton.jsx";
+import { AuthContext } from "../contexts/auth.context";
+
+import Button from "react-bootstrap/Button";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
 
 const Navbar = () => {
   const [modalShowSignUp, setModalShowSignUp] = useState(false);

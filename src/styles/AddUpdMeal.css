@@ -353,12 +353,17 @@
     width: 25px;
     height: 25px;
     text-align: center;
-    border-radius: 50%;
+    border-radius: 5px;
     background-color: #003459c4;
     color: white;
     font-weight: bolder;
 
     cursor: pointer;
+  }
+
+  p:hover {
+    background-color: rgb(216, 161, 165);
+    color: rgb(195, 62, 71);
   }
 }
 
