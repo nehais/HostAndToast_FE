@@ -14,6 +14,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
 import ErrorModal from "./components/ErrorModal";
+import CustomSpinner from "./components/CustomSpinner";
 import SingleMeal from "./pages/SingleMeal";
 import EditMeal from "./pages/EditMeal";
 import CookOverviewPage from "./pages/CookOverviewPage";
@@ -21,6 +22,8 @@ import CookOverviewPage from "./pages/CookOverviewPage";
 function App() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [showSpinner, setShowSpinner] = useState(false);
+  const [toast, setToast] = useState({ msg: "", type: "" });
 
   return (
     <div className="App">
@@ -49,14 +52,18 @@ function App() {
           <Route
             path="/add-meal"
             element={
-              <AddMeal setErrorMessage={setErrorMessage} setShowErrorModal={setShowErrorModal} />
+              <AddMeal
+                setErrorMessage={setErrorMessage}
+                setShowErrorModal={setShowErrorModal}
+                setShowSpinner={setShowSpinner}
+              />
             }
           />
           <Route path="/cook/:cookId" element={<CookOverviewPage />} />
 
           <Route path="/edit-meal/:mealId" element={<EditMeal />} />
 
-          <Route path="/meal-list" element={<MealList />} />
+          <Route path="/meal-list" element={<MealList setToast={setToast} />} />
           <Route path="*" element={<PageNotFound />}></Route>
         </Routes>
 
@@ -66,8 +73,11 @@ function App() {
           handleClose={() => setShowErrorModal(false)}
           errorMessage={errorMessage}
         />
+
+        {/* Spinner */}
+        {showSpinner && <CustomSpinner />}
       </div>
-      <Footer />
+      <Footer toast={toast} />
     </div>
   );
 }
