@@ -1,3 +1,4 @@
+// AllMealsPage.jsx
 import { useContext, useEffect, useMemo, useState } from "react";
 import MealCard from "../components/MealCard";
 import "../styles/AllMealsPage.css";
@@ -7,6 +8,7 @@ import Map from "../components/Map.jsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { AddressContext } from "../contexts/address.context.jsx";
+import { LatLngBounds } from "leaflet"; // for bounds checking
 
 const AllMealsPage = () => {
   const [meals, setMeals] = useState([]);
@@ -18,6 +20,8 @@ const AllMealsPage = () => {
     pickupDate: null, // selected pickup date; null means no date filter
   });
   const [initialCuisineSet, setInitialCuisineSet] = useState(false);
+  // New state for the current map bounds.
+  const [mapBounds, setMapBounds] = useState(null);
 
   const { address } = useContext(AddressContext);
 
@@ -55,17 +59,22 @@ const AllMealsPage = () => {
   }, [meals]);
 
   // --- Derived Values for Cuisine Counts (Price & Pickup Date) ---
-  // For showing counts (and for auto-unchecking), filter meals by price and, if set, by pickup date.
   const availableMealsForCuisine = useMemo(() => {
     return meals.filter((meal) => {
+      // Price and pickup date filters remain.
       if (meal.price > filters.price) return false;
       if (filters.pickupDate && !isSameDay(new Date(meal.pickupTime), filters.pickupDate))
         return false;
+      // NEW: Only include meals within the current map bounds if they exist.
+      if (mapBounds) {
+        const lat = meal.user.address.lat;
+        const lng = meal.user.address.long;
+        if (!mapBounds.contains([lat, lng])) return false;
+      }
       return true;
     });
-  }, [meals, filters.price, filters.pickupDate]);
+  }, [meals, filters.price, filters.pickupDate, mapBounds]);
 
-  // Compute counts for each cuisine.
   const cuisineCounts = useMemo(() => {
     const counts = {};
     availableMealsForCuisine.forEach((meal) => {
@@ -87,7 +96,6 @@ const AllMealsPage = () => {
     const datesSet = new Set();
     availableMealsForPickupDates.forEach((meal) => {
       const d = new Date(meal.pickupTime);
-      // Use a key based on year-month-day.
       const key = `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
       datesSet.add(key);
     });
@@ -98,7 +106,6 @@ const AllMealsPage = () => {
   }, [availableMealsForPickupDates]);
 
   // --- Initialize the Cuisine Filter ---
-  // On first load, select all cuisines.
   useEffect(() => {
     if (meals.length > 0 && !initialCuisineSet) {
       setFilters((prev) => ({ ...prev, cuisine: allCuisines }));
@@ -106,17 +113,18 @@ const AllMealsPage = () => {
     }
   }, [meals, allCuisines, initialCuisineSet]);
 
-  // --- Auto-Uncheck Cuisines Not Available ---
-  // If a cuisine’s available count becomes 0, remove it from the filter state.
+  // --- Auto-update Cuisine Filter Based on Map Bounds ---
+  // Instead of only unchecking (filtering) out unavailable cuisines,
+  // we now set the cuisine filter to include all cuisines available in the current map area.
   useEffect(() => {
+    const availableCuisines = allCuisines.filter((cuisine) => (cuisineCounts[cuisine] || 0) > 0);
     setFilters((prev) => ({
       ...prev,
-      cuisine: prev.cuisine.filter((cuisine) => (cuisineCounts[cuisine] || 0) > 0),
+      cuisine: availableCuisines,
     }));
-  }, [cuisineCounts]);
+  }, [cuisineCounts, allCuisines]);
 
   // --- Update Filtered Meals ---
-  // Apply all filters: price, selected cuisines, and (if set) the pickup date.
   useEffect(() => {
     const filtered = meals.filter((meal) => {
       if (meal.price > filters.price) return false;
@@ -128,9 +136,22 @@ const AllMealsPage = () => {
     setFilteredMeals(filtered);
   }, [filters, meals]);
 
+  // --- Update Visible Meals Based on Map Bounds ---
+  // Only show meals that are in the current map bounds.
+  const visibleMeals = useMemo(() => {
+    if (!mapBounds) return filteredMeals; // If no bounds yet, show all filtered meals.
+    return filteredMeals.filter((meal) => {
+      const lat = meal.user.address.lat;
+      const lng = meal.user.address.long;
+      // mapBounds is a Leaflet LatLngBounds, so we can use its contains() method.
+      return mapBounds.contains([lat, lng]);
+    });
+  }, [filteredMeals, mapBounds]);
+
   // --- Update Map Markers ---
+  // Now compute markers based on visibleMeals.
   useEffect(() => {
-    const allMarkers = filteredMeals.map((meal) => ({
+    const allMarkers = visibleMeals.map((meal) => ({
       geocode: [meal.user.address.lat, meal.user.address.long],
       popUp: (
         <>
@@ -144,7 +165,7 @@ const AllMealsPage = () => {
       ),
     }));
     setMarkers(allMarkers);
-  }, [filteredMeals]);
+  }, [visibleMeals]);
 
   // --- "Show All"/"Uncheck All" Button ---
   const areAllChecked = useMemo(() => {
@@ -168,6 +189,11 @@ const AllMealsPage = () => {
       cuisine: allCuisines,
       pickupDate: null,
     });
+  };
+
+  // --- Callback from the Map Component to update the bounds ---
+  const handleBoundsChange = (bounds) => {
+    setMapBounds(bounds);
   };
 
   return (
@@ -204,7 +230,6 @@ const AllMealsPage = () => {
               <div>
                 <fieldset>
                   <legend>Cuisine</legend>
-                  {/* Render all cuisines even if not available */}
                   {allCuisines.map((cuisine, index) => (
                     <div key={index}>
                       <label className="cuisine-label">
@@ -262,10 +287,12 @@ const AllMealsPage = () => {
 
         <div id="right-column">
           <div id="map">
-            <Map markers={markers} />
+            {/* Pass the handleBoundsChange callback to the Map */}
+            <Map markers={markers} onBoundsChange={handleBoundsChange} />
           </div>
           <div id="all-cards">
-            {filteredMeals.map((meal) => (
+            {/* Render only the meals currently in view on the map */}
+            {visibleMeals.map((meal) => (
               <MealCard key={meal._id} meal={meal} />
             ))}
           </div>

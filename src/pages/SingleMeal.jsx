@@ -97,7 +97,12 @@ const SingleMeal = () => {
   return (
     <div className="single-meal">
       <div className="top-container">
-        <h1>{meal.title}</h1>
+        <div className="header">
+          <h1>{meal.title}</h1>
+          <Link to={`/all-meals`}>
+            <button>Back to all meals</button>
+          </Link>
+        </div>
         <div className="images-container">
           {/* Only one image */}
           {numberImages === 1 && (
