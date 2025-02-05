@@ -112,13 +112,17 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
   //Updated an existing User meal
   async function updateMeal() {
     try {
+      setShowSpinner((prev) => !prev); //Show custom spinner during update Meal
       const updatedMeal = await axios.put(
         `${API_URL}/api/meals/${useMealID}`,
         mealFormData
       );
+
+      setShowSpinner((prev) => !prev);
       console.log("Meal updated", updatedMeal);
       nav("/all-meals");
     } catch (error) {
+      setShowSpinner((prev) => !prev);
       handleError("Update Meal Error: ", error);
     }
   }
@@ -126,10 +130,14 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
   //Creates a new User meal
   async function addNewMeal() {
     try {
+      setShowSpinner((prev) => !prev); //Show custom spinner during add Meal
       const newMeal = await axios.post(`${API_URL}/api/meals`, mealFormData);
+
+      setShowSpinner((prev) => !prev);
       console.log("Meal updated", newMeal);
       nav("/all-meals");
     } catch (error) {
+      setShowSpinner((prev) => !prev);
       handleError("Add Meal Error: ", error);
     }
   }
@@ -137,11 +145,16 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
   //Gets all meals for the User
   async function getUserMeals() {
     try {
+      setShowSpinner((prev) => !prev); //Show custom spinner during the fetch
       const { data } = await axios.get(
         `${API_URL}/api/meals/user/${profileData._id}`
       );
+
+      setShowSpinner((prev) => !prev);
+      console.log("All User Meals fetched", data);
       setMeals(data);
     } catch (error) {
+      setShowSpinner((prev) => !prev);
       handleError("Error fetching meals: ", error);
     }
   }
@@ -172,6 +185,7 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
     });
   }
 
+  //Clear Form data
   function useMeal(meal) {
     setUseMealID(meal._id);
 
