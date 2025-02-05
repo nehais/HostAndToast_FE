@@ -1,5 +1,5 @@
 // AllMealsPage.jsx
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import MealCard from "../components/MealCard";
 import "../styles/AllMealsPage.css";
 import axios from "axios";
@@ -7,8 +7,8 @@ import { API_URL } from "../config/apiConfig.js";
 import Map from "../components/Map.jsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { AddressContext } from "../contexts/address.context.jsx";
-import { LatLngBounds } from "leaflet"; // for bounds checking
+// import { AddressContext } from "../contexts/address.context.jsx";
+// import { LatLngBounds } from "leaflet"; // for bounds checking
 
 const AllMealsPage = () => {
   const [meals, setMeals] = useState([]);
@@ -23,7 +23,7 @@ const AllMealsPage = () => {
   // New state for the current map bounds.
   const [mapBounds, setMapBounds] = useState(null);
 
-  const { address } = useContext(AddressContext);
+  // const { address } = useContext(AddressContext);
 
   // Helper: Compare two dates ignoring time.
   const isSameDay = (d1, d2) => {
@@ -225,8 +225,7 @@ const AllMealsPage = () => {
                   <span>{filters.price} €</span>
                 </div>
               </label>
-
-              {/* Cuisine Filter */}
+              Cuisine Filter
               <div>
                 <fieldset>
                   <legend>Cuisine</legend>
@@ -260,7 +259,6 @@ const AllMealsPage = () => {
                   {areAllChecked ? "Uncheck All" : "Check All"}
                 </button>
               </div>
-
               {/* Pickup Date Filter */}
               <div>
                 <label>
@@ -274,7 +272,6 @@ const AllMealsPage = () => {
                   />
                 </label>
               </div>
-
               {/* Reset Filters Button */}
               <div>
                 <button className="filter-button reset-button" type="button" onClick={resetFilters}>
