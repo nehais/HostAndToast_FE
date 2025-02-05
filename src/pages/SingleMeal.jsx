@@ -10,7 +10,7 @@ import hostedIcon from "../assets/meeting-alt.png";
 import euroIcon from "../assets/euro.png";
 import profileIcon from "../assets/profile.png";
 import { AuthContext } from "../contexts/auth.context.jsx";
-import { useToast } from "../contexts/toast.context.jsx";
+// import { useToast } from "../contexts/toast.context.jsx";
 
 const SingleMeal = () => {
   const { mealId } = useParams();
@@ -19,7 +19,7 @@ const SingleMeal = () => {
   const [showAllImages, setShowAllImages] = useState(false);
   const [host, setHost] = useState(null);
   const { user } = useContext(AuthContext);
-  const { setToast } = useToast();
+  // const { setToast } = useToast();
   const nav = useNavigate();
 
   // Fetch the meal data
@@ -109,7 +109,7 @@ const SingleMeal = () => {
         console.log(data);
 
         //show success message
-        setToast({ msg: "Meal deleted successfully", type: "success" });
+        // setToast({ msg: "Meal deleted successfully", type: "success" });
 
         //redirect to all meals
         nav(`/all-meals`);
