@@ -11,6 +11,7 @@ import euroIcon from "../assets/euro.png";
 import profileIcon from "../assets/profile.png";
 
 const SingleMeal = () => {
+  console.log("SingleMeal");
   const { mealId } = useParams();
   const [meal, setMeal] = useState(null);
   const [numberImages, setNumberImages] = useState(1);
