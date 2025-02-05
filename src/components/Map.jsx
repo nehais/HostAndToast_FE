@@ -1,5 +1,5 @@
 // Map.jsx
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-cluster";
 import { useContext, useEffect, useState } from "react";
 import { AddressContext } from "../contexts/address.context";
@@ -21,20 +21,16 @@ const MapUpdater = ({ lat, long, zoom }) => {
 };
 
 // New component to report bounds back to the parent.
+// It now uses useMapEvents so that only actual map movements (e.g. panning/zooming)
+// trigger the onBoundsChange callback.
 const MapEvents = ({ onBoundsChange }) => {
-  const map = useMap();
-  useEffect(() => {
-    const updateBounds = () => {
-      const bounds = map.getBounds();
-      if (onBoundsChange) onBoundsChange(bounds);
-    };
-    map.on("moveend", updateBounds);
-    // Call it once to initialize the bounds.
-    updateBounds();
-    return () => {
-      map.off("moveend", updateBounds);
-    };
-  }, [map, onBoundsChange]);
+  useMapEvents({
+    moveend: (event) => {
+      if (onBoundsChange) {
+        onBoundsChange(event.target.getBounds());
+      }
+    },
+  });
   return null;
 };
 
@@ -74,10 +70,10 @@ const Map = ({ markers, onBoundsChange }) => {
     <MapContainer center={[lat, long]} zoom={zoom}>
       {/* Update the view if lat/long/zoom change */}
       <MapUpdater lat={lat} long={long} zoom={zoom} />
-      {/* Listen to map movements and report new bounds */}
+      {/* Listen to map movements and report new bounds using moveend event */}
       <MapEvents onBoundsChange={onBoundsChange} />
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
       <MarkerClusterGroup chunkedLoading>
