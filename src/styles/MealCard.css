@@ -10,7 +10,7 @@ a {
 
 .meal-card {
   width: 250px;
-  height: 300px;
+  height: 330px;
   perspective: 1000px;
 }
 
@@ -41,6 +41,10 @@ a {
   justify-content: center;
 }
 
+.meal-card-front {
+  justify-content: flex-start;
+}
+
 /* Front Side */
 .meal-card-front {
   background-color: rgb(245, 171, 124);
@@ -51,6 +55,7 @@ a {
   height: 200px;
   object-fit: cover;
   border-radius: 10px 10px 0 0;
+  /* margin-bottom: 10px; */
 }
 
 /* Back Side with Dynamic Image */

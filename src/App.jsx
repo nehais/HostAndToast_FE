@@ -14,7 +14,11 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
 import ErrorModal from "./components/ErrorModal";
+<<<<<<< HEAD
 import CustomSpinner from "./components/CustomSpinner";
+=======
+import SingleMeal from "./pages/SingleMeal";
+>>>>>>> 6432a4583ab104fdf516cfd8b169632b428bbb8e
 
 function App() {
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -37,6 +41,7 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="/meals/:mealId" element={<SingleMeal />} />
           <Route
             path="/shopping-cart"
             element={
@@ -48,11 +53,15 @@ function App() {
           <Route
             path="/add-meal"
             element={
+<<<<<<< HEAD
               <AddMeal
                 setErrorMessage={setErrorMessage}
                 setShowErrorModal={setShowErrorModal}
                 setShowSpinner={setShowSpinner}
               />
+=======
+              <AddMeal setErrorMessage={setErrorMessage} setShowErrorModal={setShowErrorModal} />
+>>>>>>> 6432a4583ab104fdf516cfd8b169632b428bbb8e
             }
           />
           <Route path="/meal-list" element={<MealList setToast={setToast} />} />

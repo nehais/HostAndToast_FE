@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import "../styles/MealCard.css";
 
 const MealCard = ({ meal }) => {
-  const imageUrl = meal.imageUrl;
+  const imageUrl = meal.imageUrl[0];
 
   // Function to truncate description
   const truncateText = (text, limit) => {
