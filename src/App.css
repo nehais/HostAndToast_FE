@@ -14,6 +14,7 @@ body {
   justify-content: stretch;
   overflow-y: hidden;
   overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .main-content {

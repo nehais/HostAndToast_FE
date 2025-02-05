@@ -22,6 +22,7 @@ const AllMealsPage = () => {
   const [initialCuisineSet, setInitialCuisineSet] = useState(false);
   // New state for the current map bounds.
   const [mapBounds, setMapBounds] = useState(null);
+  const [showFilters, setShowFilters] = useState(true);
 
   // const { address } = useContext(AddressContext);
 
@@ -33,6 +34,15 @@ const AllMealsPage = () => {
       d1.getDate() === d2.getDate()
     );
   };
+
+  useEffect(() => {
+    function checkDeviceWidth() {
+      if (window.innerWidth < 820) {
+        setShowFilters(false);
+      }
+    }
+    checkDeviceWidth();
+  }, []);
 
   // --- Fetch Meals ---
   useEffect(() => {
@@ -200,87 +210,107 @@ const AllMealsPage = () => {
     <>
       <div>{/* <h1>All Meals Page</h1> */}</div>
       <div id="all-meals-page">
-        <div id="left-column">
-          <div id="filter">
-            <h3>Filter Meals</h3>
-            <form>
-              {/* Price Filter */}
-              <label>
-                <legend>Maximal Price</legend>
-                <div className="price-label">
-                  <input
-                    type="range"
-                    name="price"
-                    min="0"
-                    max={allMaxPrice}
-                    step="1"
-                    value={filters.price}
-                    onChange={(e) =>
-                      setFilters((prev) => ({
-                        ...prev,
-                        price: Number(e.target.value),
-                      }))
-                    }
-                  />
-                  <span>{filters.price} €</span>
-                </div>
-              </label>
-              Cuisine Filter
-              <div>
-                <fieldset>
-                  <legend>Cuisine</legend>
-                  {allCuisines.map((cuisine, index) => (
-                    <div key={index}>
-                      <label className="cuisine-label">
-                        <input
-                          type="checkbox"
-                          name="cuisine"
-                          value={cuisine}
-                          checked={filters.cuisine.includes(cuisine)}
-                          onChange={() => {
-                            let newCuisines = [...filters.cuisine];
-                            if (newCuisines.includes(cuisine)) {
-                              newCuisines = newCuisines.filter((c) => c !== cuisine);
-                            } else {
-                              newCuisines.push(cuisine);
-                            }
-                            setFilters((prev) => ({ ...prev, cuisine: newCuisines }));
-                          }}
-                        />
-                        <span className="one-cuisine">
-                          {cuisine}
-                          <span className="number-of-meals">({cuisineCounts[cuisine] || 0})</span>
-                        </span>
-                      </label>
-                    </div>
-                  ))}
-                </fieldset>
-                <button className="filter-button" type="button" onClick={handleCheckAllCuisines}>
-                  {areAllChecked ? "Uncheck All" : "Check All"}
-                </button>
-              </div>
-              {/* Pickup Date Filter */}
-              <div>
-                <label>
-                  <legend>Pickup Date</legend>
-                  <DatePicker
-                    selected={filters.pickupDate}
-                    onChange={(date) => setFilters((prev) => ({ ...prev, pickupDate: date }))}
-                    placeholderText="Select a pickup date"
-                    highlightDates={availablePickupDates}
-                    isClearable
-                  />
-                </label>
-              </div>
-              {/* Reset Filters Button */}
-              <div>
-                <button className="filter-button reset-button" type="button" onClick={resetFilters}>
-                  Reset Filters
-                </button>
-              </div>
-            </form>
-          </div>
+        <div id="mobile-filter-button">
+          <button className="filter-button" onClick={() => setShowFilters((prev) => !prev)}>
+            {!showFilters ? "Filter Meals" : "Close Filters"}
+          </button>
         </div>
+
+        {showFilters && (
+          <>
+            <div id="left-column">
+              <div id="filter">
+                <h3>Filter Meals</h3>
+                <form>
+                  {/* Price Filter */}
+                  <label>
+                    <legend>Maximal Price</legend>
+                    <div className="price-label">
+                      <input
+                        type="range"
+                        name="price"
+                        min="0"
+                        max={allMaxPrice}
+                        step="1"
+                        value={filters.price}
+                        onChange={(e) =>
+                          setFilters((prev) => ({
+                            ...prev,
+                            price: Number(e.target.value),
+                          }))
+                        }
+                      />
+                      <span>{filters.price} €</span>
+                    </div>
+                  </label>
+                  Cuisine Filter
+                  <div>
+                    <fieldset>
+                      <legend>Cuisine</legend>
+                      {allCuisines.map((cuisine, index) => (
+                        <div key={index}>
+                          <label className="cuisine-label">
+                            <input
+                              type="checkbox"
+                              name="cuisine"
+                              value={cuisine}
+                              checked={filters.cuisine.includes(cuisine)}
+                              onChange={() => {
+                                let newCuisines = [...filters.cuisine];
+                                if (newCuisines.includes(cuisine)) {
+                                  newCuisines = newCuisines.filter((c) => c !== cuisine);
+                                } else {
+                                  newCuisines.push(cuisine);
+                                }
+                                setFilters((prev) => ({ ...prev, cuisine: newCuisines }));
+                              }}
+                            />
+                            <span className="one-cuisine">
+                              {cuisine}
+                              <span className="number-of-meals">
+                                ({cuisineCounts[cuisine] || 0})
+                              </span>
+                            </span>
+                          </label>
+                        </div>
+                      ))}
+                    </fieldset>
+                    <button
+                      className="filter-button"
+                      type="button"
+                      onClick={handleCheckAllCuisines}
+                    >
+                      {areAllChecked ? "Uncheck All" : "Check All"}
+                    </button>
+                  </div>
+                  {/* Pickup Date Filter */}
+                  <div>
+                    <label>
+                      <legend>Pickup Date</legend>
+                      <DatePicker
+                        selected={filters.pickupDate}
+                        onChange={(date) => setFilters((prev) => ({ ...prev, pickupDate: date }))}
+                        placeholderText="Select a pickup date"
+                        highlightDates={availablePickupDates}
+                        isClearable
+                      />
+                    </label>
+                  </div>
+                  {/* Reset Filters Button */}
+                  <div>
+                    <button
+                      className="filter-button reset-button"
+                      type="button"
+                      onClick={resetFilters}
+                    >
+                      Reset Filters
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </>
+        )}
 
         <div id="right-column">
           <div id="map">
