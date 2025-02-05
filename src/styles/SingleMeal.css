@@ -21,13 +21,12 @@
     h1 {
       display: inline-block;
     }
-
-    button {
-      background-color: #003459;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-    }
+  }
+  button {
+    background-color: #003459;
+    color: white;
+    border: none;
+    padding: 10px 15px;
   }
 
   .images-container {
@@ -194,6 +193,11 @@
       height: 1.5rem;
       display: inline-block;
       margin-right: 10px;
+    }
+
+    button {
+      margin-right: 20px;
+      margin-top: 20px;
     }
   }
 

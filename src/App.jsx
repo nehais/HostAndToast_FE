@@ -15,6 +15,7 @@ import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
 import ErrorModal from "./components/ErrorModal";
 import SingleMeal from "./pages/SingleMeal";
+import EditMeal from "./pages/EditMeal";
 
 function App() {
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -50,6 +51,9 @@ function App() {
               <AddMeal setErrorMessage={setErrorMessage} setShowErrorModal={setShowErrorModal} />
             }
           />
+
+          <Route path="/edit-meal/:mealId" element={<EditMeal />} />
+
           <Route path="/meal-list" element={<MealList />} />
           <Route path="*" element={<PageNotFound />}></Route>
         </Routes>

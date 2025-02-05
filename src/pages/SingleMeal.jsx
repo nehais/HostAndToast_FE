@@ -1,7 +1,7 @@
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { API_URL } from "../config/apiConfig.js";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "../styles/SingleMeal.css";
 import spoonIcon from "../assets/bowl-spoon.png";
 import calendarIcon from "../assets/calendar-clock.png";
@@ -9,14 +9,18 @@ import lunchBoxIcon from "../assets/lunch-box.png";
 import hostedIcon from "../assets/meeting-alt.png";
 import euroIcon from "../assets/euro.png";
 import profileIcon from "../assets/profile.png";
+import { AuthContext } from "../contexts/auth.context.jsx";
+import { useToast } from "../contexts/toast.context.jsx";
 
 const SingleMeal = () => {
-  console.log("SingleMeal");
   const { mealId } = useParams();
   const [meal, setMeal] = useState(null);
   const [numberImages, setNumberImages] = useState(1);
   const [showAllImages, setShowAllImages] = useState(false);
   const [host, setHost] = useState(null);
+  const { user } = useContext(AuthContext);
+  const { setToast } = useToast();
+  const nav = useNavigate();
 
   // Fetch the meal data
   useEffect(() => {
@@ -26,7 +30,7 @@ const SingleMeal = () => {
         setMeal(data);
         setNumberImages(data.imageUrl.length);
         setHost(data.user);
-        console.log("Meal", data);
+        // console.log("Meal", data);
       } catch (error) {
         console.log("Error fetching meal", error.response.data.message);
       }
@@ -42,7 +46,7 @@ const SingleMeal = () => {
       try {
         const { data } = await axios.get(`${API_URL}/auth/users/${meal.user}`);
         setHost(data);
-        console.log("Host", data);
+        // console.log("Host", data);
       } catch (error) {
         console.log("Error fetching user", error.response?.data?.message || error.message);
       }
@@ -91,6 +95,29 @@ const SingleMeal = () => {
     //
     //
     //
+  };
+
+  const handleEditMeal = () => {
+    nav(`/edit-meal/${mealId}`);
+  };
+
+  const handleDeleteMeal = () => {
+    //delete meal
+    const deleteMeal = async () => {
+      try {
+        const { data } = await axios.delete(`${API_URL}/api/meals/${mealId}`);
+        console.log(data);
+
+        //show success message
+        setToast({ msg: "Meal deleted successfully", type: "success" });
+
+        //redirect to all meals
+        nav(`/all-meals`);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    deleteMeal();
   };
 
   if (!meal) return <div>Loading...</div>;
@@ -196,13 +223,20 @@ const SingleMeal = () => {
             <img src={euroIcon} alt="Price icon" className="icon" />
             Price: {meal.price}€
           </p>
-          <form onSubmit={handleAddToCart}>
-            <label htmlFor="quantity">
-              <input type="number" id="quantity" name="quantity" min="1" max={meal.plates} />
-            </label>
+          {user._id !== host._id ? (
+            <form onSubmit={handleAddToCart}>
+              <label htmlFor="quantity">
+                <input type="number" id="quantity" name="quantity" min="1" max={meal.plates} />
+              </label>
 
-            <button className="cart-btn">Add to cart</button>
-          </form>
+              <button className="cart-btn">Add to cart</button>
+            </form>
+          ) : (
+            <>
+              <button onClick={handleEditMeal}>Edit Meal</button>
+              <button onClick={handleDeleteMeal}>Delete Meal</button>
+            </>
+          )}
         </div>
         <div className="right-column">
           <Link to={`/users/${host._id}`}>
