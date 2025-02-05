@@ -4,7 +4,7 @@ import GitHubLogo from "../assets/gitOpen.png";
 import { Link } from "react-router-dom";
 import ToastMessage from "./ToastMessage.jsx";
 
-const Footer = () => {
+const Footer = ({ toast }) => {
   return (
     <div className="footer">
       <Link to="https://github.com/girsy01/HostAndToast_FE" target="_blank">
@@ -12,7 +12,7 @@ const Footer = () => {
       </Link>
 
       {/*Show Delete Toast Message*/}
-      <ToastMessage className="footer-toast"></ToastMessage>
+      <ToastMessage className="footer-toast" toast={toast}></ToastMessage>
     </div>
   );
 };

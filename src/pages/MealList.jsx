@@ -6,12 +6,10 @@ import { API_URL } from "../config/apiConfig.js";
 import { useContext, useEffect, useState } from "react";
 
 import FunctionBar from "../components/FunctionBar.jsx";
-import { useToast } from "../contexts/toast.context.jsx";
 import { AuthContext } from "../contexts/auth.context.jsx";
 import MealListCard from "../components/MealListCard.jsx";
 
-const MealList = () => {
-  const { setToast } = useToast(); //Use setToast context to set message
+const MealList = ({ setToast }) => {
   const [ascSort, setAscSort] = useState(true);
   const [searchStr, setSearchStr] = useState("");
   const [meals, setMeals] = useState([]);
@@ -35,6 +33,9 @@ const MealList = () => {
 
   return (
     <div className="meal-list">
+      <button onClick={() => setToast({ msg: "test", type: "primary" })}>
+        TOast
+      </button>
       {/* Search & Sort */}
       <div className="function-area">
         <FunctionBar

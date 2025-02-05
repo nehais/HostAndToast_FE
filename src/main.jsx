@@ -7,19 +7,16 @@ import { AddressWrapper } from "./contexts/address.context.jsx";
 
 import { BrowserRouter as Router } from "react-router-dom";
 import { CartWrapper } from "./contexts/cart.context.jsx";
-import { ToastProviderWrapper } from "./contexts/toast.context.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Router>
       <AuthWrapper>
-        <ToastProviderWrapper>
-          <AddressWrapper>
-            <CartWrapper>
-              <App />
-            </CartWrapper>
-          </AddressWrapper>
-        </ToastProviderWrapper>
+        <AddressWrapper>
+          <CartWrapper>
+            <App />
+          </CartWrapper>
+        </AddressWrapper>
       </AuthWrapper>
     </Router>
   </StrictMode>

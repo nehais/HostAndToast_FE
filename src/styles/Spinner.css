@@ -1,0 +1,50 @@
+.customer-spinner {
+  display: flex;
+  gap: 2px;
+
+  position: absolute;
+  left: calc(100% * 0.5);
+  top: calc(100% * 0.5);
+  z-index: 2000;
+}
+
+.spinner-frok {
+  width: 15;
+  height: 50px;
+  animation: cutlery-jump 2s infinite;
+}
+
+.spinner-plate {
+  width: 50px;
+  height: 50px;
+  animation: plate-rotate 3s linear infinite;
+}
+
+@keyframes plate-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-spoon {
+  width: 15px;
+  height: 50px;
+  animation: cutlery-jump 2s infinite;
+  animation-delay: 1s;
+}
+
+@keyframes cutlery-jump {
+  0%,
+  20% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}

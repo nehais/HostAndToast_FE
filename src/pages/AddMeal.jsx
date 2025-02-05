@@ -16,7 +16,7 @@ import { Dropdown } from "react-bootstrap";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-const AddMeal = ({ setErrorMessage, setShowErrorModal }) => {
+const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
   const [sideBarOpen, setSideBarOpen] = useState(true);
   const [imgError, setImgError] = useState(false);
   const [mealFormData, setMealFormData] = useState({
@@ -90,10 +90,13 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal }) => {
     });
 
     try {
+      setShowSpinner((prev) => !prev); //Show custom spinner during the upload
+
       const { data } = await axios.post(
         `${API_URL}/api/multiple-uploads`,
         myFormData
       );
+      setShowSpinner((prev) => !prev);
       console.log("image uploaded successfully", data);
 
       setMealFormData((prev) => {
@@ -101,6 +104,7 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal }) => {
         return { ...prev, imageUrl: updatedImageUrls };
       });
     } catch (error) {
+      setShowSpinner((prev) => !prev);
       handleError("File upload failed: ", error);
     }
   }
