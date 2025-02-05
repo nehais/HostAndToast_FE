@@ -226,7 +226,14 @@ const SingleMeal = () => {
           {user._id !== host._id ? (
             <form onSubmit={handleAddToCart}>
               <label htmlFor="quantity">
-                <input type="number" id="quantity" name="quantity" min="1" max={meal.plates} />
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  min="1"
+                  max={meal.plates}
+                  defaultValue="1"
+                />
               </label>
 
               <button className="cart-btn">Add to cart</button>
@@ -239,7 +246,7 @@ const SingleMeal = () => {
           )}
         </div>
         <div className="right-column">
-          <Link to={`/users/${host._id}`}>
+          <Link to={`/cook/${host._id}`}>
             <div>
               <h2>The cook</h2>
               <img

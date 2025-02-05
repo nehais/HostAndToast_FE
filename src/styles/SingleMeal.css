@@ -27,6 +27,7 @@
     color: white;
     border: none;
     padding: 10px 15px;
+    border-radius: 5px;
   }
 
   .images-container {
@@ -86,12 +87,6 @@
     bottom: 10px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #003459;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    cursor: pointer;
-    border-radius: 5px;
     z-index: 10;
   }
 

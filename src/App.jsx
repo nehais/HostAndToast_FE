@@ -16,6 +16,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import ErrorModal from "./components/ErrorModal";
 import SingleMeal from "./pages/SingleMeal";
 import EditMeal from "./pages/EditMeal";
+import CookOverviewPage from "./pages/CookOverviewPage";
 
 function App() {
   const [showErrorModal, setShowErrorModal] = useState(false);
@@ -51,6 +52,7 @@ function App() {
               <AddMeal setErrorMessage={setErrorMessage} setShowErrorModal={setShowErrorModal} />
             }
           />
+          <Route path="/cook/:cookId" element={<CookOverviewPage />} />
 
           <Route path="/edit-meal/:mealId" element={<EditMeal />} />
 
