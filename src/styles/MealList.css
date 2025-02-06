@@ -1,6 +1,12 @@
 .meal-list {
 }
 
+.function-bar {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
 .search-bar {
   background-image: url("../assets/search.png");
   background-repeat: no-repeat;
@@ -19,12 +25,14 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
-  justify-content: center;
+  align-items: center;
+
+  margin-top: 20px;
 }
 
 .meal-list-card {
   background-color: rgba(203, 217, 222, 0.854);
-  width: 400px;
+  width: 600px;
   padding: 5px;
   border-radius: 5px;
 
@@ -44,7 +52,27 @@
 }
 
 .meal-list-details {
-  flex-basis: 60%;
+  flex-basis: 50%;
+}
+
+.meal-list-desc {
+  text-align: justify;
+  flex-basis: 40%;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .meal-list-card {
+    width: 350px;
+  }
+
+  .meal-list-details {
+    flex-basis: 70%;
+  }
+
+  .meal-list-desc {
+    display: none;
+  }
 }
 
 .meal-list-buttons {
@@ -57,6 +85,10 @@
 .meal-list-button {
   border: none;
   background-color: transparent;
+}
+
+.meal-list-button:hover {
+  transform: scale(1.5);
 }
 
 .meal-list-button-img {

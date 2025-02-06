@@ -228,6 +228,7 @@
   background-color: #003459cd;
 
   padding-top: 25px;
+  margin-bottom: 10px;
 
   display: flex;
   flex-direction: column;
@@ -264,6 +265,20 @@
   width: 50%;
   display: flex;
   gap: 50px;
+}
+
+.col-field-cuisine-row {
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .col-field-cuisine-row {
+    width: 100%;
+  }
 }
 
 .col-field-img {
@@ -372,7 +387,7 @@
 }
 
 .bottom-buttons {
-  margin-top: 10px;
+  margin-top: 25px;
   display: flex;
   gap: 20px;
 }

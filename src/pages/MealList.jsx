@@ -5,15 +5,17 @@ import { API_URL } from "../config/apiConfig.js";
 
 import { useContext, useEffect, useState } from "react";
 
+import { useToast } from "../contexts/toast.context.jsx";
 import FunctionBar from "../components/FunctionBar.jsx";
 import { AuthContext } from "../contexts/auth.context.jsx";
 import MealListCard from "../components/MealListCard.jsx";
 
-const MealList = ({ setToast }) => {
+const MealList = () => {
   const [ascSort, setAscSort] = useState(true);
   const [searchStr, setSearchStr] = useState("");
   const [meals, setMeals] = useState([]);
   const { profileData } = useContext(AuthContext);
+  const { setToast } = useToast(); //Use setToast context to set message
 
   useEffect(() => {
     getUserMeals();

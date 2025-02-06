@@ -10,7 +10,7 @@ const FunctionBar = ({
   setGridMode,
 }) => {
   return (
-    <>
+    <div className="function-bar ">
       <input
         type="text"
         placeholder="Search Story"
@@ -29,7 +29,7 @@ const FunctionBar = ({
           {ascSort ? "Z-A" : "A-Z"}
         </button>
       </OverlayTrigger>
-    </>
+    </div>
   );
 };
 

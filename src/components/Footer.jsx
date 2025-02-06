@@ -12,7 +12,7 @@ const Footer = ({ toast }) => {
       </Link>
 
       {/*Show Delete Toast Message*/}
-      <ToastMessage className="footer-toast" toast={toast}></ToastMessage>
+      <ToastMessage className="footer-toast"></ToastMessage>
     </div>
   );
 };

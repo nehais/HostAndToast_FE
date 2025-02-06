@@ -23,7 +23,6 @@ function App() {
   const [showErrorModal, setShowErrorModal] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
-  const [toast, setToast] = useState({ msg: "", type: "" });
 
   return (
     <div className="App">
@@ -63,7 +62,7 @@ function App() {
 
           <Route path="/edit-meal/:mealId" element={<EditMeal />} />
 
-          <Route path="/meal-list" element={<MealList setToast={setToast} />} />
+          <Route path="/meal-list" element={<MealList />} />
           <Route path="*" element={<PageNotFound />}></Route>
         </Routes>
 
@@ -77,7 +76,7 @@ function App() {
         {/* Spinner */}
         {showSpinner && <CustomSpinner />}
       </div>
-      <Footer toast={toast} />
+      <Footer />
     </div>
   );
 }

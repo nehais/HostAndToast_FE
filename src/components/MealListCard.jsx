@@ -4,6 +4,9 @@ import DeleteIcon from "../assets/delete.png";
 
 import ImageCarousel from "./ImageCarousel";
 import { format } from "date-fns";
+import OverlayTrigger from "react-bootstrap/OverlayTrigger";
+import Tooltip from "react-bootstrap/Tooltip";
+import { Link } from "react-router-dom";
 
 const MealListCard = ({ meal }) => {
   function formatDate(dateToBeFormated) {
@@ -23,28 +26,53 @@ const MealListCard = ({ meal }) => {
         <p>{formatDate(meal.pickupTime)}</p>
       </div>
 
+      <div className="meal-list-desc">
+        <p className="meal-list-desc">{meal.description}</p>
+      </div>
+
       <div className="meal-list-buttons">
-        <button className="meal-list-button">
-          <img
-            src={EditIcon}
-            alt="Edit Icon"
-            className="meal-list-button-img"
-          />
-        </button>
-        <button className="meal-list-button">
-          <img
-            src={DeleteIcon}
-            alt="Delete Icon"
-            className="meal-list-button-img"
-          />
-        </button>
-        <button className="meal-list-button">
-          <img
-            src={LikeIcon}
-            alt="Like Icon"
-            className="meal-list-button-img"
-          />
-        </button>
+        <OverlayTrigger
+          placement="right"
+          overlay={<Tooltip id="edit-tooltip">Edit your Meal</Tooltip>}
+        >
+          <Link to="/add-meal?mode=Edit">
+            <button className="meal-list-button">
+              <img
+                src={EditIcon}
+                alt="Edit Icon"
+                className="meal-list-button-img"
+              />
+            </button>
+          </Link>
+        </OverlayTrigger>
+
+        <OverlayTrigger
+          placement="right"
+          overlay={<Tooltip id="edit-tooltip">Delete your Meal</Tooltip>}
+        >
+          <button className="meal-list-button">
+            <img
+              src={DeleteIcon}
+              alt="Delete Icon"
+              className="meal-list-button-img"
+            />
+          </button>
+        </OverlayTrigger>
+
+        <OverlayTrigger
+          placement="right"
+          overlay={
+            <Tooltip id="edit-tooltip">Mark this Meal as Favourite</Tooltip>
+          }
+        >
+          <button className="meal-list-button">
+            <img
+              src={LikeIcon}
+              alt="Like Icon"
+              className="meal-list-button-img"
+            />
+          </button>
+        </OverlayTrigger>
       </div>
     </div>
   );

@@ -6,7 +6,7 @@ import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
 
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import AddressSearch from "../components/AddressSearch.jsx";
 import PrevMealCard from "../components/PrevMealCard.jsx";
 import { AuthContext } from "../contexts/auth.context.jsx";
@@ -17,6 +17,8 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
 const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
+  const [searchParams, setSearchParams] = useSearchParams(); //Check if newly created book
+  const mode = searchParams.get("mode");
   const [sideBarOpen, setSideBarOpen] = useState(true);
   const [imgError, setImgError] = useState(false);
   const [mealFormData, setMealFormData] = useState({
@@ -204,7 +206,7 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
 
   return (
     <div className="add-meal-container">
-      {meals.length > 0 && sideBarOpen && (
+      {mode !== "Edit" && meals.length > 0 && sideBarOpen && (
         <div className="sidebar">
           <div className="sidebar-header-area">
             <h4>Previous Creations</h4>
@@ -236,22 +238,25 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
             <h2 className="meal-form-heading">Meal Details</h2>
             <img src={SpoonIcon} alt="" className="add-spoon-img" />
           </div>
-          <OverlayTrigger
-            placement="top"
-            overlay={
-              <Tooltip id="register-tooltip">
-                Load your older meals to re-create the creation.
-              </Tooltip>
-            }
-          >
-            <button
-              className="load-prevmeal-button add-meal-button"
-              onClick={() => getUserMeals()}
+
+          {mode !== "Edit" && (
+            <OverlayTrigger
+              placement="top"
+              overlay={
+                <Tooltip id="register-tooltip">
+                  Load your older meals to re-create the creation.
+                </Tooltip>
+              }
             >
-              <img src={ReuseIcon} alt="" className="reuse-img" />
-              Load Previous Meals
-            </button>
-          </OverlayTrigger>
+              <button
+                className="load-prevmeal-button add-meal-button"
+                onClick={() => getUserMeals()}
+              >
+                <img src={ReuseIcon} alt="" className="reuse-img" />
+                Load Previous Meals
+              </button>
+            </OverlayTrigger>
+          )}
         </div>
 
         <form onSubmit={handleSubmit} className="meal-form">
@@ -268,7 +273,7 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
                 onChange={handleChange}
                 placeholder="The Meal title"
                 className={`meal-input ${useMealID ? "input-disabled" : ""}`}
-              ></input>
+              />
 
               {/*Description Field */}
               <label htmlFor="description">Description</label>
@@ -291,7 +296,7 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
                 multiple
                 onChange={handleImageUpload}
                 className="meal-input meal-input-img"
-              ></input>
+              />
 
               {mealFormData.imageUrl.length === 0 && imgError && (
                 <p className="errors">Please upload at least one image.</p>
@@ -314,34 +319,6 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
           </div>
 
           <div className="col-fields">
-            <div className="col-field">
-              {/*Cuisine Field */}
-              <label htmlFor="cuisine">Cuisine</label>
-              <Dropdown
-                onSelect={(selectedValue) =>
-                  setMealFormData((prev) => ({
-                    ...prev,
-                    cuisine: selectedValue,
-                  }))
-                }
-              >
-                <Dropdown.Toggle
-                  variant="warning"
-                  id="cuisine-dropdown"
-                  className="meal-input"
-                >
-                  {mealFormData.cuisine || "Select Cuisine"}
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                  <Dropdown.Item eventKey="Italian">Italian</Dropdown.Item>
-                  <Dropdown.Item eventKey="Mexican">Mexican</Dropdown.Item>
-                  <Dropdown.Item eventKey="Indian">Indian</Dropdown.Item>
-                  <Dropdown.Item eventKey="Chinese">Chinese</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-
             <div className="col-field">
               {/*Allergies Field */}
               <label htmlFor="allergies" className="col25">
@@ -370,50 +347,74 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
                 styles={{ padding: "0 !important" }}
               />
             </div>
-          </div>
 
-          <div className="col-fields">
-            <div className="col-field">
-              {/*No. of Plates Field */}
-              <label htmlFor="plates" className="col25">
-                Plates
-              </label>
-              <input
-                type="number"
-                name="plates"
-                required
-                value={mealFormData.plates}
-                onChange={handleChange}
-                className="meal-input"
-                min={1}
-              ></input>
-            </div>
+            <div className="col-field-cuisine-row">
+              <div className="col-field" style={{ width: "35%" }}>
+                {/*Cuisine Field */}
+                <label htmlFor="cuisine">Cuisine</label>
+                <Dropdown
+                  onSelect={(selectedValue) =>
+                    setMealFormData((prev) => ({
+                      ...prev,
+                      cuisine: selectedValue,
+                    }))
+                  }
+                >
+                  <Dropdown.Toggle
+                    variant="warning"
+                    id="cuisine-dropdown"
+                    className="meal-input"
+                  >
+                    {mealFormData.cuisine || "Select Cuisine"}
+                  </Dropdown.Toggle>
 
-            <div className="col-field">
-              {/*Price Field */}
-              <label htmlFor="price" className="col25">
-                Price
-              </label>
-              <input
-                type="number"
-                name="price"
-                required
-                value={mealFormData.price}
-                onChange={handleChange}
-                className="meal-input"
-                min={1}
-              ></input>
+                  <Dropdown.Menu>
+                    <Dropdown.Item eventKey="Italian">Italian</Dropdown.Item>
+                    <Dropdown.Item eventKey="Mexican">Mexican</Dropdown.Item>
+                    <Dropdown.Item eventKey="Indian">Indian</Dropdown.Item>
+                    <Dropdown.Item eventKey="Chinese">Chinese</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+
+              <div className="col-field" style={{ width: "25%" }}>
+                {/*No. of Plates Field */}
+                <label htmlFor="plates">Plates</label>
+                <input
+                  type="number"
+                  name="plates"
+                  required
+                  value={mealFormData.plates}
+                  onChange={handleChange}
+                  className="meal-input"
+                  min={1}
+                />
+              </div>
+
+              <div className="col-field" style={{ width: "25%" }}>
+                {/*Price Field */}
+                <label htmlFor="price">Price €</label>
+                <input
+                  type="number"
+                  name="price"
+                  required
+                  value={mealFormData.price}
+                  onChange={handleChange}
+                  className="meal-input"
+                  min={1}
+                />
+              </div>
             </div>
           </div>
 
           <div className="col-fields">
             <div className="col-field">
               {/*Address Field */}
-              <label htmlFor="pickupTime" className="col25">
+              <label htmlFor="address" className="col25">
                 Address
               </label>
 
-              <AddressSearch componentId="meal-form" />
+              <AddressSearch name="address" componentId="meal-form" />
             </div>
 
             <div className="col-field-row">
@@ -427,7 +428,7 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
                   value={mealFormData.pickupTime}
                   onChange={handleChange}
                   className="meal-input"
-                ></input>
+                />
               </div>
 
               <div className="col-field">
@@ -445,7 +446,7 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
                     }))
                   }
                   className="meal-input meal-input-checkbox"
-                ></input>
+                />
               </div>
             </div>
           </div>

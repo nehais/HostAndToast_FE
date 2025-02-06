@@ -1,7 +1,10 @@
 import Toast from "react-bootstrap/Toast";
 import { useEffect, useState } from "react";
 
-const ToastMessage = ({ toast }) => {
+import { useToast } from "../contexts/toast.context.jsx";
+
+const ToastMessage = () => {
+  const { toast } = useToast();
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
