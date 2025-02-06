@@ -16,9 +16,10 @@ import { Dropdown } from "react-bootstrap";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
-  const [searchParams, setSearchParams] = useSearchParams(); //Check if newly created book
-  const mode = searchParams.get("mode");
+const AddUpdMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const mode = searchParams.get("mode"); //Check if newly created book
+  const Id = searchParams.get("Id");
   const [sideBarOpen, setSideBarOpen] = useState(true);
   const [imgError, setImgError] = useState(false);
   const [mealFormData, setMealFormData] = useState({
@@ -44,6 +45,21 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
       return { ...prev, user: profileData._id };
     });
   }, [profileData]);
+
+  // Fetch the meal data
+  useEffect(() => {
+    if (!Id) return;
+
+    const getMeal = async () => {
+      try {
+        const { data } = await axios.get(`${API_URL}/api/meals/${Id}`);
+        useMeal(data);
+      } catch (error) {
+        console.log("Error fetching meal", error.response.data.message);
+      }
+    };
+    getMeal();
+  }, [Id]);
 
   function handleError(logMsg, error) {
     console.log(logMsg, error?.response?.data?.message);
@@ -477,4 +493,4 @@ const AddMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
   );
 };
 
-export default AddMeal;
+export default AddUpdMeal;

@@ -35,7 +35,7 @@ const MealListCard = ({ meal }) => {
           placement="right"
           overlay={<Tooltip id="edit-tooltip">Edit your Meal</Tooltip>}
         >
-          <Link to="/add-meal?mode=Edit">
+          <Link to={`/handle-meal?mode=Edit&Id=${meal._id}`}>
             <button className="meal-list-button">
               <img
                 src={EditIcon}

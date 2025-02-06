@@ -7,7 +7,7 @@ import Home from "./pages/Home";
 import ProfilePage from "./pages/ProfilePage";
 import PageNotFound from "./pages/PageNotFound";
 import AllMealsPage from "./pages/AllMealsPage";
-import AddMeal from "./pages/AddMeal";
+import AddUpdMeal from "./pages/AddUpdMeal";
 import ShoppingCart from "./pages/ShoppingCart";
 import MealList from "./pages/MealList";
 import Navbar from "./components/Navbar";
@@ -48,18 +48,27 @@ function App() {
             }
           />
           <Route
-            path="/add-meal"
+            path="/handle-meal/"
             element={
-              <AddMeal
-                setErrorMessage={setErrorMessage}
-                setShowErrorModal={setShowErrorModal}
-                setShowSpinner={setShowSpinner}
-              />
+              <PrivateRoute>
+                <AddUpdMeal
+                  setErrorMessage={setErrorMessage}
+                  setShowErrorModal={setShowErrorModal}
+                  setShowSpinner={setShowSpinner}
+                />
+              </PrivateRoute>
             }
           />
           <Route path="/cook/:cookId" element={<CookOverviewPage />} />
 
-          <Route path="/meal-list" element={<MealList />} />
+          <Route
+            path="/meal-list"
+            element={
+              <PrivateRoute>
+                <MealList />
+              </PrivateRoute>
+            }
+          />
           <Route path="*" element={<PageNotFound />}></Route>
         </Routes>
 

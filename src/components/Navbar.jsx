@@ -23,11 +23,7 @@ const Navbar = () => {
   const loc = useLocation();
 
   function addMeal() {
-    if (!isLoggedIn) {
-      setModalShowLogIn(true);
-    } else {
-      nav("/add-meal");
-    }
+    nav("/handle-meal");
   }
 
   return (

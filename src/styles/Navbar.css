@@ -115,7 +115,8 @@
     border: none;
   }
 
-  li:hover {
+  li:hover,
+  a:hover {
     transform: scale(1.1);
     color: #ffb45e;
   }
