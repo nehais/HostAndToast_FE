@@ -16,7 +16,6 @@ import PrivateRoute from "./components/PrivateRoute";
 import ErrorModal from "./components/ErrorModal";
 import CustomSpinner from "./components/CustomSpinner";
 import SingleMeal from "./pages/SingleMeal";
-import EditMeal from "./pages/EditMeal";
 import CookOverviewPage from "./pages/CookOverviewPage";
 
 function App() {
@@ -59,8 +58,6 @@ function App() {
             }
           />
           <Route path="/cook/:cookId" element={<CookOverviewPage />} />
-
-          <Route path="/edit-meal/:mealId" element={<EditMeal />} />
 
           <Route path="/meal-list" element={<MealList />} />
           <Route path="*" element={<PageNotFound />}></Route>

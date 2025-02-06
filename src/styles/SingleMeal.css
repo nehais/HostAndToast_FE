@@ -8,11 +8,16 @@
 .single-meal {
   height: 100%;
   margin: 40px;
+  width: inherit;
+  max-width: 1024px;
+  margin-inline: auto;
 
-  .top-container {
+  .container {
     background-color: rgba(203, 217, 222, 0.9);
     padding: 20px;
+    min-width: 100%;
   }
+
   .header {
     display: flex;
     flex-direction: row;
@@ -265,5 +270,10 @@
 
   input {
     min-width: 50px;
+  }
+
+  .ratings-container {
+    margin: 20px auto;
+    width: 100%;
   }
 }

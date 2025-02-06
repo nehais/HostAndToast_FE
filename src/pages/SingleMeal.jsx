@@ -15,6 +15,7 @@ import { AuthContext } from "../contexts/auth.context.jsx";
 const SingleMeal = () => {
   const { mealId } = useParams();
   const [meal, setMeal] = useState(null);
+  const [ratings, setRatings] = useState([]);
   const [numberImages, setNumberImages] = useState(1);
   const [showAllImages, setShowAllImages] = useState(false);
   const [host, setHost] = useState(null);
@@ -38,7 +39,7 @@ const SingleMeal = () => {
     getMeal();
   }, [mealId]);
 
-  //
+  // Fetch the host data
   useEffect(() => {
     if (!meal || !meal.user) return;
 
@@ -55,6 +56,24 @@ const SingleMeal = () => {
     getHost();
   }, [meal]);
 
+  // Fetch the ratings data
+  useEffect(() => {
+    if (!meal || !meal.user) return;
+
+    const getRatings = async () => {
+      try {
+        const { data } = await axios.get(`${API_URL}/api/ratings/meals/${mealId}`);
+        setRatings(data);
+        console.log("Ratings", data);
+      } catch (error) {
+        console.log("Error fetching ratings", error.response?.data?.message || error.message);
+      }
+    };
+
+    getRatings();
+  }, [meal]);
+
+  // Format the date and time
   const formatDateTime = (isoString, shortWeekday = false) => {
     if (!isoString) return "N/A";
     const date = new Date(isoString);
@@ -98,7 +117,7 @@ const SingleMeal = () => {
   };
 
   const handleEditMeal = () => {
-    nav(`/edit-meal/${mealId}`);
+    nav(`/add-meal?mode=Edit&Id=${meal._id}`);
   };
 
   const handleDeleteMeal = () => {
@@ -124,7 +143,7 @@ const SingleMeal = () => {
 
   return (
     <div className="single-meal">
-      <div className="top-container">
+      <div className="container">
         <div className="header">
           <h1>{meal.title}</h1>
           <Link to={`/all-meals`}>
@@ -260,6 +279,9 @@ const SingleMeal = () => {
             </div>
           </Link>
         </div>
+      </div>
+      <div className="container ratings-container">
+        <h2>Ratings</h2>
       </div>
     </div>
   );
