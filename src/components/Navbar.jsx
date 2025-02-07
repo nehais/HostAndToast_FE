@@ -49,6 +49,7 @@ const Navbar = () => {
           <Button
             id="list-meal-button"
             variant="secondary"
+            className="button-shadow"
             onClick={() => addMeal()}
           >
             + List Your Meal
@@ -67,6 +68,7 @@ const Navbar = () => {
             >
               <Button
                 variant="secondary"
+                className="button-shadow"
                 onClick={() => setModalShowSignUp(true)}
               >
                 Sign up
@@ -81,7 +83,11 @@ const Navbar = () => {
                 </Tooltip>
               }
             >
-              <Button variant="primary" onClick={() => setModalShowLogIn(true)}>
+              <Button
+                variant="primary"
+                className="button-shadow"
+                onClick={() => setModalShowLogIn(true)}
+              >
                 Log In
               </Button>
             </OverlayTrigger>

@@ -1,7 +1,16 @@
+import { useNavigate } from "react-router-dom";
+
+import Button from "react-bootstrap/Button";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
 const FunctionBar = ({ searchStr, setSearchStr, ascSort, setAscSort }) => {
+  const nav = useNavigate();
+
+  function addMeal() {
+    nav("/handle-meal");
+  }
+
   return (
     <div className="function-bar ">
       <input
@@ -18,9 +27,29 @@ const FunctionBar = ({ searchStr, setSearchStr, ascSort, setAscSort }) => {
           <Tooltip id="sort-tooltip">Sort the Meals on the Tiltle</Tooltip>
         }
       >
-        <button className="func-button" onClick={() => setAscSort(!ascSort)}>
+        <button
+          className="func-button button-shadow"
+          onClick={() => setAscSort(!ascSort)}
+        >
           {ascSort ? "Z-A" : "A-Z"}
         </button>
+      </OverlayTrigger>
+
+      <OverlayTrigger
+        placement="top"
+        overlay={
+          <Tooltip id="register-tooltip">
+            List your meal for others to book and savor.
+          </Tooltip>
+        }
+      >
+        <Button
+          variant="secondary"
+          className="meal-list-add button-shadow"
+          onClick={() => addMeal()}
+        >
+          + List Your Meal
+        </Button>
       </OverlayTrigger>
     </div>
   );

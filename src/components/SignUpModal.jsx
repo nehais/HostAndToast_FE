@@ -93,10 +93,14 @@ export default function SignUpModal({ show, onHide }) {
           </div>
 
           <div className="signup-buttons">
-            <Button variant="danger" onClick={() => onHide()}>
+            <Button
+              variant="danger"
+              className="button-shadow"
+              onClick={() => onHide()}
+            >
               Cancel
             </Button>
-            <Button type="submit" variant="primary">
+            <Button type="submit" variant="primary" className="button-shadow">
               Submit
             </Button>
           </div>

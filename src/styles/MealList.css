@@ -41,6 +41,25 @@
   border-radius: 5px;
 }
 
+.meal-list-add {
+  display: none;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .search-bar {
+    font-size: 0.8em;
+  }
+  .func-button {
+    font-size: 0.8em;
+  }
+
+  .meal-list-add {
+    display: block;
+    font-size: 0.8em;
+  }
+}
+
 .meal-list-cards {
   display: flex;
   flex-direction: column;
