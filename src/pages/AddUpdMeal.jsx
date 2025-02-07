@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AddressSearch from "../components/AddressSearch.jsx";
 import PrevMealCard from "../components/PrevMealCard.jsx";
+import GenModal from "../components/GenModal";
 import { AuthContext } from "../contexts/auth.context.jsx";
 
 import Select from "react-select";
@@ -16,7 +17,7 @@ import { Dropdown } from "react-bootstrap";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-const AddUpdMeal = ({ setGenMessageModal, setShowSpinner }) => {
+const AddUpdMeal = ({ setShowSpinner }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get("mode"); //Check if newly created book
   const Id = searchParams.get("Id");
@@ -38,6 +39,12 @@ const AddUpdMeal = ({ setGenMessageModal, setShowSpinner }) => {
   const [useMealID, setUseMealID] = useState("");
   const { profileData } = useContext(AuthContext);
   const nav = useNavigate();
+  const [genMessageModal, setGenMessageModal] = useState({
+    header: "",
+    message: "",
+    show: false,
+    confirmation: false,
+  });
 
   useEffect(() => {
     //Display the meal address as the user address
@@ -492,6 +499,12 @@ const AddUpdMeal = ({ setGenMessageModal, setShowSpinner }) => {
           </div>
         </form>
       </section>
+
+      {/* Error Modal */}
+      <GenModal
+        messageObj={genMessageModal}
+        handleClose={(prev) => setGenMessageModal({ ...prev, show: false })}
+      />
     </div>
   );
 };

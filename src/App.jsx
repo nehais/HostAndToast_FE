@@ -13,18 +13,11 @@ import MealList from "./pages/MealList";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
-import GenModal from "./components/GenModal";
 import CustomSpinner from "./components/CustomSpinner";
 import SingleMeal from "./pages/SingleMeal";
 import CookOverviewPage from "./pages/CookOverviewPage";
 
 function App() {
-  const [genMessageModal, setGenMessageModal] = useState({
-    header: "",
-    message: "",
-    show: false,
-    confirmation: false,
-  });
   const [showSpinner, setShowSpinner] = useState(false);
 
   return (
@@ -55,10 +48,7 @@ function App() {
             path="/handle-meal/"
             element={
               <PrivateRoute>
-                <AddUpdMeal
-                  setGenMessageModal={setGenMessageModal}
-                  setShowSpinner={setShowSpinner}
-                />
+                <AddUpdMeal setShowSpinner={setShowSpinner} />
               </PrivateRoute>
             }
           />
@@ -68,18 +58,12 @@ function App() {
             path="/meal-list"
             element={
               <PrivateRoute>
-                <MealList setGenMessageModal={setGenMessageModal} />
+                <MealList />
               </PrivateRoute>
             }
           />
           <Route path="*" element={<PageNotFound />}></Route>
         </Routes>
-
-        {/* Error Modal */}
-        <GenModal
-          messageObj={genMessageModal}
-          handleClose={(prev) => setGenMessageModal({ ...prev, show: false })}
-        />
 
         {/* Spinner */}
         {showSpinner && <CustomSpinner />}

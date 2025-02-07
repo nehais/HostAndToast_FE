@@ -8,11 +8,22 @@ import { API_URL } from "../config/apiConfig.js";
 import { Link, useNavigate } from "react-router-dom";
 import ImageCarousel from "./ImageCarousel";
 import { format } from "date-fns";
+
+import GenModal from "./GenModal";
+import { useToast } from "../contexts/toast.context.jsx";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
+import { useState } from "react";
 
-const MealListCard = ({ meal, setGenMessageModal }) => {
+const MealListCard = ({ meal }) => {
   const nav = useNavigate();
+  const { setToast } = useToast(); //Use setToast context to set message
+  const [genMessageModal, setGenMessageModal] = useState({
+    header: "",
+    message: "",
+    show: false,
+    confirmation: false,
+  });
 
   function formatDate(dateToBeFormated) {
     const formattedDate = format(dateToBeFormated, "MMMM d, yyyy, h:mm a");
@@ -21,28 +32,25 @@ const MealListCard = ({ meal, setGenMessageModal }) => {
   }
 
   function onDelete() {
-    console.log("Delete clicked");
+    //Call Delete API to delete the meal
+    axios
+      .delete(`${API_URL}/api/meals/${meal._id}`)
+      .then(() => {
+        nav("/");
+        setToast({ msg: `'${meal.title}' Meal was Deleted!`, type: "danger" });
+      })
+      .catch((error) => console.log("Error during meal delete:", error));
   }
+
   function handleDelete() {
+    //Check for Delete Confirmation
     setGenMessageModal((prev) => ({
       ...prev,
       header: "Delete Confirmation",
       message: "Are you sure, you want to Delete the Meal?",
       show: true,
       confirmation: true,
-      action: onDelete(),
     }));
-
-    //Call Delete API to delete the meal
-    /*axios
-      .delete(`${API_URL}/api/meals/${meal._id}`)
-      .then(() => {
-        //Indicate Context API for refresh
-        setRefresh((prev) => prev + 1);
-        nav("/");
-        setToast(`'${meal.title}' was Deleted!`);
-      })
-      .catch((error) => console.log("Error during meal delete:", error));*/
   }
 
   return (
@@ -109,6 +117,13 @@ const MealListCard = ({ meal, setGenMessageModal }) => {
           </button>
         </OverlayTrigger>
       </div>
+
+      {/* Delete Confirmation / Error Modal */}
+      <GenModal
+        messageObj={genMessageModal}
+        handleClose={(prev) => setGenMessageModal({ ...prev, show: false })}
+        handleAction={onDelete}
+      />
     </div>
   );
 };

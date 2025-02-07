@@ -1,7 +1,12 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
 
-const GenModal = ({ messageObj, handleClose }) => {
+const GenModal = ({ messageObj, handleClose, handleAction }) => {
+  function closeAndAction() {
+    handleClose();
+    handleAction();
+  }
+
   return (
     <Modal show={messageObj.show} onHide={handleClose} centered>
       <Modal.Header closeButton>
@@ -15,16 +20,28 @@ const GenModal = ({ messageObj, handleClose }) => {
       <Modal.Footer>
         {messageObj.confirmation && (
           <>
-            <Button variant="secondary" onClick={handleClose}>
+            <Button
+              variant="secondary"
+              className="button-shadow"
+              onClick={handleClose}
+            >
               Cancel
             </Button>
-            <Button variant="danger" onClick={() => messageObj.action()}>
+            <Button
+              variant="danger"
+              className="button-shadow"
+              onClick={closeAndAction}
+            >
               Yes
             </Button>
           </>
         )}
         {!messageObj.confirmation && (
-          <Button variant="danger" onClick={handleClose}>
+          <Button
+            variant="danger"
+            className="button-shadow"
+            onClick={handleClose}
+          >
             Close
           </Button>
         )}
