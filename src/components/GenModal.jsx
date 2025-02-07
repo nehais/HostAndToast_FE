@@ -7,16 +7,18 @@ const GenModal = ({ messageObj, handleClose }) => {
       <Modal.Header closeButton>
         <Modal.Title>{messageObj.header}</Modal.Title>
       </Modal.Header>
+
       <Modal.Body>
         <p>{messageObj.message}</p>
       </Modal.Body>
+
       <Modal.Footer>
         {messageObj.confirmation && (
           <>
             <Button variant="secondary" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="danger" onClick={handleClose}>
+            <Button variant="danger" onClick={() => messageObj.action()}>
               Yes
             </Button>
           </>

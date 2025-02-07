@@ -20,6 +20,9 @@ const MealListCard = ({ meal, setGenMessageModal }) => {
     return formattedDate;
   }
 
+  function onDelete() {
+    console.log("Delete clicked");
+  }
   function handleDelete() {
     setGenMessageModal((prev) => ({
       ...prev,
@@ -27,6 +30,7 @@ const MealListCard = ({ meal, setGenMessageModal }) => {
       message: "Are you sure, you want to Delete the Meal?",
       show: true,
       confirmation: true,
+      action: onDelete(),
     }));
 
     //Call Delete API to delete the meal
