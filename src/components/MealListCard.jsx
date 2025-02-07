@@ -2,17 +2,43 @@ import EditIcon from "../assets/edit.png";
 import LikeIcon from "../assets/like.png";
 import DeleteIcon from "../assets/delete.png";
 
+import axios from "axios";
+import { API_URL } from "../config/apiConfig.js";
+
+import { Link, useNavigate } from "react-router-dom";
 import ImageCarousel from "./ImageCarousel";
 import { format } from "date-fns";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
-import { Link } from "react-router-dom";
 
-const MealListCard = ({ meal }) => {
+const MealListCard = ({ meal, setGenMessageModal }) => {
+  const nav = useNavigate();
+
   function formatDate(dateToBeFormated) {
     const formattedDate = format(dateToBeFormated, "MMMM d, yyyy, h:mm a");
 
     return formattedDate;
+  }
+
+  function handleDelete() {
+    setGenMessageModal((prev) => ({
+      ...prev,
+      header: "Delete Confirmation",
+      message: "Are you sure, you want to Delete the Meal?",
+      show: true,
+      confirmation: true,
+    }));
+
+    //Call Delete API to delete the meal
+    /*axios
+      .delete(`${API_URL}/api/meals/${meal._id}`)
+      .then(() => {
+        //Indicate Context API for refresh
+        setRefresh((prev) => prev + 1);
+        nav("/");
+        setToast(`'${meal.title}' was Deleted!`);
+      })
+      .catch((error) => console.log("Error during meal delete:", error));*/
   }
 
   return (
@@ -48,9 +74,14 @@ const MealListCard = ({ meal }) => {
 
         <OverlayTrigger
           placement="right"
-          overlay={<Tooltip id="edit-tooltip">Delete your Meal</Tooltip>}
+          overlay={<Tooltip id="delete-tooltip">Delete your Meal</Tooltip>}
         >
-          <button className="meal-list-button">
+          <button
+            className="meal-list-button"
+            onClick={() => {
+              handleDelete();
+            }}
+          >
             <img
               src={DeleteIcon}
               alt="Delete Icon"

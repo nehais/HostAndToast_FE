@@ -16,7 +16,7 @@ import { Dropdown } from "react-bootstrap";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-const AddUpdMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
+const AddUpdMeal = ({ setGenMessageModal, setShowSpinner }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const mode = searchParams.get("mode"); //Check if newly created book
   const Id = searchParams.get("Id");
@@ -63,8 +63,11 @@ const AddUpdMeal = ({ setErrorMessage, setShowErrorModal, setShowSpinner }) => {
 
   function handleError(logMsg, error) {
     console.log(logMsg, error?.response?.data?.message);
-    setErrorMessage(logMsg + error?.response?.data?.message);
-    setShowErrorModal(true);
+    setGenMessageModal({
+      header: "Error",
+      message: logMsg + error?.response?.data?.message,
+      show: true,
+    });
   }
 
   function handleChange(e) {

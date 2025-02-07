@@ -3,9 +3,10 @@ import { Navigate } from "react-router-dom";
 import { AuthContext } from "../contexts/auth.context";
 
 const PrivateRoute = ({ children }) => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoading, isLoggedIn } = useContext(AuthContext);
 
-  if (!isLoggedIn) {
+  //User is not logged in so open the Login Modal
+  if (!isLoading && !isLoggedIn) {
     return <Navigate to="/?session=out" />;
   }
 

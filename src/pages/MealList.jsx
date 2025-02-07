@@ -10,7 +10,7 @@ import FunctionBar from "../components/FunctionBar.jsx";
 import { AuthContext } from "../contexts/auth.context.jsx";
 import MealListCard from "../components/MealListCard.jsx";
 
-const MealList = () => {
+const MealList = ({ setGenMessageModal }) => {
   const [ascSort, setAscSort] = useState(true);
   const [searchStr, setSearchStr] = useState("");
   const [meals, setMeals] = useState([]);
@@ -33,11 +33,29 @@ const MealList = () => {
     }
   }
 
+  useEffect(() => {
+    /*Sort the Meal added here*/
+    if (meals.length > 0) {
+      let tempMeals = sortByTitle();
+      setMeals([...tempMeals]);
+    }
+  }, [ascSort]);
+
+  function sortByTitle() {
+    return meals.sort((a, b) => {
+      const titleA = a.title || ""; // Fallback to empty string
+      const titleB = b.title || ""; // Fallback to empty string
+
+      if (ascSort) {
+        return titleA.localeCompare(titleB);
+      } else {
+        return titleB.localeCompare(titleA);
+      }
+    });
+  }
+
   return (
     <div className="meal-list">
-      <button onClick={() => setToast({ msg: "test", type: "primary" })}>
-        TOast
-      </button>
       {/* Search & Sort */}
       <div className="function-area">
         <FunctionBar
@@ -50,9 +68,19 @@ const MealList = () => {
 
       {/* Meal List */}
       <div className="meal-list-cards">
-        {meals.map((meal) => (
-          <MealListCard key={meal._id} meal={meal} />
-        ))}
+        {meals
+          .filter((meal) => {
+            return (
+              meal.title.toUpperCase().search(searchStr.toUpperCase()) >= 0
+            );
+          })
+          .map((meal) => (
+            <MealListCard
+              key={meal._id}
+              meal={meal}
+              setGenMessageModal={setGenMessageModal}
+            />
+          ))}
       </div>
     </div>
   );
