@@ -10,7 +10,9 @@ import hostedIcon from "../assets/meeting-alt.png";
 import euroIcon from "../assets/euro.png";
 import profileIcon from "../assets/profile.png";
 import { AuthContext } from "../contexts/auth.context.jsx";
-// import { useToast } from "../contexts/toast.context.jsx";
+import Rating from "../components/Rating.jsx";
+import { useToast } from "../contexts/toast.context.jsx";
+import StarRating from "../components/StarRating.jsx";
 
 const SingleMeal = () => {
   const { mealId } = useParams();
@@ -19,8 +21,9 @@ const SingleMeal = () => {
   const [numberImages, setNumberImages] = useState(1);
   const [showAllImages, setShowAllImages] = useState(false);
   const [host, setHost] = useState(null);
+  const [userRating, setUserRating] = useState(null);
   const { user } = useContext(AuthContext);
-  // const { setToast } = useToast();
+  const { setToast } = useToast();
   const nav = useNavigate();
 
   // Fetch the meal data
@@ -58,13 +61,13 @@ const SingleMeal = () => {
 
   // Fetch the ratings data
   useEffect(() => {
-    if (!meal || !meal.user) return;
+    if (!meal) return;
 
     const getRatings = async () => {
       try {
         const { data } = await axios.get(`${API_URL}/api/ratings/meals/${mealId}`);
         setRatings(data);
-        console.log("Ratings", data);
+        // console.log("Ratings", data);
       } catch (error) {
         console.log("Error fetching ratings", error.response?.data?.message || error.message);
       }
@@ -72,6 +75,23 @@ const SingleMeal = () => {
 
     getRatings();
   }, [meal]);
+
+  // Fetch the hosts rating
+  useEffect(() => {
+    if (!host || !host._id) return;
+
+    const getUserRating = async () => {
+      try {
+        const { data } = await axios.get(`${API_URL}/auth/users/rating/${host._id}`);
+        setUserRating(data.averageRating);
+        // console.log("User rating", data);
+      } catch (error) {
+        console.log("Error fetching user rating", error.response?.data?.message || error.message);
+      }
+    };
+
+    getUserRating();
+  }, [host]); // Ensure useEffect re-runs when user changes
 
   // Format the date and time
   const formatDateTime = (isoString, shortWeekday = false) => {
@@ -128,7 +148,7 @@ const SingleMeal = () => {
         console.log(data);
 
         //show success message
-        // setToast({ msg: "Meal deleted successfully", type: "success" });
+        setToast({ msg: "Meal deleted successfully", type: "success" });
 
         //redirect to all meals
         nav(`/all-meals`);
@@ -267,14 +287,16 @@ const SingleMeal = () => {
         <div className="right-column">
           <Link to={`/cook/${host._id}`}>
             <div>
-              <h2>The cook</h2>
+              <h2>The Chef</h2>
               <img
                 src={host.imageUrl ? host.imageUrl : profileIcon}
-                alt="Profile Image"
-                className="profile-image"
+                className={!host.imageUrl ? "profile-image default-image" : "profile-image"}
               />
               <div>
                 <h3>{host.username}</h3>
+              </div>
+              <div>
+                <StarRating initialValue={userRating ? userRating : 0} editable={false} />
               </div>
             </div>
           </Link>
@@ -282,6 +304,13 @@ const SingleMeal = () => {
       </div>
       <div className="container ratings-container">
         <h2>Ratings</h2>
+        <div className="ratings">
+          {ratings.length ? (
+            ratings.map((rating) => <Rating rating={rating} key={rating._id} />)
+          ) : (
+            <p>No ratings yet</p>
+          )}
+        </div>
       </div>
     </div>
   );
