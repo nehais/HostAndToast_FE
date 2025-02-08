@@ -24,6 +24,7 @@ export default function SignUpModal({ show, onHide }) {
     e.preventDefault();
 
     try {
+      //Sign up New user
       const { data } = await axios.post(`${API_URL}/auth/signup`, formData);
       console.log("New user", data);
       onHide();

@@ -44,7 +44,7 @@ const FunctionBar = ({ searchStr, setSearchStr, ascSort, setAscSort }) => {
         }
       >
         <Button
-          variant="secondary"
+          variant="warning"
           className="meal-list-add button-shadow"
           onClick={() => addMeal()}
         >

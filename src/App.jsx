@@ -31,7 +31,7 @@ function App() {
             path="/profile"
             element={
               <PrivateRoute>
-                <ProfilePage />
+                <ProfilePage setShowSpinner={setShowSpinner} />
               </PrivateRoute>
             }
           />

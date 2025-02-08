@@ -1,5 +1,4 @@
 import EditIcon from "../assets/edit.png";
-import LikeIcon from "../assets/like.png";
 import DeleteIcon from "../assets/delete.png";
 
 import axios from "axios";
@@ -55,8 +54,10 @@ const MealListCard = ({ meal }) => {
 
   return (
     <div key={meal._id} className="meal-list-card">
+      {/* Image Carousel to display multiple images */}
       <ImageCarousel imageUrls={meal.imageUrl} />
 
+      {/* Meal info details */}
       <div className="meal-list-details">
         <p>{meal.cuisine}</p>
         <h4>{meal.title}</h4>
@@ -64,11 +65,14 @@ const MealListCard = ({ meal }) => {
         <p>{formatDate(meal.pickupTime)}</p>
       </div>
 
+      {/* Meal description */}
       <div className="meal-list-desc">
         <p className="meal-list-desc">{meal.description}</p>
       </div>
 
+      {/* Meal List Buttons */}
       <div className="meal-list-buttons">
+        {/* Edit Button */}
         <OverlayTrigger
           placement="right"
           overlay={<Tooltip id="edit-tooltip">Edit your Meal</Tooltip>}
@@ -83,7 +87,7 @@ const MealListCard = ({ meal }) => {
             </button>
           </Link>
         </OverlayTrigger>
-
+        {/* Delete Button */}
         <OverlayTrigger
           placement="right"
           overlay={<Tooltip id="delete-tooltip">Delete your Meal</Tooltip>}
@@ -100,25 +104,10 @@ const MealListCard = ({ meal }) => {
               className="meal-list-button-img"
             />
           </button>
-        </OverlayTrigger>
-
-        <OverlayTrigger
-          placement="right"
-          overlay={
-            <Tooltip id="edit-tooltip">Mark this Meal as Favourite</Tooltip>
-          }
-        >
-          <button className="meal-list-button">
-            <img
-              src={LikeIcon}
-              alt="Like Icon"
-              className="meal-list-button-img"
-            />
-          </button>
-        </OverlayTrigger>
+        </OverlayTrigger>{" "}
       </div>
 
-      {/* Delete Confirmation / Error Modal */}
+      {/* Delete Confirmation || Error Modal */}
       <GenModal
         messageObj={genMessageModal}
         handleClose={(prev) => setGenMessageModal({ ...prev, show: false })}

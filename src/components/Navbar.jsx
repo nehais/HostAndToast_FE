@@ -38,6 +38,7 @@ const Navbar = () => {
       {loc.pathname !== "/" && <AddressSearch componentId="navbar" />}
 
       <div className="nav-buttons">
+        {/* Add Meal Button */}
         <OverlayTrigger
           placement="bottom"
           overlay={
@@ -48,7 +49,7 @@ const Navbar = () => {
         >
           <Button
             id="list-meal-button"
-            variant="secondary"
+            variant="warning"
             className="button-shadow"
             onClick={() => addMeal()}
           >
@@ -58,6 +59,7 @@ const Navbar = () => {
 
         {!isLoggedIn && (
           <>
+            {/* Registration Button */}
             <OverlayTrigger
               placement="bottom"
               overlay={
@@ -75,6 +77,7 @@ const Navbar = () => {
               </Button>
             </OverlayTrigger>
 
+            {/* Login Button */}
             <OverlayTrigger
               placement="bottom"
               overlay={
@@ -96,7 +99,9 @@ const Navbar = () => {
 
         {isLoggedIn && (
           <>
+            {/* Profile Button - Opens sub-menu*/}
             <ProfileButton />
+            {/* Shopping Cart Button */}
             <CartButton />
           </>
         )}

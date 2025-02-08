@@ -2,6 +2,23 @@ import React from "react";
 import { Modal, Button } from "react-bootstrap";
 
 const GenModal = ({ messageObj, handleClose, handleAction }) => {
+  /* Valid values to be passed for this Modal
+  Verification Modal=>
+    messageObj.show : True to show the window 
+    messageObj.header : Sets the Message Box Header
+    messageObj.confirmation : True to show the Cancel & Yes Buttons
+    messageObj.message : Message for confirmation
+    handleAction: call back function to handle after confirmation
+    handleClose: {(prev) => setGenMessageModal({ ...prev, show: false })}
+
+  Error Modal=>
+    messageObj.show : True to show the window 
+    messageObj.header : Sets the Message Box Header
+    messageObj.confirmation : True to show the Cancel & Yes Buttons
+    messageObj.message : Message for confirmation
+    handleClose: {(prev) => setGenMessageModal({ ...prev, show: false })}
+  */
+
   function closeAndAction() {
     handleClose();
     handleAction();

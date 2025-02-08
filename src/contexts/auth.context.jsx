@@ -23,6 +23,7 @@ const AuthWrapper = ({ children }) => {
   }, []);
 
   useEffect(() => {
+    // Fetch & store the Profile Data
     async function getUserProfile() {
       try {
         const { data } = await axios.get(`${API_URL}/auth/users/${user._id}`);
@@ -52,13 +53,10 @@ const AuthWrapper = ({ children }) => {
     }
   }, [user._id]); // Track only `_id`
 
-  useEffect(() => {
-    console.log("user state updated:", user);
-  }, [user]);
-
   const authenticateUser = async () => {
-    const theToken = localStorage.getItem("authToken");
+    const theToken = localStorage.getItem("authToken"); //Check if any session Token exists
     if (theToken) {
+      //Verify the existing Token if the session is valid
       try {
         const { data } = await axios.get(`${API_URL}/auth/verify`, {
           headers: { authorization: `Bearer ${theToken}` },
@@ -74,6 +72,7 @@ const AuthWrapper = ({ children }) => {
         console.error("Error Authenticating", error.response?.data?.message);
       }
     } else {
+      //No valid session Token present
       setUser({ username: "", _id: "" }); // Reset state
       setIsLoading(false);
       setIsLoggedIn(false);
@@ -83,7 +82,15 @@ const AuthWrapper = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, profileData, isLoading, isLoggedIn, authenticateUser }}
+      value={{
+        user,
+        setUser,
+        profileData,
+        setProfileData,
+        isLoading,
+        isLoggedIn,
+        authenticateUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

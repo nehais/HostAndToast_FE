@@ -346,10 +346,8 @@ const AddUpdMeal = ({ setShowSpinner }) => {
 
           <div className="col-fields">
             <div className="col-field">
-              {/*Allergies Field */}
-              <label htmlFor="allergies" className="col25">
-                Allergies
-              </label>
+              {/*User Preferances Field */}
+              <label htmlFor="allergies">User Preferances</label>
 
               <Select
                 options={[
@@ -369,7 +367,7 @@ const AddUpdMeal = ({ setShowSpinner }) => {
                     allergies: selectedOptions.map((option) => option.value),
                   }))
                 }
-                placeholder="Select Allergies"
+                placeholder="Select User Preferances"
                 styles={{ padding: "0 !important" }}
               />
             </div>

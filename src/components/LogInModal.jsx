@@ -2,7 +2,6 @@ import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
 
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/auth.context";
 
 import Button from "react-bootstrap/Button";
@@ -14,7 +13,6 @@ export default function LogInModal({ show, onHide }) {
     password: "",
   });
   const [error, setError] = useState("");
-  const nav = useNavigate();
   const { authenticateUser } = useContext(AuthContext);
 
   function handleChange(e) {
@@ -27,13 +25,14 @@ export default function LogInModal({ show, onHide }) {
     e.preventDefault();
 
     try {
+      //Validate the Login details
       const { data } = await axios.post(`${API_URL}/auth/login`, formData);
-      console.log("New user", data);
-      localStorage.setItem("authToken", data.authToken);
+      console.log("Login successful", data);
+      localStorage.setItem("authToken", data.authToken); //Store the token in session
       await authenticateUser();
       onHide();
     } catch (error) {
-      console.log("Error Signing Up the details", error.response.data.message);
+      console.log("Error loggin the details", error.response.data.message);
       setError(error.response.data.message);
     }
   }

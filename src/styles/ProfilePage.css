@@ -1,0 +1,117 @@
+.profile-page {
+  color: white;
+  width: 100%;
+  margin-top: 20px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pp-user-info {
+  padding: 10px;
+  display: flex;
+  gap: 30px;
+
+  border: 1px dashed white;
+  border-radius: 10px;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .pp-user-info {
+    flex-direction: column;
+  }
+}
+
+.pp-img {
+  padding: 5px;
+  width: 150px;
+  height: 150px;
+  border: 1px solid white;
+  border-radius: 50%;
+  background-color: white;
+}
+
+.col-field-prof-img {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .col-field-prof-img {
+    width: 100%;
+  }
+}
+
+.col-field-100 {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  margin: 10px 0;
+}
+
+.profile-input {
+  border-radius: 5px;
+  border: 2px solid white;
+  height: 40px;
+  width: 280px;
+}
+
+.profile-input:focus,
+.profile-input-desc:focus,
+.profile-adr-input:focus {
+  outline: none; /* Remove default focus outline */
+  border-color: #007bff; /* Border color on focus */
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.5); /* Optional: Add glow effect */
+}
+
+.profile-input-img {
+  color: transparent;
+  border: none;
+  width: 100px;
+}
+
+#mobileProfHeader,
+#otherProfHeader {
+  color: #ffb45e;
+  font-family: "Satisfy", serif;
+}
+
+#mobileProfHeader {
+  display: none;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  #mobileProfHeader {
+    display: block;
+  }
+  #otherProfHeader {
+    display: none;
+  }
+}
+
+.profile-input-desc {
+  border-radius: 5px;
+  border: 2px solid white;
+  height: 50px;
+}
+
+.profile-adr-input {
+  border-radius: 5px;
+  height: 40px;
+}
+
+.upd-profile-button {
+  margin-top: 15px;
+}
+
+.profile-input-spec {
+  background-color: rgba(60, 89, 144, 0.477);
+}

@@ -1,4 +1,3 @@
-import arrow from "../assets/pin.png";
 import slide1 from "../assets/01_how_it_works_post.jfif";
 import slide2 from "../assets/02_how_it_works_book.jfif";
 import slide3 from "../assets/03_how_it_works_cook.jfif";
