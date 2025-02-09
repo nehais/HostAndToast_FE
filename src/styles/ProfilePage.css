@@ -1,3 +1,4 @@
+/*User Profile Section*/
 .profile-page {
   color: white;
   width: 100%;
@@ -15,12 +16,43 @@
 
   border: 1px dashed white;
   border-radius: 10px;
+  position: relative;
 }
 
 /*Mobile Screen*/
 @media screen and (max-device-width: 425px) {
   .pp-user-info {
     flex-direction: column;
+  }
+}
+
+.prof-open {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.prof-collapse {
+  transform: rotate(90deg);
+  margin: 2px;
+  border-radius: 5px;
+}
+
+.expand-prof-container {
+  border: 1px dashed white;
+  border-radius: 5px;
+
+  display: flex;
+  width: 5%;
+  padding: 5px;
+
+  img {
+    padding: 5px;
+    width: 50px;
+    height: 50px;
+    border: 1px solid white;
+    border-radius: 50%;
+    background-color: white;
   }
 }
 
@@ -78,7 +110,8 @@
 }
 
 #mobileProfHeader,
-#otherProfHeader {
+#otherProfHeader,
+#collapsedProf {
   color: #ffb45e;
   font-family: "Satisfy", serif;
 }
@@ -103,6 +136,12 @@
   height: 50px;
 }
 
+#cuisine-dropdown {
+  background-color: white;
+  color: black;
+  text-align: left;
+}
+
 .profile-adr-input {
   border-radius: 5px;
   height: 40px;
@@ -110,8 +149,11 @@
 
 .upd-profile-button {
   margin-top: 15px;
+  margin-bottom: 25px;
 }
 
 .profile-input-spec {
   background-color: rgba(60, 89, 144, 0.477);
 }
+
+/*Tab Section*/
