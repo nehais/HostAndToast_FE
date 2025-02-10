@@ -5,10 +5,15 @@
 
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .navbar-adr {
   width: 50%;
+}
+
+#mobile-list-meal-button {
+  display: none; /*Button too big for mobile display*/
 }
 
 /*Mobile Screen*/
@@ -18,12 +23,15 @@
   }
 
   .navbar-adr {
-    width: 45%;
+    width: 40%;
     margin: 0;
   }
 
   #list-meal-button {
     display: none; /*Button too big for mobile display*/
+  }
+  #mobile-list-meal-button {
+    display: block; /*Button too big for mobile display*/
   }
 }
 
@@ -44,6 +52,13 @@
 .nav-buttons {
   display: flex;
   gap: 10px;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .nav-buttons {
+    gap: 0px;
+  }
 }
 
 .row {

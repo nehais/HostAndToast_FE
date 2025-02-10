@@ -156,4 +156,59 @@
   background-color: rgba(60, 89, 144, 0.477);
 }
 
-/*Tab Section*/
+/*Dashboard Section*/
+.dashboard {
+  width: 50vw;
+  margin-bottom: 15px;
+}
+
+.dashboard-tab {
+  border: 0.25px solid white;
+  border-top: none;
+}
+
+.stats {
+  padding: 10px 20px;
+
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+
+  font-weight: bolder;
+  font-size: 1.5em;
+
+  color: #ffb45e;
+}
+
+.dashboard-tab-cont {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: center;
+  align-items: center;
+}
+
+.display-block-dd {
+  width: 95%;
+  height: 40px;
+  margin: 10px 0;
+  padding: 5px;
+
+  background-color: rgba(203, 217, 222);
+  color: black;
+  border-radius: 5px;
+
+  display: flex;
+  justify-content: space-between;
+}
+
+.notification-active em {
+  color: green;
+  font-style: normal;
+  font-weight: bold;
+}
+.notification-inactive em {
+  color: red;
+  font-style: normal;
+  font-weight: bold;
+}

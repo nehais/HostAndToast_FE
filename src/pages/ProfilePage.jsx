@@ -4,15 +4,13 @@ import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
 
 import { useContext, useEffect, useState } from "react";
-import Tab from "react-bootstrap/Tab";
-import Tabs from "react-bootstrap/Tabs";
 
 import { AuthContext } from "../contexts/auth.context";
 import { useToast } from "../contexts/toast.context.jsx";
 import UserProfileInfo from "../components/UserProfileInfo.jsx";
+import ProfileDashboard from "../components/ProfileDashboard.jsx";
 
-const ProfilePage = ({ setShowSpinner }) => {
-  const [key, setKey] = useState("chef");
+const ProfilePage = ({ setShowSpinner, meals }) => {
   const { user, profileData, setProfileData, setUser } =
     useContext(AuthContext);
   const { setToast } = useToast(); //Use setToast context to set message
@@ -24,10 +22,57 @@ const ProfilePage = ({ setShowSpinner }) => {
     description: "",
     specialty: "",
   });
+  const [chefMeals, setChefAMeals] = useState({
+    activeMeals: [],
+    expiredMeals: [],
+  });
+  const [buyerMeals, setBuyerMeals] = useState({
+    activeMeals: [],
+    expiredMeals: [],
+  });
 
   useEffect(() => {
-    if (profileData) setNewProfData({ ...profileData });
+    if (profileData) {
+      setNewProfData({ ...profileData });
+
+      if (profileData._id) {
+        getAllChefMeals();
+      }
+    }
   }, [profileData]);
+
+  //Gets all meals for the User
+  async function getAllChefMeals() {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/meals/user/${profileData._id}`
+      );
+
+      filterByPickupTime(data);
+    } catch (error) {
+      handleError("Error fetching meals: ", error);
+    }
+  }
+
+  function filterByPickupTime(meals) {
+    const currentTime = new Date(); // Get the current date and time
+    let expiredMeals = [];
+    let activeMeals = [];
+
+    meals.forEach((meal) => {
+      const pickupTime = new Date(meal.pickupTime); // Convert pickupTime to a Date object
+      // Check if pickupTime is less than currentTime
+      if (pickupTime < currentTime) {
+        expiredMeals.push(meal);
+      } else {
+        activeMeals.push(meal);
+      }
+    });
+
+    setChefAMeals((prev) => {
+      return { ...prev, activeMeals: activeMeals, expiredMeals: expiredMeals };
+    });
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -83,24 +128,7 @@ const ProfilePage = ({ setShowSpinner }) => {
       />
 
       {/*User Dashboard for Chef / Buyer */}
-      <div style={{ width: "50%" }}>
-        <Tabs
-          id="controlled-tab-example"
-          activeKey={key}
-          onSelect={(k) => setKey(k)}
-        >
-          <Tab eventKey="chef" title="Chef's Dashboard">
-            <div style={{ height: "75vh", border: "1px solid white" }}>
-              <h2>You have 0 Up coming Meals v</h2>
-            </div>
-          </Tab>
-          <Tab eventKey="buyer" title="Buyers's Dashboard">
-            <div>
-              <h3>Tab content for Buyer</h3>
-            </div>
-          </Tab>
-        </Tabs>
-      </div>
+      <ProfileDashboard chefMeals={chefMeals} buyerMeals={buyerMeals} />
     </div>
   );
 };

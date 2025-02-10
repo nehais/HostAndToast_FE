@@ -34,23 +34,6 @@ const FunctionBar = ({ searchStr, setSearchStr, ascSort, setAscSort }) => {
           {ascSort ? "Z-A" : "A-Z"}
         </button>
       </OverlayTrigger>
-
-      <OverlayTrigger
-        placement="top"
-        overlay={
-          <Tooltip id="register-tooltip">
-            List your meal for others to book and savor.
-          </Tooltip>
-        }
-      >
-        <Button
-          variant="warning"
-          className="meal-list-add button-shadow"
-          onClick={() => addMeal()}
-        >
-          + List Your Meal
-        </Button>
-      </OverlayTrigger>
     </div>
   );
 };

@@ -1,7 +1,6 @@
 .meal-list {
   padding: 10px;
   overflow-x: hidden;
-  position: relative;
 }
 
 /*Mobile Screen*/
@@ -14,7 +13,6 @@
 .function-area {
   width: 100vw;
   height: 24vh;
-  position: fixed;
 }
 
 .function-bar {
@@ -41,21 +39,12 @@
   border-radius: 5px;
 }
 
-.meal-list-add {
-  display: none;
-}
-
 /*Mobile Screen*/
 @media screen and (max-device-width: 425px) {
   .search-bar {
     font-size: 0.8em;
   }
   .func-button {
-    font-size: 0.8em;
-  }
-
-  .meal-list-add {
-    display: block;
     font-size: 0.8em;
   }
 }
@@ -67,8 +56,6 @@
   align-items: center;
 
   width: 100vw;
-  position: fixed;
-  top: calc(10vh + 60px);
 
   overflow-y: auto;
   overflow-x: hidden;
@@ -76,7 +63,6 @@
 }
 
 .meal-list-card {
-  background-color: rgba(203, 217, 222, 0.854);
   width: 600px;
   padding: 5px;
   border-radius: 5px;
@@ -89,6 +75,14 @@
   h3 {
     margin: 0;
   }
+}
+
+.meal-list-card-active {
+  background-color: rgba(146, 158, 81);
+}
+
+.meal-list-card-inactive {
+  background-color: rgba(195, 62, 71);
 }
 
 .carousel-img {

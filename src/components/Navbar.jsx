@@ -57,6 +57,14 @@ const Navbar = () => {
           </Button>
         </OverlayTrigger>
 
+        <Button
+          id="mobile-list-meal-button"
+          variant="warning"
+          className="button-shadow"
+          onClick={() => addMeal()}
+        >
+          +
+        </Button>
         {!isLoggedIn && (
           <>
             {/* Registration Button */}

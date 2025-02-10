@@ -41,19 +41,6 @@ const ProfileButton = () => {
                   </Link>
                 </li>
                 <li>Messages</li>
-                <li>
-                  <Link to="/meal-list" className="profile-menu-link">
-                    Your Meals
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    to="/meal-list?mode=orders"
-                    className="profile-menu-link"
-                  >
-                    Your Orders
-                  </Link>
-                </li>
                 <li onClick={() => handleLogOut()}>Log Out!</li>
               </ul>
             </div>

@@ -14,7 +14,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { useState } from "react";
 
-const MealListCard = ({ meal }) => {
+const MealListCard = ({ meal, active }) => {
   const nav = useNavigate();
   const { setToast } = useToast(); //Use setToast context to set message
   const [genMessageModal, setGenMessageModal] = useState({
@@ -53,7 +53,12 @@ const MealListCard = ({ meal }) => {
   }
 
   return (
-    <div key={meal._id} className="meal-list-card">
+    <div
+      key={meal._id}
+      className={`meal-list-card ${
+        active ? "meal-list-card-active" : "meal-list-card-inactive"
+      }`}
+    >
       {/* Image Carousel to display multiple images */}
       <ImageCarousel imageUrls={meal.imageUrl} />
 

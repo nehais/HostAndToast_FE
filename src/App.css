@@ -23,6 +23,7 @@ body {
 .main-content {
   height: 85%;
   position: relative;
+  overflow-x: hidden;
 }
 
 .errors {
