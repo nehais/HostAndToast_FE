@@ -25,8 +25,14 @@
       object-fit: cover;
       border-radius: 2000px;
       display: block;
-      margin: auto;
+      margin: 20px;
       border: none;
+
+      @media screen and (max-width: 425px) {
+        width: 120px;
+        height: 120px;
+        margin: 10px;
+      }
     }
 
     .default-image {
@@ -38,7 +44,37 @@
   .header {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
+
+    @media screen and (max-width: 840px) {
+      flex-direction: column;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin: 20px;
+
+      @media screen and (max-width: 840px) {
+        align-items: center;
+      }
+
+      h1 {
+        background-color: rgb(242, 204, 22);
+        padding: 0 2px;
+      }
+    }
+  }
+
+  .underline {
+    text-decoration: underline;
+    margin: 0;
+    margin-top: 10px;
+
+    @media screen and (max-width: 425px) {
+      margin: 0;
+    }
   }
 
   #all-cards {
@@ -56,37 +92,28 @@
   }
 
   .meal-day {
-    background: #ffc107; /* Highlight color (e.g., amber) */
+    background: rgba(255, 193, 7, 0.8); /* Highlight color (e.g., amber) */
     color: black;
     border-radius: 5px;
   }
 
-  .react-calendar__tile:enabled:hover {
-    background: rgba(29, 80, 162, 0.8); /* Highlight color (e.g., amber) */
-    color: white;
+  .react-calendar {
+    padding: 10px;
+    background: rgba(245, 245, 245, 0.7);
   }
 
+  .react-calendar__tile:enabled:hover,
   .react-calendar__tile:enabled:focus {
-    background: rgb(29, 80, 162); /* Highlight color (e.g., amber) */
+    background: rgba(29, 80, 162, 0.8); /* Highlight color (e.g., amber) */
+    border-radius: 5px;
     color: white;
   }
 
   .react-calendar__tile--now {
-    background: #ffc107; /* Highlight color (e.g., amber) */
+    background: #cecece; /* Highlight color (e.g., amber) */
     color: black;
-    border: 1px solid rgb(29, 80, 162);
-  }
-
-  h1 {
-    margin-top: 20px;
-    max-width: 40%;
-    margin-inline: auto;
-    text-wrap: balance;
-
-    span {
-      background-color: rgb(242, 204, 22);
-      padding: 0 2px;
-    }
+    border-radius: 5px;
+    /* border: 1px solid rgb(29, 80, 162); */
   }
 
   h4 {
@@ -97,11 +124,12 @@
 
   .created-info {
     font-size: 0.9rem;
+    margin: 0;
   }
 
   .rating {
-    margin: 20px auto;
-    padding: 20px 10px;
+    margin: 10px auto;
+    padding: 10px;
     border: 1px dashed #003459;
     min-width: 250px;
 

@@ -24,7 +24,7 @@ const CookOverviewPage = () => {
       try {
         const { data } = await axios.get(`${API_URL}/auth/users/${cookId}`);
         setCook(data);
-        console.log("Cook", data);
+        // console.log("Cook", data);
       } catch (error) {
         console.log("Error fetching cook", error.response?.data?.message || error.message);
       }
@@ -114,9 +114,7 @@ const CookOverviewPage = () => {
           </div>
           {cook && (
             <div className="user-info">
-              <h1>
-                <span>{cook.username}</span>
-              </h1>
+              <h1>{cook.username && cook.username}</h1>
               <p className="created-info">User since {formatDateTime(cook.createdAt)}</p>
               <h4>{cook.description}</h4>
               <div className="rating">
@@ -127,36 +125,43 @@ const CookOverviewPage = () => {
           )}
         </div>
       )}
-      <div className="container columns-container">
-        <div className="left-column">
-          {/* Calendar with highlighted meal days */}
-          <div id="calendar">
-            <Calendar
-              // Highlight days that have meals
-              tileClassName={({ date, view }) => {
-                if (view === "month" && mealDatesSet.has(date.toDateString())) {
-                  return "meal-day"; // CSS class for highlighted days
-                }
-              }}
-              // Update the selected date on day click
-              onClickDay={(value) => {
-                setSelectedDate(value);
-              }}
-            />
-            {selectedDate && (
-              <div className="filter-info">
-                <button onClick={() => setSelectedDate(null)}>Clear Filter</button>
+      <div className="container ">
+        {cook && (
+          <>
+            <h2 className="underline">Meals offered by {cook.username}</h2>
+            <div className="columns-container">
+              <div className="left-column">
+                {/* Calendar with highlighted meal days */}
+                <div id="calendar">
+                  <Calendar
+                    // Highlight days that have meals
+                    tileClassName={({ date, view }) => {
+                      if (view === "month" && mealDatesSet.has(date.toDateString())) {
+                        return "meal-day"; // CSS class for highlighted days
+                      }
+                    }}
+                    // Update the selected date on day click
+                    onClickDay={(value) => {
+                      setSelectedDate(value);
+                    }}
+                  />
+                  {selectedDate && (
+                    <div className="filter-info">
+                      <button onClick={() => setSelectedDate(null)}>Clear Filter</button>
+                    </div>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
-        </div>
-        <div className="right-column">
-          <div id="all-cards">
-            {filteredMeals.map((meal) => (
-              <MealCard key={meal._id} meal={meal} />
-            ))}
-          </div>
-        </div>
+              <div className="right-column">
+                <div id="all-cards">
+                  {filteredMeals.map((meal) => (
+                    <MealCard key={meal._id} meal={meal} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

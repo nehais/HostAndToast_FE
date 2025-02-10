@@ -4,6 +4,8 @@ import "../styles/MealCard.css";
 const MealCard = ({ meal }) => {
   const imageUrl = meal.imageUrl[0];
 
+  console.log("Meal user username:", meal.user.username);
+
   // Function to truncate description
   const truncateText = (text, limit) => {
     return text && text.length > limit ? text.slice(0, limit) + "..." : text;

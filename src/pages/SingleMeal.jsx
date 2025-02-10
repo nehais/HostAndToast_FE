@@ -137,7 +137,7 @@ const SingleMeal = () => {
   };
 
   const handleEditMeal = () => {
-    nav(`/add-meal?mode=Edit&Id=${meal._id}`);
+    nav(`/handle-meal?mode=Edit&Id=${meal._id}`);
   };
 
   const handleDeleteMeal = () => {
