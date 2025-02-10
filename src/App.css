@@ -15,6 +15,9 @@ body {
   overflow-y: hidden;
   overflow-x: hidden;
   box-sizing: border-box;
+  font-family: "Space Grotesk", serif;
+  /* font-family: "Karla", serif; */
+  /* font-family: "Raleway", serif; */
 }
 
 .main-content {

@@ -13,6 +13,7 @@ import { AuthContext } from "../contexts/auth.context.jsx";
 import Rating from "../components/Rating.jsx";
 import { useToast } from "../contexts/toast.context.jsx";
 import StarRating from "../components/StarRating.jsx";
+import GenModal from "../components/GenModal.jsx";
 
 const SingleMeal = () => {
   const { mealId } = useParams();
@@ -25,6 +26,12 @@ const SingleMeal = () => {
   const { user } = useContext(AuthContext);
   const { setToast } = useToast();
   const nav = useNavigate();
+  const [genMessageModal, setGenMessageModal] = useState({
+    header: "",
+    message: "",
+    show: false,
+    confirmation: false,
+  });
 
   // Fetch the meal data
   useEffect(() => {
@@ -140,24 +147,46 @@ const SingleMeal = () => {
     nav(`/handle-meal?mode=Edit&Id=${meal._id}`);
   };
 
-  const handleDeleteMeal = () => {
-    //delete meal
-    const deleteMeal = async () => {
-      try {
-        const { data } = await axios.delete(`${API_URL}/api/meals/${mealId}`);
-        console.log(data);
+  // const handleDeleteMeal = () => {
+  //   //delete meal
+  //   const deleteMeal = async () => {
+  //     try {
+  //       const { data } = await axios.delete(`${API_URL}/api/meals/${mealId}`);
+  //       console.log(data);
 
-        //show success message
-        setToast({ msg: "Meal deleted successfully", type: "success" });
+  //       //show success message
+  //       setToast({ msg: "Meal deleted successfully", type: "success" });
 
-        //redirect to all meals
-        nav(`/all-meals`);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    deleteMeal();
-  };
+  //       //redirect to all meals
+  //       nav(`/all-meals`);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   deleteMeal();
+  // };
+
+  function onDelete() {
+    //Call Delete API to delete the meal
+    axios
+      .delete(`${API_URL}/api/meals/${meal._id}`)
+      .then(() => {
+        nav("/");
+        setToast({ msg: `'${meal.title}' Meal was Deleted!`, type: "danger" });
+      })
+      .catch((error) => console.log("Error during meal delete:", error));
+  }
+
+  function handleDelete() {
+    //Check for Delete Confirmation
+    setGenMessageModal((prev) => ({
+      ...prev,
+      header: "Delete Confirmation",
+      message: "Are you sure, you want to Delete the Meal?",
+      show: true,
+      confirmation: true,
+    }));
+  }
 
   if (!meal) return <div>Loading...</div>;
 
@@ -280,7 +309,7 @@ const SingleMeal = () => {
           ) : (
             <>
               <button onClick={handleEditMeal}>Edit Meal</button>
-              <button onClick={handleDeleteMeal}>Delete Meal</button>
+              <button onClick={handleDelete}>Delete Meal</button>
             </>
           )}
         </div>
@@ -312,6 +341,11 @@ const SingleMeal = () => {
           )}
         </div>
       </div>
+      <GenModal
+        messageObj={genMessageModal}
+        handleClose={(prev) => setGenMessageModal({ ...prev, show: false })}
+        handleAction={onDelete}
+      />
     </div>
   );
 };
