@@ -6,7 +6,14 @@ import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import DisplayDropDown from "./DisplayDropDown";
 
-const ProfileDashboard = ({ chefMeals, buyerMeals }) => {
+const ProfileDashboard = ({
+  chefMeals,
+  buyerMeals,
+  platesServed,
+  totalRevenue,
+  platesBought,
+  totalPurchase,
+}) => {
   const [key, setKey] = useState("chef");
   return (
     <div className="dashboard">
@@ -19,11 +26,11 @@ const ProfileDashboard = ({ chefMeals, buyerMeals }) => {
           <div className="stats">
             <div>
               🍽️ <strong>Meals Served: </strong>
-              <span className="badge bg-success">{40}</span>
+              <span className="badge bg-success">{platesServed}</span>
             </div>
             <div>
               💰 <strong>Revenue Generated: </strong>
-              <span className="badge bg-info">{40}€</span>
+              <span className="badge bg-info">{totalRevenue}€</span>
             </div>
           </div>
 
@@ -48,35 +55,39 @@ const ProfileDashboard = ({ chefMeals, buyerMeals }) => {
           </div>
         </Tab>
 
-        <Tab eventKey="buyer" title="Buyers's Dashboard">
+        <Tab
+          eventKey="buyer"
+          title="Customers's Dashboard"
+          className="dashboard-tab"
+        >
           <div className="stats">
             <div>
-              🍽️ <strong>Plates Enjoyed: </strong>
-              <span className="badge bg-success">{40}</span>
+              🍽️ <strong>Meals Enjoyed: </strong>
+              <span className="badge bg-success">{platesBought}</span>
             </div>
             <div>
               💰 <strong>Invested in Authentic Tastes: </strong>
-              <span className="badge bg-info">{40}€</span>
+              <span className="badge bg-info">{totalPurchase}€</span>
             </div>
           </div>
 
           <div className="dashboard-tab-cont">
             <DisplayDropDown
-              notification={"up coming Meals"}
+              notification={"up coming Meal Pickup"}
               mealCount={
-                buyerMeals.activeMeals ? buyerMeals.activeMeals.length : 0
+                buyerMeals.activeOrders ? buyerMeals.activeOrders.length : 0
               }
               active={true}
-              meals={buyerMeals.activeMeals}
+              orders={buyerMeals.activeOrders}
             />
 
             <DisplayDropDown
-              notification={"Inactive Meals"}
+              notification={"completed Meal Purchase"}
               mealCount={
-                buyerMeals.expiredMeals ? buyerMeals.expiredMeals.length : 0
+                buyerMeals.expiredOrders ? buyerMeals.activeOrders.length : 0
               }
               active={false}
-              meals={buyerMeals.expiredMeals}
+              orders={buyerMeals.expiredOrders}
             />
           </div>
         </Tab>

@@ -3,7 +3,7 @@ import { createContext, useState } from "react";
 const CartContext = createContext();
 
 const CartWrapper = ({ children }) => {
-  const [cart, setCart] = useState({ counter: 0 });
+  const [cart, setCart] = useState({ counter: 99 });
 
   return (
     <CartContext.Provider value={{ cart, setCart }}>

@@ -14,7 +14,10 @@
   display: flex;
   gap: 30px;
 
-  border: 1px dashed white;
+  background-color: rgba(203, 217, 222, 0.9);
+  color: black;
+
+  border: 2px dashed white;
   border-radius: 10px;
   position: relative;
 }
@@ -112,7 +115,6 @@
 #mobileProfHeader,
 #otherProfHeader,
 #collapsedProf {
-  color: #ffb45e;
   font-family: "Satisfy", serif;
 }
 
@@ -165,6 +167,9 @@
 .dashboard-tab {
   border: 0.25px solid white;
   border-top: none;
+
+  background-color: rgba(203, 217, 222, 0.9);
+  color: black;
 }
 
 .stats {
@@ -176,8 +181,6 @@
 
   font-weight: bolder;
   font-size: 1.5em;
-
-  color: #ffb45e;
 }
 
 .dashboard-tab-cont {
@@ -194,7 +197,7 @@
   margin: 10px 0;
   padding: 5px;
 
-  background-color: rgba(203, 217, 222);
+  background-color: rgb(158, 175, 182);
   color: black;
   border-radius: 5px;
 

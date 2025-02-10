@@ -14,7 +14,7 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { useState } from "react";
 
-const MealListCard = ({ meal, active }) => {
+const MealListCard = ({ meal, active, order }) => {
   const nav = useNavigate();
   const { setToast } = useToast(); //Use setToast context to set message
   const [genMessageModal, setGenMessageModal] = useState({

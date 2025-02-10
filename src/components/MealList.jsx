@@ -1,59 +1,37 @@
+import { useEffect } from "react";
 import "../styles/MealList.css";
 
-import { useEffect, useState } from "react";
-
-import FunctionBar from "./FunctionBar.jsx";
 import MealListCard from "./MealListCard.jsx";
 
-const MealList = ({ meals, active }) => {
-  const [ascSort, setAscSort] = useState(true);
-  const [searchStr, setSearchStr] = useState("");
-
+const MealList = ({ meals, active, orders }) => {
   useEffect(() => {
-    /*Sort the Meal added here*/
-    if (meals.length > 0) {
-      //let tempMeals = sortByTitle();
-      // setMeals([...tempMeals]);
-    }
-  }, [ascSort]);
-
-  function sortByTitle() {
-    return meals.sort((a, b) => {
-      const titleA = a.title || ""; // Fallback to empty string
-      const titleB = b.title || ""; // Fallback to empty string
-
-      if (ascSort) {
-        return titleA.localeCompare(titleB);
-      } else {
-        return titleB.localeCompare(titleA);
-      }
-    });
-  }
+    console.log("Orders in meal list", orders);
+  }, [orders]);
 
   return (
     <div className="meal-list">
-      {/* Search & Sort 
-      <div className="function-area">
-        <FunctionBar
-          searchStr={searchStr}
-          setSearchStr={setSearchStr}
-          ascSort={ascSort}
-          setAscSort={setAscSort}
-        />
-      </div>*/}
-
       {/* Meal List */}
-      <div className="meal-list-cards">
-        {meals
-          .filter((meal) => {
-            return (
-              meal.title.toUpperCase().search(searchStr.toUpperCase()) >= 0
-            );
-          })
-          .map((meal) => (
+      {meals && (
+        <div className="meal-list-cards">
+          {meals.map((meal) => (
             <MealListCard key={meal._id} meal={meal} active={active} />
           ))}
-      </div>
+        </div>
+      )}
+
+      {/* Order List */}
+      {orders && (
+        <div className="meal-list-cards">
+          {orders.map((order) => (
+            <MealListCard
+              key={order._id}
+              meal={order.meal}
+              order={order}
+              active={active}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

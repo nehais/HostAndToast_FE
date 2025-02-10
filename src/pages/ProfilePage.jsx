@@ -30,6 +30,15 @@ const ProfilePage = ({ setShowSpinner, meals }) => {
     activeMeals: [],
     expiredMeals: [],
   });
+  const [chefStats, setChefStats] = useState({
+    platesServed: 0,
+    totalRevenue: 0,
+  });
+  const [customerStats, setCustomerStats] = useState({
+    platesBought: 0,
+    totalPurchase: 0,
+  });
+  const orderFINISHED = "FINISHED";
 
   useEffect(() => {
     if (profileData) {
@@ -37,6 +46,8 @@ const ProfilePage = ({ setShowSpinner, meals }) => {
 
       if (profileData._id) {
         getAllChefMeals();
+        getChefStats();
+        getAllCustomerOrders();
       }
     }
   }, [profileData]);
@@ -50,7 +61,7 @@ const ProfilePage = ({ setShowSpinner, meals }) => {
 
       filterByPickupTime(data);
     } catch (error) {
-      handleError("Error fetching meals: ", error);
+      //handleError("Error fetching meals: ", error);
     }
   }
 
@@ -71,6 +82,66 @@ const ProfilePage = ({ setShowSpinner, meals }) => {
 
     setChefAMeals((prev) => {
       return { ...prev, activeMeals: activeMeals, expiredMeals: expiredMeals };
+    });
+  }
+
+  //Gets all stats for the chef
+  async function getChefStats() {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/orders/chef-stats/${profileData._id}`
+      );
+
+      setChefStats({
+        platesServed: data.platesServed,
+        totalRevenue: data.totalRevenue,
+      });
+    } catch (error) {
+      //handleError("Error fetching stats: ", error);
+    }
+  }
+
+  //Gets all orders for the User
+  async function getAllCustomerOrders() {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/api/orders/user/${profileData._id}`
+      );
+
+      filterByStatus(data);
+    } catch (error) {
+      //handleError("Error fetching meals: ", error);
+    }
+  }
+
+  function filterByStatus(orders) {
+    let expiredOrders = [];
+    let activeOrders = [];
+    let platesBought = 0;
+    let totalPurchase = 0;
+
+    orders.forEach((order) => {
+      // Check if order is completed
+      if (order.status === orderFINISHED) {
+        expiredOrders.push(order);
+        platesBought += order.plates;
+        totalPurchase += order.price;
+      } else {
+        activeOrders.push(order);
+      }
+    });
+
+    setBuyerMeals((prev) => {
+      return {
+        ...prev,
+        activeOrders: activeOrders,
+        expiredOrders: expiredOrders,
+      };
+    });
+
+    setCustomerStats({
+      platesBought: platesBought,
+      totalPurchase: totalPurchase,
     });
   }
 
@@ -128,7 +199,14 @@ const ProfilePage = ({ setShowSpinner, meals }) => {
       />
 
       {/*User Dashboard for Chef / Buyer */}
-      <ProfileDashboard chefMeals={chefMeals} buyerMeals={buyerMeals} />
+      <ProfileDashboard
+        chefMeals={chefMeals}
+        buyerMeals={buyerMeals}
+        platesServed={chefStats.platesServed}
+        totalRevenue={chefStats.totalRevenue}
+        platesBought={customerStats.platesBought}
+        totalPurchase={customerStats.totalPurchase}
+      />
     </div>
   );
 };

@@ -3,7 +3,13 @@ import React from "react";
 import { useState } from "react";
 import MealList from "./MealList";
 
-const DisplayDropDown = ({ notification, mealCount, active, meals }) => {
+const DisplayDropDown = ({
+  notification,
+  mealCount,
+  active,
+  meals,
+  orders,
+}) => {
   const [showActiveMeals, setShowActiveMeals] = useState(false);
 
   return (
@@ -25,7 +31,9 @@ const DisplayDropDown = ({ notification, mealCount, active, meals }) => {
           ></div>
         )}
       </div>
-      {showActiveMeals && <MealList meals={meals} active={active} />}
+      {showActiveMeals && (
+        <MealList meals={meals} active={active} orders={orders} />
+      )}
     </>
   );
 };
