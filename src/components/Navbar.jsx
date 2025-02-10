@@ -23,11 +23,7 @@ const Navbar = () => {
   const loc = useLocation();
 
   function addMeal() {
-    if (!isLoggedIn) {
-      setModalShowLogIn(true);
-    } else {
-      nav("/add-meal");
-    }
+    nav("/handle-meal");
   }
 
   return (
@@ -42,6 +38,7 @@ const Navbar = () => {
       {loc.pathname !== "/" && <AddressSearch componentId="navbar" />}
 
       <div className="nav-buttons">
+        {/* Add Meal Button */}
         <OverlayTrigger
           placement="bottom"
           overlay={
@@ -52,7 +49,8 @@ const Navbar = () => {
         >
           <Button
             id="list-meal-button"
-            variant="secondary"
+            variant="warning"
+            className="button-shadow"
             onClick={() => addMeal()}
           >
             + List Your Meal
@@ -61,6 +59,7 @@ const Navbar = () => {
 
         {!isLoggedIn && (
           <>
+            {/* Registration Button */}
             <OverlayTrigger
               placement="bottom"
               overlay={
@@ -71,12 +70,14 @@ const Navbar = () => {
             >
               <Button
                 variant="secondary"
+                className="button-shadow"
                 onClick={() => setModalShowSignUp(true)}
               >
                 Sign up
               </Button>
             </OverlayTrigger>
 
+            {/* Login Button */}
             <OverlayTrigger
               placement="bottom"
               overlay={
@@ -85,7 +86,11 @@ const Navbar = () => {
                 </Tooltip>
               }
             >
-              <Button variant="primary" onClick={() => setModalShowLogIn(true)}>
+              <Button
+                variant="primary"
+                className="button-shadow"
+                onClick={() => setModalShowLogIn(true)}
+              >
                 Log In
               </Button>
             </OverlayTrigger>
@@ -94,7 +99,9 @@ const Navbar = () => {
 
         {isLoggedIn && (
           <>
+            {/* Profile Button - Opens sub-menu*/}
             <ProfileButton />
+            {/* Shopping Cart Button */}
             <CartButton />
           </>
         )}

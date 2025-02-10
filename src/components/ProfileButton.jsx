@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const ProfileButton = () => {
   const [showDropdownMenu, setShowDropdownMenu] = useState(false);
-  const { user, authenticateUser } = useContext(AuthContext);
+  const { profileData, authenticateUser } = useContext(AuthContext);
 
   const handleLogOut = () => {
     logOut();
@@ -24,21 +24,36 @@ const ProfileButton = () => {
         onMouseEnter={() => setShowDropdownMenu(true)}
         onMouseLeave={() => setShowDropdownMenu(false)}
       >
-        <img src={ProfileIcon} alt="" className="profile-img" />
+        <img
+          src={profileData.imageUrl ? profileData.imageUrl : ProfileIcon}
+          alt="Profile Icon"
+          className="profile-img"
+        />
 
         {showDropdownMenu && (
           <>
             <div className="profile-drop-down">
-              <p>Hello {user.username}!</p>
+              <p>Hello {profileData.username}!</p>
               <ul>
-                <li>Profile</li>
+                <li>
+                  <Link to="/profile" className="profile-menu-link">
+                    Profile
+                  </Link>
+                </li>
                 <li>Messages</li>
                 <li>
                   <Link to="/meal-list" className="profile-menu-link">
-                    Your Listings
+                    Your Meals
                   </Link>
                 </li>
-                <li>Your Favourites</li>
+                <li>
+                  <Link
+                    to="/meal-list?mode=orders"
+                    className="profile-menu-link"
+                  >
+                    Your Orders
+                  </Link>
+                </li>
                 <li onClick={() => handleLogOut()}>Log Out!</li>
               </ul>
             </div>

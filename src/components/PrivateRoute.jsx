@@ -1,14 +1,13 @@
 import { useContext } from "react";
-import { AuthContext } from "../contexts/auth.context";
 import { Navigate } from "react-router-dom";
+import { AuthContext } from "../contexts/auth.context";
 
 const PrivateRoute = ({ children }) => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoading, isLoggedIn } = useContext(AuthContext);
 
-  //isLoading any Use here?
-
-  if (!isLoggedIn) {
-    return <Navigate to="/" />;
+  //User is not logged in so open the Login Modal
+  if (!isLoading && !isLoggedIn) {
+    return <Navigate to="/?session=out" />;
   }
 
   return <div>{children}</div>;

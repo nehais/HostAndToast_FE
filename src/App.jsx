@@ -7,20 +7,17 @@ import Home from "./pages/Home";
 import ProfilePage from "./pages/ProfilePage";
 import PageNotFound from "./pages/PageNotFound";
 import AllMealsPage from "./pages/AllMealsPage";
-import AddMeal from "./pages/AddMeal";
+import AddUpdMeal from "./pages/AddUpdMeal";
 import ShoppingCart from "./pages/ShoppingCart";
 import MealList from "./pages/MealList";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
-import ErrorModal from "./components/ErrorModal";
 import CustomSpinner from "./components/CustomSpinner";
 import SingleMeal from "./pages/SingleMeal";
 import CookOverviewPage from "./pages/CookOverviewPage";
 
 function App() {
-  const [showErrorModal, setShowErrorModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [showSpinner, setShowSpinner] = useState(false);
 
   return (
@@ -34,7 +31,7 @@ function App() {
             path="/profile"
             element={
               <PrivateRoute>
-                <ProfilePage />
+                <ProfilePage setShowSpinner={setShowSpinner} />
               </PrivateRoute>
             }
           />
@@ -48,27 +45,25 @@ function App() {
             }
           />
           <Route
-            path="/add-meal"
+            path="/handle-meal/"
             element={
-              <AddMeal
-                setErrorMessage={setErrorMessage}
-                setShowErrorModal={setShowErrorModal}
-                setShowSpinner={setShowSpinner}
-              />
+              <PrivateRoute>
+                <AddUpdMeal setShowSpinner={setShowSpinner} />
+              </PrivateRoute>
             }
           />
           <Route path="/cook/:cookId" element={<CookOverviewPage />} />
 
-          <Route path="/meal-list" element={<MealList />} />
+          <Route
+            path="/meal-list"
+            element={
+              <PrivateRoute>
+                <MealList />
+              </PrivateRoute>
+            }
+          />
           <Route path="*" element={<PageNotFound />}></Route>
         </Routes>
-
-        {/* Error Modal */}
-        <ErrorModal
-          show={showErrorModal}
-          handleClose={() => setShowErrorModal(false)}
-          errorMessage={errorMessage}
-        />
 
         {/* Spinner */}
         {showSpinner && <CustomSpinner />}

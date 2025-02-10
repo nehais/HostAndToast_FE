@@ -1,4 +1,20 @@
 .meal-list {
+  padding: 10px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .meal-list {
+    padding: 5px;
+  }
+}
+
+.function-area {
+  width: 100vw;
+  height: 24vh;
+  position: fixed;
 }
 
 .function-bar {
@@ -21,13 +37,42 @@
   text-indent: 20px;
 }
 
+.func-button {
+  border-radius: 5px;
+}
+
+.meal-list-add {
+  display: none;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .search-bar {
+    font-size: 0.8em;
+  }
+  .func-button {
+    font-size: 0.8em;
+  }
+
+  .meal-list-add {
+    display: block;
+    font-size: 0.8em;
+  }
+}
+
 .meal-list-cards {
   display: flex;
   flex-direction: column;
   gap: 10px;
   align-items: center;
 
-  margin-top: 20px;
+  width: 100vw;
+  position: fixed;
+  top: calc(10vh + 60px);
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 75vh;
 }
 
 .meal-list-card {
@@ -80,6 +125,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  align-items: center;
 }
 
 .meal-list-button {

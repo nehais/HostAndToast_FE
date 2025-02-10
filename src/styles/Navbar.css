@@ -75,6 +75,7 @@
 .profile-img {
   padding: 1px;
   width: 35px;
+  height: 35px;
   border-radius: 50%;
   border: 2px solid #003459;
 }
@@ -115,7 +116,8 @@
     border: none;
   }
 
-  li:hover {
+  li:hover,
+  a:hover {
     transform: scale(1.1);
     color: #ffb45e;
   }
