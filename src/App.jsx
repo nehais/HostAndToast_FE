@@ -15,7 +15,6 @@ import PrivateRoute from "./components/PrivateRoute";
 import CustomSpinner from "./components/CustomSpinner";
 import SingleMeal from "./pages/SingleMeal";
 import ChefOverviewPage from "./pages/ChefOverviewPage";
-import Cart from "./pages/Cart";
 import Success from "./pages/Success"; // Import Success Page
 import Cancel from "./pages/Cancel"; // Import Cancel Page
 
@@ -55,7 +54,6 @@ function App() {
             }
           />
           <Route path="/chef/:chefId" element={<ChefOverviewPage />} />
-          <Route path="/cart" element={<Cart />} />
 
           {/* ✅ Payment Success and Cancel Routes */}
           <Route path="/success" element={<Success />} />

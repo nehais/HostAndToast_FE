@@ -148,7 +148,7 @@ const SingleMeal = () => {
       try {
         const { data } = await axios.post(`${API_URL}/api/orders`, newOrder);
         console.log("Order created", data);
-        nav("/cart");
+        nav("/shopping-cart");
       } catch (error) {
         console.log("Error creating the order", error);
       }
