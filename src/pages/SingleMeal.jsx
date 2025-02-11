@@ -129,18 +129,31 @@ const SingleMeal = () => {
 
   const handleAddToCart = (event) => {
     event.preventDefault();
-    //
-    //
-    //
-    //
-    //
-    // TODO: Implement the add-to-cart functionality
-    //
-    //
-    //
-    //
-    //
-    //
+
+    console.log("Add to cart");
+
+    const mealId = meal._id;
+    const plates = event.target.quantity.value;
+    const price = meal.price;
+    const userId = user._id;
+
+    const newOrder = {
+      meal: mealId,
+      plates,
+      price,
+      user: userId,
+    };
+
+    const addToCart = async () => {
+      try {
+        const { data } = await axios.post(`${API_URL}/api/orders`, newOrder);
+        console.log("Order created", data);
+        nav("/cart");
+      } catch (error) {
+        console.log("Error creating the order", error);
+      }
+    };
+    addToCart();
   };
 
   const handleEditMeal = () => {

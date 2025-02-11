@@ -15,6 +15,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import CustomSpinner from "./components/CustomSpinner";
 import SingleMeal from "./pages/SingleMeal";
 import ChefOverviewPage from "./pages/ChefOverviewPage";
+import Cart from "./pages/Cart";
 
 function App() {
   const [showSpinner, setShowSpinner] = useState(false);
@@ -52,6 +53,7 @@ function App() {
             }
           />
           <Route path="/chef/:chefId" element={<ChefOverviewPage />} />
+          <Route path="/cart" element={<Cart />} />
 
           <Route path="*" element={<PageNotFound />}></Route>
         </Routes>
