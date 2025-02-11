@@ -16,6 +16,8 @@ import CustomSpinner from "./components/CustomSpinner";
 import SingleMeal from "./pages/SingleMeal";
 import ChefOverviewPage from "./pages/ChefOverviewPage";
 import Cart from "./pages/Cart";
+import Success from "./pages/Success"; // Import Success Page
+import Cancel from "./pages/Cancel"; // Import Cancel Page
 
 function App() {
   const [showSpinner, setShowSpinner] = useState(false);
@@ -55,7 +57,12 @@ function App() {
           <Route path="/chef/:chefId" element={<ChefOverviewPage />} />
           <Route path="/cart" element={<Cart />} />
 
-          <Route path="*" element={<PageNotFound />}></Route>
+          {/* ✅ Payment Success and Cancel Routes */}
+          <Route path="/success" element={<Success />} />
+          <Route path="/cancel" element={<Cancel />} />
+
+          {/* 404 - Page Not Found */}
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
 
         {/* Spinner */}
