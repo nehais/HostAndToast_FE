@@ -8,7 +8,7 @@ const ToastMessage = () => {
   const [showToast, setShowToast] = useState(false);
 
   useEffect(() => {
-    if (toast & toast.msg) {
+    if (toast && toast.msg) {
       //Toast message was set. We need to show it
       setShowToast(true);
 

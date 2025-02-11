@@ -13,6 +13,7 @@ const ProfileDashboard = ({
   totalRevenue,
   platesBought,
   totalPurchase,
+  setRefreshProfile,
 }) => {
   const [key, setKey] = useState("chef");
   return (
@@ -79,15 +80,17 @@ const ProfileDashboard = ({
               }
               active={true}
               orders={buyerMeals.activeOrders}
+              setRefreshProfile={setRefreshProfile}
             />
 
             <DisplayDropDown
               notification={"completed Meal Purchase"}
               mealCount={
-                buyerMeals.expiredOrders ? buyerMeals.activeOrders.length : 0
+                buyerMeals.expiredOrders ? buyerMeals.expiredOrders.length : 0
               }
               active={false}
               orders={buyerMeals.expiredOrders}
+              hideActions={true}
             />
           </div>
         </Tab>

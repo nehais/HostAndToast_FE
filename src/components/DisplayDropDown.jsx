@@ -9,8 +9,10 @@ const DisplayDropDown = ({
   active,
   meals,
   orders,
+  hideActions,
+  setRefreshProfile,
 }) => {
-  const [showActiveMeals, setShowActiveMeals] = useState(false);
+  const [showMeals, setShowMeals] = useState(false);
 
   return (
     <>
@@ -18,21 +20,28 @@ const DisplayDropDown = ({
         <p className={active ? "notification-active" : "notification-inactive"}>
           You have <em>{mealCount}</em> {notification}
         </p>
-        {!showActiveMeals && (
+        {!showMeals && (
           <div
             className="expand-bar prof-collapse"
-            onClick={() => setShowActiveMeals((prev) => !prev)}
+            onClick={() => setShowMeals((prev) => !prev)}
           ></div>
         )}
-        {showActiveMeals && (
+        {showMeals && (
           <div
             className="collapse-bar prof-collapse"
-            onClick={() => setShowActiveMeals((prev) => !prev)}
+            onClick={() => setShowMeals((prev) => !prev)}
           ></div>
         )}
       </div>
-      {showActiveMeals && (
-        <MealList meals={meals} active={active} orders={orders} />
+      {showMeals && (
+        <MealList
+          meals={meals}
+          active={active}
+          orders={orders}
+          hideActions={hideActions}
+          setRefreshProfile={setRefreshProfile}
+          setShowMeals={setShowMeals}
+        />
       )}
     </>
   );

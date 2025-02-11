@@ -10,10 +10,12 @@ import { useToast } from "../contexts/toast.context.jsx";
 import UserProfileInfo from "../components/UserProfileInfo.jsx";
 import ProfileDashboard from "../components/ProfileDashboard.jsx";
 
-const ProfilePage = ({ setShowSpinner, meals }) => {
+const ProfilePage = ({ setShowSpinner }) => {
   const { user, profileData, setProfileData, setUser } =
     useContext(AuthContext);
   const { setToast } = useToast(); //Use setToast context to set message
+  const [refreshProfile, setRefreshProfile] = useState(0);
+  const [userRating, setUserRating] = useState(0);
   const [newProfData, setNewProfData] = useState({
     username: "",
     email: "",
@@ -41,16 +43,18 @@ const ProfilePage = ({ setShowSpinner, meals }) => {
   const orderFINISHED = "FINISHED";
 
   useEffect(() => {
-    if (profileData) {
-      setNewProfData({ ...profileData });
+    if (!profileData || !profileData._id) return;
 
-      if (profileData._id) {
-        getAllChefMeals();
-        getChefStats();
-        getAllCustomerOrders();
-      }
-    }
-  }, [profileData]);
+    setShowSpinner((prev) => !prev); //Show custom spinner during update Meal
+
+    setNewProfData({ ...profileData });
+    getAllChefMeals(); //Get All the Chef meals
+    getChefStats(); //Get the Chefs Statistics
+    getAllCustomerOrders(); //Get the customer orders
+    getUserRating(); //Get the users rating
+
+    setShowSpinner((prev) => !prev); //Show custom spinner during update Meal
+  }, [profileData._id, refreshProfile]);
 
   //Gets all meals for the User
   async function getAllChefMeals() {
@@ -145,6 +149,21 @@ const ProfilePage = ({ setShowSpinner, meals }) => {
     });
   }
 
+  //Get Chef rating
+  async function getUserRating() {
+    try {
+      const { data } = await axios.get(
+        `${API_URL}/auth/users/rating/${profileData._id}`
+      );
+      setUserRating(data.averageRating);
+    } catch (error) {
+      console.log(
+        "Error fetching user rating",
+        error.response?.data?.message || error.message
+      );
+    }
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -196,6 +215,7 @@ const ProfilePage = ({ setShowSpinner, meals }) => {
         setNewProfData={setNewProfData}
         handleSubmit={handleSubmit}
         setShowSpinner={setShowSpinner}
+        userRating={userRating}
       />
 
       {/*User Dashboard for Chef / Buyer */}
@@ -206,6 +226,7 @@ const ProfilePage = ({ setShowSpinner, meals }) => {
         totalRevenue={chefStats.totalRevenue}
         platesBought={customerStats.platesBought}
         totalPurchase={customerStats.totalPurchase}
+        setRefreshProfile={setRefreshProfile}
       />
     </div>
   );

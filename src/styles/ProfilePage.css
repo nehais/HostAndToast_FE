@@ -46,7 +46,7 @@
   border-radius: 5px;
 
   display: flex;
-  width: 5%;
+  width: 90px;
   padding: 5px;
 
   img {
@@ -109,7 +109,7 @@
 .profile-input-img {
   color: transparent;
   border: none;
-  width: 100px;
+  width: 110px;
 }
 
 #mobileProfHeader,

@@ -3,7 +3,14 @@ import "../styles/MealList.css";
 
 import MealListCard from "./MealListCard.jsx";
 
-const MealList = ({ meals, active, orders }) => {
+const MealList = ({
+  meals,
+  active,
+  orders,
+  hideActions,
+  setRefreshProfile,
+  setShowMeals,
+}) => {
   useEffect(() => {
     console.log("Orders in meal list", orders);
   }, [orders]);
@@ -28,6 +35,9 @@ const MealList = ({ meals, active, orders }) => {
               meal={order.meal}
               order={order}
               active={active}
+              hideActions={hideActions}
+              setRefreshProfile={setRefreshProfile}
+              setShowMeals={setShowMeals}
             />
           ))}
         </div>

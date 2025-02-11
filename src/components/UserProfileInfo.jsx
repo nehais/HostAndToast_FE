@@ -5,6 +5,7 @@ import { useState } from "react";
 import { uploadToCloudinary } from "../utils/cloudinaryUpload.js";
 
 import AddressSearch from "../components/AddressSearch.jsx";
+import StarRating from "../components/StarRating.jsx";
 import { Dropdown } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -15,6 +16,7 @@ const UserProfileInfo = ({
   setNewProfData,
   handleSubmit,
   setShowSpinner,
+  userRating,
 }) => {
   const [profileOpen, setProfileOpen] = useState(true);
 
@@ -93,6 +95,10 @@ const UserProfileInfo = ({
                 onChange={handleImgUpload}
                 className="profile-input-img"
               />
+              <StarRating
+                initialValue={userRating ? userRating : 0}
+                editable={false}
+              />
             </div>
 
             <div className="profile-info">
@@ -123,7 +129,7 @@ const UserProfileInfo = ({
                     value={newProfData.email}
                     placeholder="Please enter your User Name"
                     onChange={handleChange}
-                    className="profile-input  input-disabled"
+                    className="profile-input"
                   />
                 </div>
               </div>

@@ -14,7 +14,15 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 import { useState } from "react";
 
-const MealListCard = ({ meal, active, order }) => {
+const MealListCard = ({
+  meal,
+  active,
+  order,
+  deleteDisabled,
+  hideActions,
+  setRefreshProfile,
+  setShowMeals,
+}) => {
   const nav = useNavigate();
   const { setToast } = useToast(); //Use setToast context to set message
   const [genMessageModal, setGenMessageModal] = useState({
@@ -31,22 +39,45 @@ const MealListCard = ({ meal, active, order }) => {
   }
 
   function onDelete() {
-    //Call Delete API to delete the meal
-    axios
-      .delete(`${API_URL}/api/meals/${meal._id}`)
-      .then(() => {
-        nav("/");
-        setToast({ msg: `'${meal.title}' Meal was Deleted!`, type: "danger" });
-      })
-      .catch((error) => console.log("Error during meal delete:", error));
+    if (order) {
+      //Call Delete API to delete the order
+      axios
+        .delete(`${API_URL}/api/orders/${order._id}`)
+        .then(() => {
+          setToast({
+            msg: `'${meal.title}' Order was Deleted!`,
+            type: "danger",
+          });
+          setRefreshProfile((prev) => prev + 1);
+          setShowMeals((prev) => !prev);
+        })
+        .catch((error) => console.log("Error during order delete:", error));
+    } else {
+      //Call Delete API to delete the meal
+      axios
+        .delete(`${API_URL}/api/meals/${meal._id}`)
+        .then(() => {
+          setToast({
+            msg: `'${meal.title}' Meal was Deleted!`,
+            type: "danger",
+          });
+        })
+        .catch((error) => console.log("Error during meal delete:", error));
+    }
   }
 
-  function handleDelete() {
+  function handleDelete(e) {
+    let message = "Are you sure, you want to Delete the Meal?";
+
+    if (order) {
+      message = "Are you sure, you want to Delete the Order?";
+    }
+
     //Check for Delete Confirmation
     setGenMessageModal((prev) => ({
       ...prev,
       header: "Delete Confirmation",
-      message: "Are you sure, you want to Delete the Meal?",
+      message: message,
       show: true,
       confirmation: true,
     }));
@@ -83,7 +114,10 @@ const MealListCard = ({ meal, active, order }) => {
           overlay={<Tooltip id="edit-tooltip">Edit your Meal</Tooltip>}
         >
           <Link to={`/handle-meal?mode=Edit&Id=${meal._id}`}>
-            <button className="meal-list-button">
+            <button
+              hidden={hideActions || order ? true : false}
+              className="meal-list-button"
+            >
               <img
                 src={EditIcon}
                 alt="Edit Icon"
@@ -98,6 +132,7 @@ const MealListCard = ({ meal, active, order }) => {
           overlay={<Tooltip id="delete-tooltip">Delete your Meal</Tooltip>}
         >
           <button
+            hidden={hideActions}
             className="meal-list-button"
             onClick={() => {
               handleDelete();
