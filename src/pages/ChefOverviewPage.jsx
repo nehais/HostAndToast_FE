@@ -4,40 +4,40 @@ import { useParams } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // Default calendar styles
 import { API_URL } from "../config/apiConfig.js";
-import "../styles/CookOverviewPage.css";
+import "../styles/ChefOverviewPage.css";
 import MealCard from "../components/MealCard";
 import profileIcon from "../assets/profile.png";
 import StarRating from "../components/StarRating.jsx";
 
-const CookOverviewPage = () => {
-  const { cookId } = useParams();
-  const [cook, setCook] = useState(null);
+const ChefOverviewPage = () => {
+  const { chefId } = useParams();
+  const [chef, setChef] = useState(null);
   const [meals, setMeals] = useState([]);
   // New state to hold the selected date for filtering meals
   const [selectedDate, setSelectedDate] = useState(null);
   const [userRating, setUserRating] = useState(null);
   const [numberOfRatings, setNumberOfRatings] = useState(0);
 
-  // Fetch the cook data
+  // Fetch the chef data
   useEffect(() => {
-    const getCook = async () => {
+    const getChef = async () => {
       try {
-        const { data } = await axios.get(`${API_URL}/auth/users/${cookId}`);
-        setCook(data);
-        // console.log("Cook", data);
+        const { data } = await axios.get(`${API_URL}/auth/users/${chefId}`);
+        setChef(data);
+        // console.log("Chef", data);
       } catch (error) {
-        console.log("Error fetching cook", error.response?.data?.message || error.message);
+        console.log("Error fetching chef", error.response?.data?.message || error.message);
       }
     };
 
-    getCook();
-  }, [cookId]);
+    getChef();
+  }, [chefId]);
 
-  // Fetch the cook's meals (using the cook's _id)
+  // Fetch the chef's meals (using the chef's _id)
   useEffect(() => {
     const getMeals = async () => {
       try {
-        const { data } = await axios.get(`${API_URL}/api/meals/user/${cook?._id}`);
+        const { data } = await axios.get(`${API_URL}/api/meals/user/${chef?._id}`);
         setMeals(data);
         console.log("Meals", data);
       } catch (error) {
@@ -45,18 +45,18 @@ const CookOverviewPage = () => {
       }
     };
 
-    if (cook) {
+    if (chef) {
       getMeals();
     }
-  }, [cook]);
+  }, [chef]);
 
   // Fetch the hosts rating
   useEffect(() => {
-    if (!cook || !cook._id) return;
+    if (!chef || !chef._id) return;
 
     const getUserRating = async () => {
       try {
-        const { data } = await axios.get(`${API_URL}/auth/users/rating/${cook._id}`);
+        const { data } = await axios.get(`${API_URL}/auth/users/rating/${chef._id}`);
         setUserRating(data.averageRating);
         setNumberOfRatings(data.numberOfRatings);
         // console.log("User rating", data);
@@ -66,7 +66,7 @@ const CookOverviewPage = () => {
     };
 
     getUserRating();
-  }, [cook]);
+  }, [chef]);
 
   // Format the date and time
   const formatDateTime = (isoString) => {
@@ -103,20 +103,20 @@ const CookOverviewPage = () => {
     : meals;
 
   return (
-    <div className="cook-overview">
-      {cook && (
+    <div className="chef-overview">
+      {chef && (
         <div className="container header">
           <div>
             <img
-              src={cook.imageUrl ? cook.imageUrl : profileIcon}
-              className={!cook.imageUrl ? "profile-image default-image" : "profile-image"}
+              src={chef.imageUrl ? chef.imageUrl : profileIcon}
+              className={!chef.imageUrl ? "profile-image default-image" : "profile-image"}
             />
           </div>
-          {cook && (
+          {chef && (
             <div className="user-info">
-              <h1>{cook.username && cook.username}</h1>
-              <p className="created-info">User since {formatDateTime(cook.createdAt)}</p>
-              <h4>{cook.description}</h4>
+              <h1>{chef.username && chef.username}</h1>
+              <p className="created-info">User since {formatDateTime(chef.createdAt)}</p>
+              <h4>{chef.description}</h4>
               <div className="rating">
                 <StarRating initialValue={userRating ? userRating : 0} editable={false} />
                 <p>Rating based on {numberOfRatings} reviews</p>
@@ -126,9 +126,9 @@ const CookOverviewPage = () => {
         </div>
       )}
       <div className="container ">
-        {cook && (
+        {chef && (
           <>
-            <h2 className="underline">Meals offered by {cook.username}</h2>
+            <h2 className="underline">Meals offered by {chef.username}</h2>
             <div className="columns-container">
               <div className="left-column">
                 {/* Calendar with highlighted meal days */}
@@ -167,4 +167,4 @@ const CookOverviewPage = () => {
   );
 };
 
-export default CookOverviewPage;
+export default ChefOverviewPage;

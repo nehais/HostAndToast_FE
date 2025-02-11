@@ -46,7 +46,7 @@ const MealCard = ({ meal }) => {
           <div className="meal-card-infos">
             <h2>{meal.title}</h2>
             <p>
-              <strong>Cook: </strong>
+              <strong>Chef: </strong>
               {meal.user.username}
             </p>
             <p>

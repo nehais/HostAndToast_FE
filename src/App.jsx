@@ -14,7 +14,7 @@ import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
 import CustomSpinner from "./components/CustomSpinner";
 import SingleMeal from "./pages/SingleMeal";
-import CookOverviewPage from "./pages/CookOverviewPage";
+import ChefOverviewPage from "./pages/ChefOverviewPage";
 
 function App() {
   const [showSpinner, setShowSpinner] = useState(false);
@@ -51,7 +51,7 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/cook/:cookId" element={<CookOverviewPage />} />
+          <Route path="/chef/:chefId" element={<ChefOverviewPage />} />
 
           <Route path="*" element={<PageNotFound />}></Route>
         </Routes>

@@ -314,7 +314,7 @@ const SingleMeal = () => {
           )}
         </div>
         <div className="right-column">
-          <Link to={`/cook/${host._id}`}>
+          <Link to={`/chef/${host._id}`}>
             <div>
               <h2>The Chef</h2>
               <img

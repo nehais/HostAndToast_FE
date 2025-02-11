@@ -169,7 +169,7 @@ const AllMealsPage = () => {
             🍽️ <strong> Meal:</strong> {meal.title}
           </p>
           <p className="pop-up">
-            🧑‍🍳 <strong> Cook:</strong> {meal.user.username}
+            🧑‍🍳 <strong> Chef:</strong> {meal.user.username}
           </p>
         </>
       ),
