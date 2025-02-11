@@ -14,6 +14,7 @@ import Rating from "../components/Rating.jsx";
 import { useToast } from "../contexts/toast.context.jsx";
 import StarRating from "../components/StarRating.jsx";
 import GenModal from "../components/GenModal.jsx";
+import { CartContext } from "../contexts/cart.context.jsx";
 
 const SingleMeal = () => {
   const { mealId } = useParams();
@@ -32,6 +33,7 @@ const SingleMeal = () => {
     show: false,
     confirmation: false,
   });
+  const { cart, setCart } = useContext(CartContext);
 
   // Fetch the meal data
   useEffect(() => {
@@ -127,13 +129,14 @@ const SingleMeal = () => {
     return `${formattedDate} at ${formattedTime}`;
   };
 
+  // Add meal to cart (create new order)
   const handleAddToCart = (event) => {
     event.preventDefault();
 
     console.log("Add to cart");
 
     const mealId = meal._id;
-    const plates = event.target.quantity.value;
+    const plates = Number(event.target.quantity.value); // Ensure it's a number
     const price = meal.price;
     const userId = user._id;
 
@@ -148,36 +151,27 @@ const SingleMeal = () => {
       try {
         const { data } = await axios.post(`${API_URL}/api/orders`, newOrder);
         console.log("Order created", data);
+
+        console.log("Cart before update", cart);
+        // Ensure safe state update
+        setCart((prevCart) => ({
+          ...prevCart, // Preserve existing properties
+          counter: prevCart.counter + plates, // Update the counter correctly
+        }));
+        console.log("Cart updated", cart);
+
         nav("/shopping-cart");
       } catch (error) {
         console.log("Error creating the order", error);
       }
     };
+
     addToCart();
   };
 
   const handleEditMeal = () => {
     nav(`/handle-meal?mode=Edit&Id=${meal._id}`);
   };
-
-  // const handleDeleteMeal = () => {
-  //   //delete meal
-  //   const deleteMeal = async () => {
-  //     try {
-  //       const { data } = await axios.delete(`${API_URL}/api/meals/${mealId}`);
-  //       console.log(data);
-
-  //       //show success message
-  //       setToast({ msg: "Meal deleted successfully", type: "success" });
-
-  //       //redirect to all meals
-  //       nav(`/all-meals`);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   deleteMeal();
-  // };
 
   function onDelete() {
     //Call Delete API to delete the meal

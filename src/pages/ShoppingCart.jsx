@@ -81,9 +81,9 @@ const ShoppingCart = () => {
       )}
 
       {/* Checkout Button */}
-      <button onClick={handleCheckout} disabled={loading}>
+      {/* <button onClick={handleCheckout} disabled={loading}>
         {loading ? "Processing..." : "Proceed to Checkout"}
-      </button>
+      </button> */}
     </div>
   );
 };
