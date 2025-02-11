@@ -92,11 +92,20 @@
 
 .meal-list-details {
   flex-basis: 50%;
+
+  h4 {
+    margin: 0;
+  }
 }
 
 .meal-list-desc {
   text-align: justify;
   flex-basis: 40%;
+}
+
+.rate-action {
+  display: flex;
+  align-items: center;
 }
 
 /*Mobile Screen*/
@@ -111,6 +120,23 @@
 
   .meal-list-desc {
     display: none;
+  }
+}
+
+.tooltip-rating {
+  white-space: nowrap;
+  display: inline-block;
+  transform: translateY(0);
+  animation: bounce 1.5s infinite ease-in-out;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
   }
 }
 
