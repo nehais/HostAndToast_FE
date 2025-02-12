@@ -28,6 +28,7 @@
 .sidebar {
   display: flex;
   flex-direction: column;
+  background-color: #3f7096b8;
 }
 
 .sidebar-header-area {

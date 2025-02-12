@@ -164,6 +164,18 @@
   margin-bottom: 15px;
 }
 
+/*Mobile Screen*/
+@media screen and (max-device-width: 840px) {
+  .dashboard {
+    width: 95vw;
+  }
+}
+
+.tab-container {
+  background-color: darkgrey;
+  border-radius: 5px 5px 0 0;
+}
+
 .dashboard-tab {
   border: 0.25px solid white;
   border-top: none;

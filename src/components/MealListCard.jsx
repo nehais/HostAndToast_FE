@@ -11,9 +11,8 @@ import { Link } from "react-router-dom";
 import ImageCarousel from "./ImageCarousel";
 import { format } from "date-fns";
 
-import StarRating from "../components/StarRating.jsx";
-
 import GenModal from "./GenModal";
+import StarRating from "./StarRating.jsx";
 import { AuthContext } from "../contexts/auth.context";
 import { useToast } from "../contexts/toast.context.jsx";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
@@ -23,13 +22,14 @@ const MealListCard = ({
   meal,
   active,
   order,
-  deleteDisabled,
   hideActions,
   setRefreshProfile,
   setShowMeals,
 }) => {
-  const [orderRate, setOrderRate] = useState(0);
   const { setToast } = useToast(); //Use setToast context to set message
+  const [comment, setComment] = useState(""); // Comment for order Rating
+  const [orderRate, setOrderRate] = useState(0); // Order Rating
+  const [showCommentModal, setShowCommentModal] = useState(false);
   const [genMessageModal, setGenMessageModal] = useState({
     header: "",
     message: "",
@@ -37,11 +37,6 @@ const MealListCard = ({
     confirmation: false,
   });
   const { profileData } = useContext(AuthContext);
-
-  useEffect(() => {
-    //Order Card & Rating not available so we create
-    if (order && !order.rating) onOrderRated(orderRate);
-  }, [orderRate]);
 
   useEffect(() => {
     //Order Card & Rating available
@@ -54,51 +49,7 @@ const MealListCard = ({
     return formattedDate;
   }
 
-  function onDelete() {
-    if (order) {
-      //Call Delete API to delete the order
-      axios
-        .delete(`${API_URL}/api/orders/${order._id}`)
-        .then(() => {
-          setToast({
-            msg: `'${meal.title}' Order was Deleted!`,
-            type: "danger",
-          });
-          setRefreshProfile((prev) => prev + 1);
-          setShowMeals((prev) => !prev);
-        })
-        .catch((error) => console.log("Error during order delete:", error));
-    } else {
-      //Call Delete API to delete the meal
-      axios
-        .delete(`${API_URL}/api/meals/${meal._id}`)
-        .then(() => {
-          setToast({
-            msg: `'${meal.title}' Meal was Deleted!`,
-            type: "danger",
-          });
-        })
-        .catch((error) => console.log("Error during meal delete:", error));
-    }
-  }
-
-  function onOrderRated(stars) {
-    if (!stars) return;
-    const ratingData = {
-      stars: stars,
-      comment: "",
-      meal: meal._id,
-      user: profileData._id,
-    };
-    axios
-      .post(`${API_URL}/api/ratings/order/${order._id}`, ratingData)
-      .then(() => {
-        console.log("Order rated");
-      })
-      .catch((error) => console.log("Error during rating order:", error));
-  }
-
-  function handleDelete(e) {
+  function handleDeleteClick(e) {
     let message = "Are you sure, you want to Delete the Meal?";
 
     if (order) {
@@ -113,6 +64,77 @@ const MealListCard = ({
       show: true,
       confirmation: true,
     }));
+  }
+
+  function deleteMealOrder() {
+    if (order) {
+      //Call Delete API to delete the order
+      axios
+        .delete(`${API_URL}/api/orders/${order._id}`)
+        .then(() => {
+          setToast({
+            msg: `'${meal.title}' Order was Deleted!`,
+            type: "danger",
+          });
+          setRefreshProfile((prev) => prev + 1);
+          setShowMeals((prev) => !prev);
+        })
+        .catch((error) => handleError("Error during order deletion:", error));
+    } else {
+      //Call Delete API to delete the meal
+      axios
+        .delete(`${API_URL}/api/meals/${meal._id}`)
+        .then(() => {
+          setToast({
+            msg: `'${meal.title}' Meal was Deleted!`,
+            type: "danger",
+          });
+        })
+        .catch((error) => handleError("Error during meal deletion:", error));
+    }
+  }
+
+  const handleRatingClick = (value) => {
+    //Order Card & Rating not available so we create
+    if (order && !order.rating) {
+      setOrderRate(value);
+      setShowCommentModal(true);
+    }
+  };
+
+  const submitFeedback = () => {
+    createOrderRating();
+    console.log("Rating:", selectedRating, "Comment:", comment);
+    setShowCommentModal(false);
+    setComment("");
+  };
+
+  function createOrderRating() {
+    //Call API to create the Order rating
+
+    if (!orderRate) return;
+    const ratingData = {
+      stars: orderRate,
+      comment: comment,
+      meal: meal._id,
+      user: profileData._id,
+    };
+
+    axios
+      .post(`${API_URL}/api/ratings/order/${order._id}`, ratingData)
+      .then(() => {
+        console.log("Order rated");
+      })
+      .catch((error) => handleError("Error during rating order:", error));
+  }
+
+  function handleError(logMsg, error) {
+    console.log(logMsg, error?.response?.data?.message);
+    setGenMessageModal({
+      header: "Error",
+      message: logMsg + error?.response?.data?.message,
+      show: true,
+    });
   }
 
   return (
@@ -167,12 +189,12 @@ const MealListCard = ({
         {order && hideActions && (
           <>
             {/* Rate the Order */}
-            {!order.rating && <p>Tap to Rate</p>}
+            {!order.rating && !orderRate && <p>Tap to Rate</p>}
             <div className={orderRate > 0 ? "" : "tooltip-rating"}>
               <StarRating
                 initialValue={orderRate}
-                onRatingChange={setOrderRate}
-                editable={order.rating ? false : true}
+                onRatingChange={handleRatingClick}
+                editable={order.rating || orderRate ? false : true}
                 small={true}
               />
             </div>
@@ -219,7 +241,7 @@ const MealListCard = ({
             hidden={hideActions}
             className="meal-list-button"
             onClick={() => {
-              handleDelete();
+              handleDeleteClick();
             }}
           >
             <img
@@ -235,7 +257,32 @@ const MealListCard = ({
       <GenModal
         messageObj={genMessageModal}
         handleClose={(prev) => setGenMessageModal({ ...prev, show: false })}
-        handleAction={onDelete}
+        handleAction={deleteMealOrder}
+      />
+
+      {/* Comment Modal */}
+      <GenModal
+        messageObj={{
+          header: "Leave a Comment",
+          message: (
+            <>
+              <p>You've given {orderRate} stars. Want to add a comment?</p>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Write your feedback..."
+                className="comment-box"
+              />
+            </>
+          ),
+          show: showCommentModal,
+          confirmation: true,
+        }}
+        handleClose={() => {
+          setOrderRate(0);
+          setShowCommentModal(false);
+        }}
+        handleAction={submitFeedback}
       />
     </div>
   );

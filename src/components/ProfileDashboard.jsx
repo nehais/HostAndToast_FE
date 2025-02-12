@@ -22,6 +22,7 @@ const ProfileDashboard = ({
         id="controlled-tab-example"
         activeKey={key}
         onSelect={(k) => setKey(k)}
+        className="tab-container"
       >
         <Tab eventKey="chef" title="Chef's Dashboard" className="dashboard-tab">
           <div className="stats">
