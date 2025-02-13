@@ -2,7 +2,7 @@ import { Carousel } from "react-bootstrap";
 
 const ImageCarousel = ({ imageUrls }) => {
   return (
-    <div style={{ width: "100px" }}>
+    <div className="carousel-cont">
       <Carousel>
         {imageUrls.map((url, index) => (
           <Carousel.Item key={index}>
