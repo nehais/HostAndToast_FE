@@ -150,9 +150,7 @@ const MealListCard = ({
   }
 
   const showInMapClicked = (lat, long) => {
-    window.open(
-      "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + long
-    );
+    window.open("https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + long);
   };
 
   function handleError(logMsg, error) {
@@ -194,9 +192,7 @@ const MealListCard = ({
             />
           )}
         </div>
-        <p className={isToday && active ? "is-today-highlight" : ""}>
-          {displayTime}
-        </p>
+        <p className={isToday && active ? "is-today-highlight" : ""}>{displayTime}</p>
       </div>
 
       {/* Meal description */}
@@ -268,17 +264,11 @@ const MealListCard = ({
         {order && active && (
           <OverlayTrigger
             placement="right"
-            overlay={
-              <Tooltip id="adr-tooltip">
-                Open the Address navigation to the Chef
-              </Tooltip>
-            }
+            overlay={<Tooltip id="adr-tooltip">Open the Address navigation to the Chef</Tooltip>}
           >
             <button
               className="adr-nav-button meal-list-button"
-              onClick={() =>
-                showInMapClicked(meal.user.address.lat, meal.user.address.long)
-              }
+              onClick={() => showInMapClicked(meal.user.address.lat, meal.user.address.long)}
             ></button>
           </OverlayTrigger>
         )}
