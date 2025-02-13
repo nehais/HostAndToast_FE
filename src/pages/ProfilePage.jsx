@@ -41,6 +41,7 @@ const ProfilePage = ({ setShowSpinner }) => {
     totalPurchase: 0,
   });
   const orderFINISHED = "FINISHED";
+  const orderPAID = "PAID";
 
   useEffect(() => {
     if (!profileData || !profileData._id) return;
@@ -130,7 +131,7 @@ const ProfilePage = ({ setShowSpinner }) => {
         expiredOrders.push(order);
         platesBought += order.plates;
         totalPurchase += order.price;
-      } else {
+      } else if (order.status === orderPAID) {
         activeOrders.push(order);
       }
     });

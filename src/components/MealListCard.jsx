@@ -21,7 +21,14 @@ import Tooltip from "react-bootstrap/Tooltip";
 
 import { CartContext } from "../contexts/cart.context.jsx";
 
-const MealListCard = ({ meal, active, order, hideActions, setRefreshProfile, setShowMeals }) => {
+const MealListCard = ({
+  meal,
+  active,
+  order,
+  hideActions,
+  setRefreshProfile,
+  setShowMeals,
+}) => {
   const { setToast } = useToast(); //Use setToast context to set message
   const [isToday, setIsToday] = useState(false);
   const [displayTime, setDisplayTime] = useState("");
@@ -160,10 +167,14 @@ const MealListCard = ({ meal, active, order, hideActions, setRefreshProfile, set
   return (
     <div
       key={meal._id}
-      className={`meal-list-card ${active ? "meal-list-card-active" : "meal-list-card-inactive"}`}
+      className={`meal-list-card ${
+        active ? "meal-list-card-active" : "meal-list-card-inactive"
+      }`}
     >
-      {/* Image Carousel to display multiple images */}
-      <ImageCarousel imageUrls={meal.imageUrl} />
+      <Link to={`/meals/${meal._id}`}>
+        {/* Image Carousel to display multiple images */}
+        <ImageCarousel imageUrls={meal.imageUrl} />
+      </Link>
 
       {/* Meal info details */}
       <div className="meal-list-details">
@@ -195,9 +206,13 @@ const MealListCard = ({ meal, active, order, hideActions, setRefreshProfile, set
             <p>{meal.price}€ Per Plate</p>
             {active && (
               <>
-                <p className="badge bg-success">{meal.plates} Plates Available</p>
+                <p className="badge bg-success">
+                  {meal.plates} Plates Available
+                </p>
 
-                <span className="badge bg-warning">{meal.booked} Plates Booked</span>
+                <span className="badge bg-warning">
+                  {meal.booked} Plates Booked
+                </span>
               </>
             )}
           </>
@@ -275,7 +290,10 @@ const MealListCard = ({ meal, active, order, hideActions, setRefreshProfile, set
           }
         >
           <Link to={`/handle-meal?mode=Edit&Id=${meal._id}`}>
-            <button hidden={hideActions || order ? true : false} className="meal-list-button">
+            <button
+              hidden={hideActions || order ? true : false}
+              className="meal-list-button"
+            >
               <img
                 src={meal.booked ? EditDisabledIcon : EditIcon}
                 alt="Edit Icon"
@@ -289,7 +307,9 @@ const MealListCard = ({ meal, active, order, hideActions, setRefreshProfile, set
           placement="right"
           overlay={
             <Tooltip id="delete-tooltip">
-              {meal.booked ? "Booked Meal cannot be deleted" : "Delete your Meal"}
+              {meal.booked
+                ? "Booked Meal cannot be deleted"
+                : "Delete your Meal"}
             </Tooltip>
           }
         >

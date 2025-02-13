@@ -115,6 +115,7 @@ const UserProfileInfo = ({
                     value={newProfData.username}
                     placeholder="Please enter your User Name"
                     onChange={handleChange}
+                    maxlength="10"
                     className="profile-input"
                   />
                 </div>

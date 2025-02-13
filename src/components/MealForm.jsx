@@ -96,6 +96,7 @@ const MealForm = ({
               value={mealFormData.title}
               onChange={handleChange}
               placeholder="The Meal title"
+              maxlength="40"
               className={`meal-input ${useMealID ? "input-disabled" : ""}`}
             />
 
