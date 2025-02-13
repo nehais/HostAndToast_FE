@@ -24,7 +24,8 @@ const ShoppingCart = () => {
         try {
           const { data } = await axios.get(`${API_URL}/api/orders/user/${user._id}`);
           console.log("Orders fetched successfully:", data);
-          setOrders(data);
+          const ordersToShow = data.filter((order) => order.status === "RESERVED");
+          setOrders(ordersToShow);
         } catch (error) {
           console.error("Error fetching the orders:", error.response?.data || error.message);
         }
@@ -39,6 +40,11 @@ const ShoppingCart = () => {
     const total = orders.reduce((acc, order) => acc + order.meal.price * order.plates, 0);
     setTotal(total);
   }, [orders]);
+
+  const handleDeleteOrder = (orderId) => {
+    // Update orders by removing the deleted order
+    setOrders(orders.filter((order) => order._id !== orderId));
+  };
 
   const handleCheckout = async () => {
     if (!orders.length) {
@@ -63,7 +69,7 @@ const ShoppingCart = () => {
       const stripe = await stripePromise;
       const result = await stripe.redirectToCheckout({ sessionId: data.id });
 
-      console.log("🚀 Stripe Redirect Result:", result); // Check for errors
+      console.log("Stripe Redirect Result:", result); // Check for errors
     } catch (error) {
       console.error(
         "Error starting checkout:",
@@ -82,7 +88,11 @@ const ShoppingCart = () => {
             {orders.length > 0 ? (
               <ul>
                 {orders.map((order) => (
-                  <ShoppingCartOrderItem key={order._id} order={order} />
+                  <ShoppingCartOrderItem
+                    key={order._id}
+                    order={order}
+                    onDelete={handleDeleteOrder} // Pass delete handler
+                  />
                 ))}
               </ul>
             ) : (
@@ -98,7 +108,7 @@ const ShoppingCart = () => {
                 </p>
               </div>
               {/* Checkout Button */}
-              <button onClick={handleCheckout} disabled={loading}>
+              <button onClick={handleCheckout} disabled={loading} className="checkout-button">
                 {loading ? "Processing..." : "Checkout"}
               </button>
             </div>
