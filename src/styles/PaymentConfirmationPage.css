@@ -1,0 +1,9 @@
+.payment-confirmation-page {
+  /* height: 100%; */
+  /* width: inherit; */
+  max-width: 1024px;
+  margin: 40px;
+  padding: 20px;
+  margin-inline: auto;
+  background-color: rgba(203, 217, 222, 0.9);
+}
