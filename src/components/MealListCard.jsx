@@ -1,3 +1,4 @@
+import ProfileIcon from "../assets/profile.png";
 import EditIcon from "../assets/edit.png";
 import DeleteIcon from "../assets/delete.png";
 import EditDisabledIcon from "../assets/edit-disabled.png";
@@ -27,6 +28,8 @@ const MealListCard = ({
   setShowMeals,
 }) => {
   const { setToast } = useToast(); //Use setToast context to set message
+  const [isToday, setIsToday] = useState(false);
+  const [displayTime, setDisplayTime] = useState("");
   const [comment, setComment] = useState(""); // Comment for order Rating
   const [orderRate, setOrderRate] = useState(0); // Order Rating
   const [showCommentModal, setShowCommentModal] = useState(false);
@@ -43,11 +46,24 @@ const MealListCard = ({
     if (order && order.rating) setOrderRate(order.rating.stars);
   }, [order]);
 
-  function formatDate(dateToBeFormated) {
-    const formattedDate = format(dateToBeFormated, "MMMM d, yyyy, h:mm a");
+  useEffect(() => {
+    if (meal.pickupTime) {
+      const date = new Date(meal.pickupTime);
+      const today = new Date();
 
-    return formattedDate;
-  }
+      const isTodayChk =
+        date.getDate() === today.getDate() &&
+        date.getMonth() === today.getMonth() &&
+        date.getFullYear() === today.getFullYear();
+
+      if (isTodayChk && active) {
+        setIsToday(true);
+        setDisplayTime(`Today at ${format(date, "h:mm a")}`);
+      } else {
+        setDisplayTime(format(date, "MMMM d, yyyy, h:mm a"));
+      }
+    }
+  }, [meal.pickupTime]);
 
   function handleDeleteClick(e) {
     let message = "Are you sure, you want to Delete the Meal?";
@@ -128,6 +144,12 @@ const MealListCard = ({
       .catch((error) => handleError("Error during rating order:", error));
   }
 
+  const showInMapClicked = (lat, long) => {
+    window.open(
+      "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + long
+    );
+  };
+
   function handleError(logMsg, error) {
     console.log(logMsg, error?.response?.data?.message);
     setGenMessageModal({
@@ -165,7 +187,9 @@ const MealListCard = ({
             />
           )}
         </div>
-        <p>{formatDate(meal.pickupTime)}</p>
+        <p className={isToday && active ? "is-today-highlight" : ""}>
+          {displayTime}
+        </p>
       </div>
 
       {/* Meal description */}
@@ -182,6 +206,33 @@ const MealListCard = ({
                 <span className="badge bg-warning">
                   {meal.booked} Plates Booked
                 </span>
+              </>
+            )}
+          </>
+        )}
+        {order && (
+          <>
+            <div className="meal-chef-details">
+              <img
+                src={meal.user.imageUrl ? meal.user.imageUrl : ProfileIcon}
+                alt="Chef Icon"
+                className="profile-img"
+              />
+              <p>
+                <strong>Chef</strong> {meal.user.username}
+              </p>
+            </div>
+            {active && (
+              <>
+                <div className="meal-chef-details">
+                  <input
+                    type="text"
+                    name="chefAddress"
+                    disabled={true}
+                    value={meal.user.address.displayName}
+                    className="chef-adr"
+                  />
+                </div>
               </>
             )}
           </>
@@ -204,6 +255,24 @@ const MealListCard = ({
 
       {/* Meal List Buttons */}
       <div className="meal-list-buttons">
+        {/* Address Navigation Button */}
+        {order && active && (
+          <OverlayTrigger
+            placement="right"
+            overlay={
+              <Tooltip id="adr-tooltip">
+                Open the Address navigation to the Chef
+              </Tooltip>
+            }
+          >
+            <button
+              className="adr-nav-button meal-list-button"
+              onClick={() =>
+                showInMapClicked(meal.user.address.lat, meal.user.address.long)
+              }
+            ></button>
+          </OverlayTrigger>
+        )}
         {/* Edit Button */}
         <OverlayTrigger
           placement="right"
