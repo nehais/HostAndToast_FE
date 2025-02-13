@@ -10,7 +10,18 @@ const CartWrapper = ({ children }) => {
   });
 
   // Function to update cart counter
-  const updateCartCounter = (amount) => {
+  const updateCartCounter = (amount, setToZero = false) => {
+    if (setToZero) {
+      setCart((prevCart) => {
+        const updatedCart = {
+          ...prevCart,
+          counter: 0,
+        };
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
+        return updatedCart;
+      });
+      return;
+    }
     setCart((prevCart) => {
       const updatedCart = {
         ...prevCart,
