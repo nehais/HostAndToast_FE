@@ -17,6 +17,7 @@ import SingleMeal from "./pages/SingleMeal";
 import ChefOverviewPage from "./pages/ChefOverviewPage";
 import Success from "./pages/Success"; // Import Success Page
 import Cancel from "./pages/Cancel"; // Import Cancel Page
+import Messages from "./pages/Messages";
 
 function App() {
   const [showSpinner, setShowSpinner] = useState(false);
@@ -33,6 +34,14 @@ function App() {
             element={
               <PrivateRoute>
                 <ProfilePage setShowSpinner={setShowSpinner} />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <PrivateRoute>
+                <Messages />
               </PrivateRoute>
             }
           />

@@ -40,7 +40,9 @@ const ProfileButton = () => {
                     Profile
                   </Link>
                 </li>
-                <li>Messages</li>
+                <Link to="/messages">
+                  <li>Messages</li>{" "}
+                </Link>
                 <li onClick={() => handleLogOut()}>Log Out!</li>
               </ul>
             </div>

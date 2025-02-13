@@ -219,16 +219,18 @@ const MealListCard = ({
         )}
         {order && (
           <>
-            <div className="meal-chef-details">
-              <img
-                src={meal.user.imageUrl ? meal.user.imageUrl : ProfileIcon}
-                alt="Chef Icon"
-                className="profile-img"
-              />
-              <p>
-                <strong>Chef</strong> {meal.user.username}
-              </p>
-            </div>
+            <Link to={`/chef/${meal.user._id}`}>
+              <div className="meal-chef-details">
+                <img
+                  src={meal.user.imageUrl ? meal.user.imageUrl : ProfileIcon}
+                  alt="Chef Icon"
+                  className="profile-img"
+                />
+                <p>
+                  <strong>Chef</strong> {meal.user.username}
+                </p>
+              </div>
+            </Link>
             {active && (
               <>
                 <div className="meal-chef-details">
