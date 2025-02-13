@@ -4,7 +4,7 @@ import "../styles/MealCard.css";
 const MealCard = ({ meal }) => {
   const imageUrl = meal.imageUrl[0];
 
-  console.log("Meal user username:", meal.user.username);
+  // console.log("Meal user username:", meal.user.username);
 
   // Function to truncate description
   const truncateText = (text, limit) => {

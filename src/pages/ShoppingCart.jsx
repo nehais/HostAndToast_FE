@@ -14,6 +14,7 @@ const ShoppingCart = () => {
   const { user } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
     if (user && user._id) {
@@ -33,6 +34,11 @@ const ShoppingCart = () => {
       console.warn("⚠️ No valid user ID found. Skipping order fetch.");
     }
   }, [user]);
+
+  useEffect(() => {
+    const total = orders.reduce((acc, order) => acc + order.meal.price * order.plates, 0);
+    setTotal(total);
+  }, [orders]);
 
   const handleCheckout = async () => {
     if (!orders.length) {
@@ -68,22 +74,37 @@ const ShoppingCart = () => {
   };
 
   return (
-    <div className="shopping-cart-container">
-      <h1>{user.username}s Shopping Cart</h1>
-      {orders.length > 0 ? (
-        <ul>
-          {orders.map((order) => (
-            <ShoppingCartOrderItem key={order._id} order={order} />
-          ))}
-        </ul>
-      ) : (
-        <p>Your cart is empty.</p>
-      )}
-
-      {/* Checkout Button */}
-      {/* <button onClick={handleCheckout} disabled={loading}>
-        {loading ? "Processing..." : "Proceed to Checkout"}
-      </button> */}
+    <div className="page-container">
+      <div className="shopping-cart-container">
+        <h1>{user.username}s Shopping Cart</h1>
+        <div className="shopping-cart">
+          <div>
+            {orders.length > 0 ? (
+              <ul>
+                {orders.map((order) => (
+                  <ShoppingCartOrderItem key={order._id} order={order} />
+                ))}
+              </ul>
+            ) : (
+              <ShoppingCartOrderItem order={null} />
+            )}
+          </div>
+          {orders.length > 0 && (
+            <div className="shopping-cart-total">
+              <div className="total">
+                <h2>Total:</h2>
+                <p>
+                  <span className="price-bold">{total}€</span>
+                </p>
+              </div>
+              {/* Checkout Button */}
+              <button onClick={handleCheckout} disabled={loading}>
+                {loading ? "Processing..." : "Checkout"}
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 };

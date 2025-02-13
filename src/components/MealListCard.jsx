@@ -12,7 +12,8 @@ import GenModal from "./GenModal";
 import { useToast } from "../contexts/toast.context.jsx";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { CartContext } from "../contexts/cart.context.jsx";
 
 const MealListCard = ({
   meal,
@@ -31,6 +32,7 @@ const MealListCard = ({
     show: false,
     confirmation: false,
   });
+  const { updateCartCounter } = useContext(CartContext);
 
   function formatDate(dateToBeFormated) {
     const formattedDate = format(dateToBeFormated, "MMMM d, yyyy, h:mm a");
@@ -50,6 +52,8 @@ const MealListCard = ({
           });
           setRefreshProfile((prev) => prev + 1);
           setShowMeals((prev) => !prev);
+          console.log("this is the order", order);
+          updateCartCounter(-order.plates);
         })
         .catch((error) => console.log("Error during order delete:", error));
     } else {
@@ -86,9 +90,7 @@ const MealListCard = ({
   return (
     <div
       key={meal._id}
-      className={`meal-list-card ${
-        active ? "meal-list-card-active" : "meal-list-card-inactive"
-      }`}
+      className={`meal-list-card ${active ? "meal-list-card-active" : "meal-list-card-inactive"}`}
     >
       {/* Image Carousel to display multiple images */}
       <ImageCarousel imageUrls={meal.imageUrl} />
@@ -114,15 +116,8 @@ const MealListCard = ({
           overlay={<Tooltip id="edit-tooltip">Edit your Meal</Tooltip>}
         >
           <Link to={`/handle-meal?mode=Edit&Id=${meal._id}`}>
-            <button
-              hidden={hideActions || order ? true : false}
-              className="meal-list-button"
-            >
-              <img
-                src={EditIcon}
-                alt="Edit Icon"
-                className="meal-list-button-img"
-              />
+            <button hidden={hideActions || order ? true : false} className="meal-list-button">
+              <img src={EditIcon} alt="Edit Icon" className="meal-list-button-img" />
             </button>
           </Link>
         </OverlayTrigger>
@@ -138,11 +133,7 @@ const MealListCard = ({
               handleDelete();
             }}
           >
-            <img
-              src={DeleteIcon}
-              alt="Delete Icon"
-              className="meal-list-button-img"
-            />
+            <img src={DeleteIcon} alt="Delete Icon" className="meal-list-button-img" />
           </button>
         </OverlayTrigger>{" "}
       </div>
