@@ -1,37 +1,42 @@
 import EditIcon from "../assets/edit.png";
 import DeleteIcon from "../assets/delete.png";
+import EditDisabledIcon from "../assets/edit-disabled.png";
+import DeleteDisabledIcon from "../assets/delete-disabled.png";
 
 import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
 
-import { Link, useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import ImageCarousel from "./ImageCarousel";
 import { format } from "date-fns";
 
 import GenModal from "./GenModal";
+import StarRating from "./StarRating.jsx";
+import { AuthContext } from "../contexts/auth.context";
 import { useToast } from "../contexts/toast.context.jsx";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
-import { useContext, useState } from "react";
+
 import { CartContext } from "../contexts/cart.context.jsx";
 
-const MealListCard = ({
-  meal,
-  active,
-  order,
-  deleteDisabled,
-  hideActions,
-  setRefreshProfile,
-  setShowMeals,
-}) => {
-  const nav = useNavigate();
+const MealListCard = ({ meal, active, order, hideActions, setRefreshProfile, setShowMeals }) => {
   const { setToast } = useToast(); //Use setToast context to set message
+  const [comment, setComment] = useState(""); // Comment for order Rating
+  const [orderRate, setOrderRate] = useState(0); // Order Rating
+  const [showCommentModal, setShowCommentModal] = useState(false);
   const [genMessageModal, setGenMessageModal] = useState({
     header: "",
     message: "",
     show: false,
     confirmation: false,
   });
+  const { profileData } = useContext(AuthContext);
+
+  useEffect(() => {
+    //Order Card & Rating available
+    if (order && order.rating) setOrderRate(order.rating.stars);
+  }, [order]);
   const { updateCartCounter } = useContext(CartContext);
 
   function formatDate(dateToBeFormated) {
@@ -40,37 +45,7 @@ const MealListCard = ({
     return formattedDate;
   }
 
-  function onDelete() {
-    if (order) {
-      //Call Delete API to delete the order
-      axios
-        .delete(`${API_URL}/api/orders/${order._id}`)
-        .then(() => {
-          setToast({
-            msg: `'${meal.title}' Order was Deleted!`,
-            type: "danger",
-          });
-          setRefreshProfile((prev) => prev + 1);
-          setShowMeals((prev) => !prev);
-          console.log("this is the order", order);
-          updateCartCounter(-order.plates);
-        })
-        .catch((error) => console.log("Error during order delete:", error));
-    } else {
-      //Call Delete API to delete the meal
-      axios
-        .delete(`${API_URL}/api/meals/${meal._id}`)
-        .then(() => {
-          setToast({
-            msg: `'${meal.title}' Meal was Deleted!`,
-            type: "danger",
-          });
-        })
-        .catch((error) => console.log("Error during meal delete:", error));
-    }
-  }
-
-  function handleDelete(e) {
+  function handleDeleteClick(e) {
     let message = "Are you sure, you want to Delete the Meal?";
 
     if (order) {
@@ -87,6 +62,79 @@ const MealListCard = ({
     }));
   }
 
+  function deleteMealOrder() {
+    if (order) {
+      //Call Delete API to delete the order
+      axios
+        .delete(`${API_URL}/api/orders/${order._id}`)
+        .then(() => {
+          setToast({
+            msg: `'${meal.title}' Order was Deleted!`,
+            type: "danger",
+          });
+          setRefreshProfile((prev) => prev + 1);
+          setShowMeals((prev) => !prev);
+          console.log("this is the order", order);
+          updateCartCounter(-order.plates);
+        })
+        .catch((error) => handleError("Error during order deletion:", error));
+    } else {
+      //Call Delete API to delete the meal
+      axios
+        .delete(`${API_URL}/api/meals/${meal._id}`)
+        .then(() => {
+          setToast({
+            msg: `'${meal.title}' Meal was Deleted!`,
+            type: "danger",
+          });
+        })
+        .catch((error) => handleError("Error during meal deletion:", error));
+    }
+  }
+
+  const handleRatingClick = (value) => {
+    //Order Card & Rating not available so we create
+    if (order && !order.rating) {
+      setOrderRate(value);
+      setShowCommentModal(true);
+    }
+  };
+
+  const submitFeedback = () => {
+    createOrderRating();
+    console.log("Rating:", selectedRating, "Comment:", comment);
+    setShowCommentModal(false);
+    setComment("");
+  };
+
+  function createOrderRating() {
+    //Call API to create the Order rating
+
+    if (!orderRate) return;
+    const ratingData = {
+      stars: orderRate,
+      comment: comment,
+      meal: meal._id,
+      user: profileData._id,
+    };
+
+    axios
+      .post(`${API_URL}/api/ratings/order/${order._id}`, ratingData)
+      .then(() => {
+        console.log("Order rated");
+      })
+      .catch((error) => handleError("Error during rating order:", error));
+  }
+
+  function handleError(logMsg, error) {
+    console.log(logMsg, error?.response?.data?.message);
+    setGenMessageModal({
+      header: "Error",
+      message: logMsg + error?.response?.data?.message,
+      show: true,
+    });
+  }
+
   return (
     <div
       key={meal._id}
@@ -99,13 +147,51 @@ const MealListCard = ({
       <div className="meal-list-details">
         <p>{meal.cuisine}</p>
         <h4>{meal.title}</h4>
-        <p>{meal.price}€</p>
+        <div>
+          {order && (
+            <p>
+              {meal.price * order.plates}€ for {order.plates} Plates
+            </p>
+          )}
+          {!order && (
+            <StarRating
+              initialValue={meal.mealRating ? meal.mealRating : 0}
+              editable={false}
+              small={true}
+            />
+          )}
+        </div>
         <p>{formatDate(meal.pickupTime)}</p>
       </div>
 
       {/* Meal description */}
       <div className="meal-list-desc">
-        <p className="meal-list-desc">{meal.description}</p>
+        {!order && (
+          <>
+            <p>{meal.price}€ Per Plate</p>
+            {active && (
+              <>
+                <p className="badge bg-success">{meal.plates} Plates Available</p>
+
+                <span className="badge bg-warning">{meal.booked} Plates Booked</span>
+              </>
+            )}
+          </>
+        )}
+        {order && hideActions && (
+          <>
+            {/* Rate the Order */}
+            {!order.rating && !orderRate && <p>Tap to Rate</p>}
+            <div className={orderRate > 0 ? "" : "tooltip-rating"}>
+              <StarRating
+                initialValue={orderRate}
+                onRatingChange={handleRatingClick}
+                editable={order.rating || orderRate ? false : true}
+                small={true}
+              />
+            </div>
+          </>
+        )}
       </div>
 
       {/* Meal List Buttons */}
@@ -113,27 +199,43 @@ const MealListCard = ({
         {/* Edit Button */}
         <OverlayTrigger
           placement="right"
-          overlay={<Tooltip id="edit-tooltip">Edit your Meal</Tooltip>}
+          overlay={
+            <Tooltip id="edit-tooltip">
+              {meal.booked ? "Booked Meal cannot be edited" : "Edit your Meal"}
+            </Tooltip>
+          }
         >
           <Link to={`/handle-meal?mode=Edit&Id=${meal._id}`}>
             <button hidden={hideActions || order ? true : false} className="meal-list-button">
-              <img src={EditIcon} alt="Edit Icon" className="meal-list-button-img" />
+              <img
+                src={meal.booked ? EditDisabledIcon : EditIcon}
+                alt="Edit Icon"
+                className="meal-list-button-img"
+              />
             </button>
           </Link>
         </OverlayTrigger>
         {/* Delete Button */}
         <OverlayTrigger
           placement="right"
-          overlay={<Tooltip id="delete-tooltip">Delete your Meal</Tooltip>}
+          overlay={
+            <Tooltip id="delete-tooltip">
+              {meal.booked ? "Booked Meal cannot be deleted" : "Delete your Meal"}
+            </Tooltip>
+          }
         >
           <button
             hidden={hideActions}
             className="meal-list-button"
             onClick={() => {
-              handleDelete();
+              handleDeleteClick();
             }}
           >
-            <img src={DeleteIcon} alt="Delete Icon" className="meal-list-button-img" />
+            <img
+              src={meal.booked ? DeleteDisabledIcon : DeleteIcon}
+              alt="Delete Icon"
+              className="meal-list-button-img"
+            />
           </button>
         </OverlayTrigger>{" "}
       </div>
@@ -142,7 +244,32 @@ const MealListCard = ({
       <GenModal
         messageObj={genMessageModal}
         handleClose={(prev) => setGenMessageModal({ ...prev, show: false })}
-        handleAction={onDelete}
+        handleAction={deleteMealOrder}
+      />
+
+      {/* Comment Modal */}
+      <GenModal
+        messageObj={{
+          header: "Leave a Comment",
+          message: (
+            <>
+              <p>You've given {orderRate} stars. Want to add a comment?</p>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Write your feedback..."
+                className="comment-box"
+              />
+            </>
+          ),
+          show: showCommentModal,
+          confirmation: true,
+        }}
+        handleClose={() => {
+          setOrderRate(0);
+          setShowCommentModal(false);
+        }}
+        handleAction={submitFeedback}
       />
     </div>
   );

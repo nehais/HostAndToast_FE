@@ -22,7 +22,7 @@ const AddUpdMeal = ({ setShowSpinner }) => {
   const [imgError, setImgError] = useState(false);
   const [mealFormData, setMealFormData] = useState({
     title: "",
-    cuisine: "",
+    cuisine: "Others",
     description: "",
     imageUrl: [],
     allergies: [],

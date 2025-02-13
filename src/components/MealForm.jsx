@@ -69,7 +69,7 @@ const MealForm = ({
 
     setMealFormData({
       title: "",
-      cuisine: "",
+      cuisine: "Others",
       description: "",
       imageUrl: [],
       allergies: [],
@@ -149,10 +149,12 @@ const MealForm = ({
 
             <Select
               options={[
-                { value: "Peanuts", label: "Peanuts 🥜" },
-                { value: "Shellfish", label: "Shellfish 🦐" },
-                { value: "Dairy", label: "Dairy 🥛" },
-                { value: "Gluten", label: "Gluten 🍞" },
+                { value: "Vegan", label: "Vegan 🌿" },
+                { value: "Vegetarian", label: "Vegetarian 🥕" },
+                { value: "No Peanuts", label: "No Peanuts 🥜" },
+                { value: "No Shellfish", label: "No Shellfish 🦐" },
+                { value: "No Dairy", label: "No Dairy 🥛" },
+                { value: "No Gluten", label: "No Gluten 🍞" },
               ]}
               isMulti
               value={mealFormData.allergies?.map((allergy) => ({
@@ -187,14 +189,16 @@ const MealForm = ({
                   id="cuisine-dropdown"
                   className="meal-input"
                 >
-                  {mealFormData.cuisine || "Select Cuisine"}
+                  {mealFormData.cuisine || "Select a Cuisine"}
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu>
-                  <Dropdown.Item eventKey="Italian">Italian</Dropdown.Item>
-                  <Dropdown.Item eventKey="Mexican">Mexican</Dropdown.Item>
-                  <Dropdown.Item eventKey="Indian">Indian</Dropdown.Item>
                   <Dropdown.Item eventKey="Chinese">Chinese</Dropdown.Item>
+                  <Dropdown.Item eventKey="Italian">Italian</Dropdown.Item>
+                  <Dropdown.Item eventKey="Indian">Indian</Dropdown.Item>
+                  <Dropdown.Item eventKey="Chinese">German</Dropdown.Item>
+                  <Dropdown.Item eventKey="Mexican">Mexican</Dropdown.Item>
+                  <Dropdown.Item eventKey="Others">Others</Dropdown.Item>
                 </Dropdown.Menu>
               </Dropdown>
             </div>
