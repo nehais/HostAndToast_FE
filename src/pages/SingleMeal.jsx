@@ -33,7 +33,7 @@ const SingleMeal = () => {
     show: false,
     confirmation: false,
   });
-  const { cart, setCart } = useContext(CartContext);
+  const { cart, updateCartCounter } = useContext(CartContext);
 
   // Fetch the meal data
   useEffect(() => {
@@ -154,10 +154,11 @@ const SingleMeal = () => {
 
         console.log("Cart before update", cart);
         // Ensure safe state update
-        setCart((prevCart) => ({
-          ...prevCart, // Preserve existing properties
-          counter: prevCart.counter + plates, // Update the counter correctly
-        }));
+        // setCart((prevCart) => ({
+        //   ...prevCart, // Preserve existing properties
+        //   counter: prevCart.counter + plates, // Update the counter correctly
+        // }));
+        updateCartCounter(plates);
         console.log("Cart updated", cart);
 
         nav("/shopping-cart");
