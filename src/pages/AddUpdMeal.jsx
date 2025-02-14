@@ -9,6 +9,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import GenModal from "../components/GenModal";
 import { AuthContext } from "../contexts/auth.context.jsx";
+import { useToast } from "../contexts/toast.context.jsx";
 
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
@@ -36,6 +37,7 @@ const AddUpdMeal = ({ setShowSpinner }) => {
   const [useMealID, setUseMealID] = useState("");
   const { profileData } = useContext(AuthContext);
   const nav = useNavigate();
+  const { setToast } = useToast(); //Use setToast context to set message
   const [genMessageModal, setGenMessageModal] = useState({
     header: "",
     message: "",
@@ -48,6 +50,15 @@ const AddUpdMeal = ({ setShowSpinner }) => {
     setMealFormData((prev) => {
       return { ...prev, user: profileData._id };
     });
+
+    //Make sure the Address is entered for the User before posting the Meal
+    if (profileData && profileData._id && !profileData.address._id) {
+      nav("/profile");
+      setToast({
+        msg: "Please enter the address to post a Meal",
+        type: "danger",
+      });
+    }
   }, [profileData]);
 
   // Fetch the meal data

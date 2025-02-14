@@ -15,7 +15,17 @@ export default function LogInModal({ show, onHide }) {
   const [error, setError] = useState("");
   const { authenticateUser, connectSocket } = useContext(AuthContext);
 
+  function cleanHide() {
+    setFormData({
+      email: "",
+      password: "",
+    });
+    setError("");
+    onHide();
+  }
+
   function handleChange(e) {
+    setError("");
     setFormData((prev) => {
       return { ...prev, [e.target.name]: e.target.value };
     });
@@ -31,7 +41,7 @@ export default function LogInModal({ show, onHide }) {
       localStorage.setItem("authToken", data.authToken); //Store the token in session
       await authenticateUser();
       await connectSocket();
-      onHide();
+      cleanHide();
     } catch (error) {
       console.log("Error loggin the details", error.response.data.message);
       setError(error.response.data.message);
@@ -41,13 +51,15 @@ export default function LogInModal({ show, onHide }) {
   return (
     <Modal
       show={show}
-      onHide={onHide}
+      onHide={cleanHide}
       size="md"
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">Log In User</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">
+          Log In User
+        </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -81,7 +93,11 @@ export default function LogInModal({ show, onHide }) {
           </div>
 
           <div className="signup-buttons">
-            <Button variant="danger" className="button-shadow" onClick={() => onHide()}>
+            <Button
+              variant="danger"
+              className="button-shadow"
+              onClick={() => cleanHide()}
+            >
               Cancel
             </Button>
             <Button type="submit" variant="primary" className="button-shadow">

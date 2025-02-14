@@ -16,6 +16,16 @@ export default function SignUpModal({ show, onHide }) {
   const [error, setError] = useState("");
   const { connectSocket } = useContext(AuthContext);
 
+  function cleanHide() {
+    setFormData({
+      username: "",
+      email: "",
+      password: "",
+    });
+    setError("");
+    onHide();
+  }
+
   function handleChange(e) {
     setFormData((prev) => {
       return { ...prev, [e.target.name]: e.target.value };
@@ -30,10 +40,13 @@ export default function SignUpModal({ show, onHide }) {
       const { data } = await axios.post(`${API_URL}/auth/signup`, formData);
       console.log("New user", data);
       connectSocket();
-      onHide();
+      cleanHide();
     } catch (error) {
-      console.log("Error Signing Up the details", error.response.data.message);
-      setError(error.response.data.message);
+      console.log(
+        "Error Signing Up the details",
+        error?.response?.data?.message
+      );
+      setError(error?.response?.data?.message);
     }
   }
 
@@ -46,7 +59,10 @@ export default function SignUpModal({ show, onHide }) {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter"> Register User</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">
+          {" "}
+          Register User
+        </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -94,7 +110,11 @@ export default function SignUpModal({ show, onHide }) {
           </div>
 
           <div className="signup-buttons">
-            <Button variant="danger" className="button-shadow" onClick={() => onHide()}>
+            <Button
+              variant="danger"
+              className="button-shadow"
+              onClick={() => onHide()}
+            >
               Cancel
             </Button>
             <Button type="submit" variant="primary" className="button-shadow">

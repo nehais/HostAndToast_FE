@@ -6,6 +6,7 @@
 
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 /*Tablet Screen 820*/
@@ -17,7 +18,6 @@
 
 .search-control-container {
   padding: 10px;
-  margin: 0 auto;
   width: 40%;
 }
 
@@ -148,4 +148,32 @@
   padding: 5px 10px;
   margin-inline: 5px;
   border-radius: 20px;
+}
+
+.adr-go {
+  flex-basis: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.go-button {
+  color: white;
+  background-color: #003459;
+  border-radius: 50%;
+  height: 35px;
+  width: 35px;
+}
+
+.disabled-go {
+  color: white;
+  background-color: #b1b8bc;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .nav-go {
+    display: none;
+  }
 }

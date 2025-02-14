@@ -10,45 +10,6 @@
   }
 }
 
-.function-area {
-  width: 100vw;
-  height: 24vh;
-}
-
-.function-bar {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-}
-
-.search-bar {
-  background-image: url("../assets/search.png");
-  background-repeat: no-repeat;
-  background-size: 25px;
-  background-position: 1px;
-  width: 50%;
-  padding: 10px;
-  border-radius: 5px;
-  border: 1px solid grey;
-
-  font-size: 1em;
-  text-indent: 20px;
-}
-
-.func-button {
-  border-radius: 5px;
-}
-
-/*Mobile Screen*/
-@media screen and (max-device-width: 425px) {
-  .search-bar {
-    font-size: 0.8em;
-  }
-  .func-button {
-    font-size: 0.8em;
-  }
-}
-
 .meal-list-cards {
   display: flex;
   flex-direction: column;
@@ -97,7 +58,7 @@
 /*Mobile Screen*/
 @media screen and (max-device-width: 425px) {
   .carousel-cont {
-    width: 50px;
+    display: none;
   }
   .carousel-img {
     width: 50px;
@@ -118,6 +79,18 @@
   flex-basis: 40%;
 }
 
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .meal-list-cuisine {
+    display: none;
+  }
+
+  .meal-list-details,
+  .meal-list-desc {
+    font-size: 0.8em;
+  }
+}
+
 .is-today-highlight {
   font-weight: bold;
   background-color: yellow;
@@ -136,6 +109,13 @@
   width: 200px;
 }
 
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .chef-adr {
+    display: none;
+  }
+}
+
 .rate-action {
   display: flex;
   align-items: center;
@@ -149,10 +129,6 @@
 
   .meal-list-details {
     flex-basis: 70%;
-  }
-
-  .meal-list-desc {
-    display: none;
   }
 }
 
@@ -181,6 +157,16 @@
   align-items: center;
 }
 
+.pickup-button {
+  background-image: url(../assets/pick.png);
+  background-size: 25px;
+  background-repeat: no-repeat;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+  animation: bounce 1.5s infinite ease-in-out;
+}
+
 .adr-nav-button {
   background-image: url(../assets/google-open.png);
   background-size: 25px;
@@ -196,7 +182,7 @@
 }
 
 .meal-list-button:hover {
-  transform: scale(1.5);
+  transform: scale(1.25);
 }
 
 .meal-list-button-img {
