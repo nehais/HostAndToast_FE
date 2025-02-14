@@ -4,6 +4,7 @@ import { useSearchParams } from "react-router-dom";
 import AddressSearch from "../components/AddressSearch";
 import HowItWorks from "../components/HowItWorks";
 import LogInModal from "../components/LogInModal.jsx";
+import GoButton from "../components/GoButton.jsx";
 import { AuthContext } from "../contexts/auth.context";
 
 const Home = () => {
@@ -22,10 +23,14 @@ const Home = () => {
     <div>
       <div className="address-container">
         <AddressSearch componentId="home" />
+        <GoButton />
       </div>
       <HowItWorks />
 
-      <LogInModal show={modalShowLogIn} onHide={() => setModalShowLogIn(false)} />
+      <LogInModal
+        show={modalShowLogIn}
+        onHide={() => setModalShowLogIn(false)}
+      />
     </div>
   );
 };

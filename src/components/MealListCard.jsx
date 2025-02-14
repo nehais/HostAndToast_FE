@@ -3,6 +3,7 @@ import EditIcon from "../assets/edit.png";
 import DeleteIcon from "../assets/delete.png";
 import EditDisabledIcon from "../assets/edit-disabled.png";
 import DeleteDisabledIcon from "../assets/delete-disabled.png";
+import PickIcon from "../assets/pick.png";
 
 import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
@@ -117,17 +118,15 @@ const MealListCard = ({
 
   const handleRatingClick = (value) => {
     //Order Card & Rating not available so we create
-    if (order && !order.rating) {
-      setOrderRate(value);
-      setShowCommentModal(true);
-    }
+    setOrderRate(value);
+    setShowCommentModal(true);
   };
 
   const submitFeedback = () => {
     createOrderRating();
-    console.log("Rating:", selectedRating, "Comment:", comment);
     setShowCommentModal(false);
     setComment("");
+    setTimeout(() => setOrderRate(orderRate), 0);
   };
 
   function createOrderRating() {
@@ -149,8 +148,39 @@ const MealListCard = ({
       .catch((error) => handleError("Error during rating order:", error));
   }
 
+  function markOrderCompleted() {
+    //Call API to create the Order rating
+
+    axios
+      .put(`${API_URL}/api/orders/${order._id}`, { status: "FINISHED" })
+      .then(() => {
+        setToast({
+          msg: `'${meal.title}' Order was Completed. Enjoy!`,
+          type: "success",
+        });
+        setRefreshProfile((prev) => prev + 1);
+      })
+      .catch((error) =>
+        handleError("Error during order update to Finished:", error)
+      );
+  }
+
+  const isPickedAvl = () => {
+    if (order && active) {
+      const currentTime = new Date(); // Get the current date and time
+      const pickupTime = new Date(meal.pickupTime); // Convert pickupTime to a Date object
+      if (pickupTime < currentTime) {
+        return true;
+      }
+      return false;
+    }
+    return false;
+  };
+
   const showInMapClicked = (lat, long) => {
-    window.open("https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + long);
+    window.open(
+      "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + long
+    );
   };
 
   function handleError(logMsg, error) {
@@ -169,15 +199,15 @@ const MealListCard = ({
         active ? "meal-list-card-active" : "meal-list-card-inactive"
       }`}
     >
-      <Link to={`/meals/${meal._id}`}>
-        {/* Image Carousel to display multiple images */}
-        <ImageCarousel imageUrls={meal.imageUrl} />
-      </Link>
+      {/* Image Carousel to display multiple images */}
+      <ImageCarousel imageUrls={meal.imageUrl} />
 
       {/* Meal info details */}
       <div className="meal-list-details">
-        <p>{meal.cuisine}</p>
-        <h4>{meal.title}</h4>
+        <p className="meal-list-cuisine">{meal.cuisine}</p>
+        <Link to={`/meals/${meal._id}`}>
+          <h4>{meal.title}</h4>
+        </Link>
         <div>
           {order && (
             <p>
@@ -192,7 +222,9 @@ const MealListCard = ({
             />
           )}
         </div>
-        <p className={isToday && active ? "is-today-highlight" : ""}>{displayTime}</p>
+        <p className={isToday && active ? "is-today-highlight" : ""}>
+          {displayTime}
+        </p>
       </div>
 
       {/* Meal description */}
@@ -245,7 +277,9 @@ const MealListCard = ({
         {order && hideActions && (
           <>
             {/* Rate the Order */}
-            {!order.rating && !orderRate && <p>Tap to Rate</p>}
+            {!order.rating && !orderRate && (
+              <p className="badge bg-warning">Tap to Rate</p>
+            )}
             <div className={orderRate > 0 ? "" : "tooltip-rating"}>
               <StarRating
                 initialValue={orderRate}
@@ -260,15 +294,35 @@ const MealListCard = ({
 
       {/* Meal List Buttons */}
       <div className="meal-list-buttons">
+        {/* Mark Order Completed Button */}
+        {isPickedAvl() && (
+          <OverlayTrigger
+            placement="right"
+            overlay={
+              <Tooltip id="adr-tooltip">Mark the order as completed</Tooltip>
+            }
+          >
+            <button
+              className="pickup-button meal-list-button"
+              onClick={markOrderCompleted}
+            ></button>
+          </OverlayTrigger>
+        )}
         {/* Address Navigation Button */}
         {order && active && (
           <OverlayTrigger
             placement="right"
-            overlay={<Tooltip id="adr-tooltip">Open the Address navigation to the Chef</Tooltip>}
+            overlay={
+              <Tooltip id="adr-tooltip">
+                Open the Address navigation to the Chef
+              </Tooltip>
+            }
           >
             <button
               className="adr-nav-button meal-list-button"
-              onClick={() => showInMapClicked(meal.user.address.lat, meal.user.address.long)}
+              onClick={() =>
+                showInMapClicked(meal.user.address.lat, meal.user.address.long)
+              }
             ></button>
           </OverlayTrigger>
         )}
@@ -347,7 +401,8 @@ const MealListCard = ({
           confirmation: true,
         }}
         handleClose={() => {
-          setOrderRate(0);
+          setComment("");
+          setTimeout(() => setOrderRate(0), 0);
           setShowCommentModal(false);
         }}
         handleAction={submitFeedback}

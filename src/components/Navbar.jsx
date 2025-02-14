@@ -9,6 +9,7 @@ import LogInModal from "./LogInModal.jsx";
 import ProfileButton from "./ProfileButton.jsx";
 import AddressSearch from "./AddressSearch.jsx";
 import CartButton from "./CartButton.jsx";
+import GoButton from "./GoButton.jsx";
 import { AuthContext } from "../contexts/auth.context";
 
 import Button from "react-bootstrap/Button";
@@ -35,7 +36,12 @@ const Navbar = () => {
       </div>
 
       {/*Address Bar is shown in Navbar when not on HomePage*/}
-      {loc.pathname !== "/" && <AddressSearch componentId="navbar" />}
+      {loc.pathname !== "/" && (
+        <div className="adr-go nav-go">
+          <AddressSearch componentId="navbar" />
+          <GoButton />
+        </div>
+      )}
 
       <div className="nav-buttons">
         {/* Add Meal Button */}
@@ -57,14 +63,6 @@ const Navbar = () => {
           </Button>
         </OverlayTrigger>
 
-        <Button
-          id="mobile-list-meal-button"
-          variant="warning"
-          className="button-shadow"
-          onClick={() => addMeal()}
-        >
-          +
-        </Button>
         {!isLoggedIn && (
           <>
             {/* Registration Button */}

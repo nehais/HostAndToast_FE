@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-import DisplayDropDown from "./DisplayDropDown";
+import MealListDropDown from "./MealListDropDown";
 
 const ProfileDashboard = ({
   chefMeals,
@@ -37,7 +37,7 @@ const ProfileDashboard = ({
           </div>
 
           <div className="dashboard-tab-cont">
-            <DisplayDropDown
+            <MealListDropDown
               notification={"up coming Meals"}
               mealCount={
                 chefMeals.activeMeals ? chefMeals.activeMeals.length : 0
@@ -46,7 +46,7 @@ const ProfileDashboard = ({
               meals={chefMeals.activeMeals}
             />
 
-            <DisplayDropDown
+            <MealListDropDown
               notification={"Inactive Meals"}
               mealCount={
                 chefMeals.expiredMeals ? chefMeals.expiredMeals.length : 0
@@ -74,7 +74,7 @@ const ProfileDashboard = ({
           </div>
 
           <div className="dashboard-tab-cont">
-            <DisplayDropDown
+            <MealListDropDown
               notification={"up coming Meal Pickup"}
               mealCount={
                 buyerMeals.activeOrders ? buyerMeals.activeOrders.length : 0
@@ -84,7 +84,7 @@ const ProfileDashboard = ({
               setRefreshProfile={setRefreshProfile}
             />
 
-            <DisplayDropDown
+            <MealListDropDown
               notification={"completed Meal Purchase"}
               mealCount={
                 buyerMeals.expiredOrders ? buyerMeals.expiredOrders.length : 0

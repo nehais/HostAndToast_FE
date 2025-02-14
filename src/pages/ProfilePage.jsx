@@ -113,13 +113,13 @@ const ProfilePage = ({ setShowSpinner }) => {
         `${API_URL}/api/orders/user/${profileData._id}`
       );
 
-      filterByStatus(data);
+      filterOrderByStatus(data);
     } catch (error) {
       //handleError("Error fetching meals: ", error);
     }
   }
 
-  function filterByStatus(orders) {
+  function filterOrderByStatus(orders) {
     let expiredOrders = [];
     let activeOrders = [];
     let platesBought = 0;
@@ -135,6 +135,10 @@ const ProfilePage = ({ setShowSpinner }) => {
         activeOrders.push(order);
       }
     });
+
+    activeOrders.sort(
+      (a, b) => new Date(a.meal.pickupTime) - new Date(b.meal.pickupTime)
+    );
 
     setBuyerMeals((prev) => {
       return {

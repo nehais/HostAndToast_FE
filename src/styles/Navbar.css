@@ -9,11 +9,7 @@
 }
 
 .navbar-adr {
-  width: 50%;
-}
-
-#mobile-list-meal-button {
-  display: none; /*Button too big for mobile display*/
+  width: 100%;
 }
 
 /*Mobile Screen*/
@@ -23,15 +19,7 @@
   }
 
   .navbar-adr {
-    width: 40%;
-    margin: 0;
-  }
-
-  #list-meal-button {
-    display: none; /*Button too big for mobile display*/
-  }
-  #mobile-list-meal-button {
-    display: block; /*Button too big for mobile display*/
+    display: none;
   }
 }
 

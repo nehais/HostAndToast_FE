@@ -3,7 +3,7 @@ import React from "react";
 import { useState } from "react";
 import MealList from "./MealList";
 
-const DisplayDropDown = ({
+const MealListDropDown = ({
   notification,
   mealCount,
   active,
@@ -16,6 +16,7 @@ const DisplayDropDown = ({
 
   return (
     <>
+      {/*Drop Down Header */}
       <div className="display-block-dd">
         <p className={active ? "notification-active" : "notification-inactive"}>
           You have <em>{mealCount}</em> {notification}
@@ -33,7 +34,9 @@ const DisplayDropDown = ({
           ></div>
         )}
       </div>
-      {showMeals && (
+
+      {/*Meal List */}
+      {showMeals && mealCount > 0 && (
         <MealList
           meals={meals}
           active={active}
@@ -43,8 +46,10 @@ const DisplayDropDown = ({
           setShowMeals={setShowMeals}
         />
       )}
+
+      {showMeals && mealCount <= 0 && <h6>No {notification}</h6>}
     </>
   );
 };
 
-export default DisplayDropDown;
+export default MealListDropDown;
