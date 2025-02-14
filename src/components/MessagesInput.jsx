@@ -19,7 +19,7 @@ const MessagesInput = () => {
   };
 
   return (
-    <div>
+    <div className="messages-input">
       <form onSubmit={handleSend}>
         <input
           type="text"

@@ -27,7 +27,7 @@ const Messages = () => {
       setIsUsersLoading(true);
       try {
         const res = await axios.get(`${API_URL}/api/messages/user/${user._id}`);
-        setMessages({ messages: res.data });
+        setMessages(res.data);
         const otherUsers = res.data.map((message) => {
           return message.senderId._id === user._id ? message.receiverId : message.senderId;
         });
