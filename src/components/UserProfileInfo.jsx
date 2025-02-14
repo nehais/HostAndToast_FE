@@ -95,10 +95,7 @@ const UserProfileInfo = ({
                 onChange={handleImgUpload}
                 className="profile-input-img"
               />
-              <StarRating
-                initialValue={userRating ? userRating : 0}
-                editable={false}
-              />
+              <StarRating initialValue={userRating ? userRating : 0} editable={false} />
             </div>
 
             <div className="profile-info">
@@ -115,7 +112,7 @@ const UserProfileInfo = ({
                     value={newProfData.username}
                     placeholder="Please enter your User Name"
                     onChange={handleChange}
-                    maxlength="10"
+                    maxLength="10"
                     className="profile-input"
                   />
                 </div>
@@ -192,17 +189,9 @@ const UserProfileInfo = ({
 
           <OverlayTrigger
             placement="bottom"
-            overlay={
-              <Tooltip id="update-profile-tooltip">
-                Update your User profile
-              </Tooltip>
-            }
+            overlay={<Tooltip id="update-profile-tooltip">Update your User profile</Tooltip>}
           >
-            <Button
-              variant="success"
-              className="upd-profile-button button-shadow"
-              type="submit"
-            >
+            <Button variant="success" className="upd-profile-button button-shadow" type="submit">
               Update Your Profile
             </Button>
           </OverlayTrigger>

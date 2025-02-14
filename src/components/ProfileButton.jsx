@@ -5,9 +5,10 @@ import { Link } from "react-router-dom";
 
 const ProfileButton = () => {
   const [showDropdownMenu, setShowDropdownMenu] = useState(false);
-  const { profileData, authenticateUser } = useContext(AuthContext);
+  const { profileData, authenticateUser, disconnectSocket } = useContext(AuthContext);
 
   const handleLogOut = () => {
+    disconnectSocket();
     logOut();
     setShowDropdownMenu(false); // Close the dropdown
   };

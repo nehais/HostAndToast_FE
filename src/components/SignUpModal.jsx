@@ -1,10 +1,11 @@
 import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
 
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { AuthContext } from "../contexts/auth.context.jsx";
 
 export default function SignUpModal({ show, onHide }) {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ export default function SignUpModal({ show, onHide }) {
     password: "",
   });
   const [error, setError] = useState("");
+  const { connectSocket } = useContext(AuthContext);
 
   function handleChange(e) {
     setFormData((prev) => {
@@ -27,6 +29,7 @@ export default function SignUpModal({ show, onHide }) {
       //Sign up New user
       const { data } = await axios.post(`${API_URL}/auth/signup`, formData);
       console.log("New user", data);
+      connectSocket();
       onHide();
     } catch (error) {
       console.log("Error Signing Up the details", error.response.data.message);
@@ -43,10 +46,7 @@ export default function SignUpModal({ show, onHide }) {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          {" "}
-          Register User
-        </Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter"> Register User</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -94,11 +94,7 @@ export default function SignUpModal({ show, onHide }) {
           </div>
 
           <div className="signup-buttons">
-            <Button
-              variant="danger"
-              className="button-shadow"
-              onClick={() => onHide()}
-            >
+            <Button variant="danger" className="button-shadow" onClick={() => onHide()}>
               Cancel
             </Button>
             <Button type="submit" variant="primary" className="button-shadow">

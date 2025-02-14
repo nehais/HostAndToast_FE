@@ -1,21 +1,22 @@
 import "../styles/Home.css";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useSearchParams } from "react-router-dom";
 import AddressSearch from "../components/AddressSearch";
 import HowItWorks from "../components/HowItWorks";
 import LogInModal from "../components/LogInModal.jsx";
+import { AuthContext } from "../contexts/auth.context";
 
 const Home = () => {
   const [modalShowLogIn, setModalShowLogIn] = useState(false);
+  const { isLoggedIn } = useContext(AuthContext); // Get the isLoggedIn state from context
   const [searchParams, setSearchParams] = useSearchParams();
-  const session = searchParams.get("session"); //Check if newly created book
+  const session = searchParams.get("session"); // Check if newly created book
 
-  //Private route hit. Login 1st
   useEffect(() => {
-    if (session === "out") {
-      setModalShowLogIn(true);
+    if (session === "out" && !isLoggedIn) {
+      setModalShowLogIn(true); // Only show the modal if the user is logged out
     }
-  }, [session]);
+  }, [session, isLoggedIn]);
 
   return (
     <div>
@@ -24,10 +25,7 @@ const Home = () => {
       </div>
       <HowItWorks />
 
-      <LogInModal
-        show={modalShowLogIn}
-        onHide={() => setModalShowLogIn(false)}
-      />
+      <LogInModal show={modalShowLogIn} onHide={() => setModalShowLogIn(false)} />
     </div>
   );
 };

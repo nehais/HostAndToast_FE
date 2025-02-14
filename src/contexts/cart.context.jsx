@@ -3,7 +3,6 @@ import { createContext, useState, useEffect } from "react";
 const CartContext = createContext();
 
 const CartWrapper = ({ children }) => {
-  console.log("inside CartWrapper******************************************");
   const [cart, setCart] = useState(() => {
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : { counter: 0 };
