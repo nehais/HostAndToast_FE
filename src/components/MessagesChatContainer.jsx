@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import MessagesChatHeader from "./MessagesChatHeader";
 import MessagesInput from "./MessagesInput";
 import { MessageContext } from "../contexts/message.context";
@@ -8,6 +8,8 @@ import ProfileIcon from "../assets/profile.png";
 const MessagesChatContainer = () => {
   const { messages, selectedUser } = useContext(MessageContext);
   const { user } = useContext(AuthContext);
+
+  useEffect(() => {}, [messages]);
 
   const formatDateTime = (isoString) => {
     if (!isoString) return "N/A";

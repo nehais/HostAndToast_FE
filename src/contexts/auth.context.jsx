@@ -53,7 +53,24 @@ const AuthWrapper = ({ children }) => {
   const connectSocket = () => {
     console.log("Connecting socket...");
     const socketInstance = io(API_URL);
-    setSocket(socketInstance);
+
+    // Listen for successful connection
+    socketInstance.on("connect", () => {
+      console.log("Socket connected:", socketInstance.id);
+      setSocket(socketInstance); // Set the socket instance after it's connected
+    });
+
+    // Listen for connection errors
+    socketInstance.on("connect_error", (error) => {
+      console.log("Socket connection failed:", error);
+      setSocket(null); // Reset socket state if connection fails
+    });
+
+    // Listen for disconnection
+    socketInstance.on("disconnect", (reason) => {
+      console.log("Socket disconnected:", reason);
+      setSocket(null); // Optionally set socket to null if disconnected
+    });
   };
 
   const disconnectSocket = () => {
@@ -63,6 +80,18 @@ const AuthWrapper = ({ children }) => {
       setSocket(null);
     }
   };
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("disconnect", () => {
+        console.log("Socket disconnected.");
+      });
+
+      socket.on("connect", () => {
+        console.log("Socket reconnected.");
+      });
+    }
+  }, [socket]);
 
   return (
     <AuthContext.Provider
@@ -76,6 +105,7 @@ const AuthWrapper = ({ children }) => {
         authenticateUser,
         connectSocket,
         disconnectSocket,
+        socket,
       }}
     >
       {children}

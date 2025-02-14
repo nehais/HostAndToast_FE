@@ -6,13 +6,11 @@ const AddressWrapper = ({ children }) => {
   const [address, setAddress] = useState({ label: null, lat: null, lon: null });
 
   useEffect(() => {
-    console.log("Address selected", address);
+    // console.log("Address selected", address);
   }, [address]);
 
   return (
-    <AddressContext.Provider value={{ address, setAddress }}>
-      {children}
-    </AddressContext.Provider>
+    <AddressContext.Provider value={{ address, setAddress }}>{children}</AddressContext.Provider>
   );
 };
 

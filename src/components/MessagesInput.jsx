@@ -5,17 +5,26 @@ import { AuthContext } from "../contexts/auth.context";
 const MessagesInput = () => {
   const [text, setText] = useState("");
   const { sendMessage, selectedUser } = useContext(MessageContext);
-  const { user } = useContext(AuthContext);
+  const { user, socket } = useContext(AuthContext);
 
   const handleSend = (e) => {
     e.preventDefault();
     if (text.trim() === "") return;
-    try {
-      sendMessage({ text, senderId: user._id, receiverId: selectedUser._id });
-      setText("");
-    } catch (error) {
-      console.log("Error sending message", error);
+
+    if (!socket || !socket.connected) {
+      console.error("Socket is not connected yet.");
+      return;
     }
+
+    const message = {
+      text,
+      senderId: user._id,
+      receiverId: selectedUser._id,
+    };
+
+    console.log("Emitting message:", message);
+    socket.emit("sendMessage", message); // Emit message only if socket is connected
+    setText(""); // Clear input
   };
 
   return (

@@ -9,7 +9,7 @@ import MessagesChatContainer from "../components/MessagesChatContainer.jsx";
 import "../styles/Messages.css";
 
 const Messages = () => {
-  const { user } = useContext(AuthContext);
+  const { user, socket } = useContext(AuthContext);
   const {
     messages,
     setMessages,
@@ -46,22 +46,20 @@ const Messages = () => {
     fetchUsers();
   }, [user]);
 
-  // useEffect(() => {
-  //   function fetchMessages = async () => {
-  //     setIsMessagesLoading(true);
-  //     try {
-  //       const res = await axios.get(`${API_URL}/api/messages/${user._id}/${selectedUser._id}`);
-  //       setMessages({messages: res.data});
-  //     } catch (error) {
-  //       console.log("Error getting messages", error);
-  //     } finally {
-  //       setIsMessagesLoading(false);
-  //     }
-  //   }
-  //   if (selectedUser) {
-  //     fetchMessages();
-  //   }
-  // }, [selectedUser]);
+  useEffect(() => {
+    if (!socket) return;
+
+    // Listen for new messages from socket
+    socket.on("receiveMessage", (newMessage) => {
+      console.log("Received message:", newMessage);
+      // Update messages state with the new message
+      setMessages((prevMessages) => [...prevMessages, newMessage]);
+    });
+
+    return () => {
+      socket.off("receiveMessage"); // Cleanup when the component is unmounted
+    };
+  }, [socket]);
 
   return (
     <div className="messages-container">
