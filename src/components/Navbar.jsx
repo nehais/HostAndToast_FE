@@ -42,9 +42,7 @@ const Navbar = () => {
         <OverlayTrigger
           placement="bottom"
           overlay={
-            <Tooltip id="register-tooltip">
-              List your meal for others to book and savor.
-            </Tooltip>
+            <Tooltip id="register-tooltip">List your meal for others to book and savor.</Tooltip>
           }
         >
           <Button
@@ -70,11 +68,7 @@ const Navbar = () => {
             {/* Registration Button */}
             <OverlayTrigger
               placement="bottom"
-              overlay={
-                <Tooltip id="register-tooltip">
-                  Register your User profile
-                </Tooltip>
-              }
+              overlay={<Tooltip id="register-tooltip">Register your User profile</Tooltip>}
             >
               <Button
                 variant="secondary"
@@ -88,11 +82,7 @@ const Navbar = () => {
             {/* Login Button */}
             <OverlayTrigger
               placement="bottom"
-              overlay={
-                <Tooltip id="login-tooltip">
-                  Login with your User details
-                </Tooltip>
-              }
+              overlay={<Tooltip id="login-tooltip">Login with your User details</Tooltip>}
             >
               <Button
                 variant="primary"
@@ -115,15 +105,9 @@ const Navbar = () => {
         )}
       </div>
 
-      <SignUpModal
-        show={modalShowSignUp}
-        onHide={() => setModalShowSignUp(false)}
-      />
+      <SignUpModal show={modalShowSignUp} onHide={() => setModalShowSignUp(false)} />
 
-      <LogInModal
-        show={modalShowLogIn}
-        onHide={() => setModalShowLogIn(false)}
-      />
+      <LogInModal show={modalShowLogIn} onHide={() => setModalShowLogIn(false)} />
     </div>
   );
 };

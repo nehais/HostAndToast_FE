@@ -44,44 +44,46 @@ const MessagesChatContainer = () => {
   };
 
   return (
-    <div className="messages-chat-container">
-      <MessagesChatHeader />
-      <div className="messages-chat">
-        {messages
-          .filter(
-            (message) =>
-              // Show only messages with the selected user
-              message.senderId._id === selectedUser._id ||
-              message.receiverId._id === selectedUser._id
-          )
-          .map((message) => {
-            return message.senderId._id === user._id ? (
-              <div key={message._id} className="message message-sent">
-                <div className="message-content">
-                  <p>{message.text}</p>
-                  <p className="message-time">{formatDateTime(message.createdAt)}</p>
+    <div className="main-content-messages">
+      <div className="messages-chat-container">
+        <MessagesChatHeader />
+        <div className="messages-chat">
+          {messages
+            .filter(
+              (message) =>
+                // Show only messages with the selected user
+                message.senderId._id === selectedUser._id ||
+                message.receiverId._id === selectedUser._id
+            )
+            .map((message) => {
+              return message.senderId._id === user._id ? (
+                <div key={message._id} className="message message-sent">
+                  <div className="message-content">
+                    <p>{message.text}</p>
+                    <p className="message-time">{formatDateTime(message.createdAt)}</p>
+                  </div>
+                  <img
+                    src={message.senderId.imageUrl ? message.senderId.imageUrl : ProfileIcon}
+                    alt="Profile Icon"
+                    className="profile-img"
+                  />
                 </div>
-                <img
-                  src={message.senderId.imageUrl ? message.senderId.imageUrl : ProfileIcon}
-                  alt="Profile Icon"
-                  className="profile-img"
-                />
-              </div>
-            ) : (
-              <div key={message._id} className="message message-received">
-                <img
-                  src={message.senderId.imageUrl ? message.senderId.imageUrl : ProfileIcon}
-                  alt="Profile Icon"
-                  className="profile-img"
-                />
-                <div className="message-content">
-                  <p>{message.text}</p>
-                  <p className="message-time">{formatDateTime(message.createdAt)}</p>
+              ) : (
+                <div key={message._id} className="message message-received">
+                  <img
+                    src={message.senderId.imageUrl ? message.senderId.imageUrl : ProfileIcon}
+                    alt="Profile Icon"
+                    className="profile-img"
+                  />
+                  <div className="message-content">
+                    <p>{message.text}</p>
+                    <p className="message-time">{formatDateTime(message.createdAt)}</p>
+                  </div>
                 </div>
-              </div>
-            );
-          })}
-        <MessagesInput />
+              );
+            })}
+          <MessagesInput />
+        </div>
       </div>
     </div>
   );
