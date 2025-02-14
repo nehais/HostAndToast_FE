@@ -1,3 +1,40 @@
 .messages-container {
   background-color: white;
+  display: flex;
+  width: 100%;
+}
+
+.messages-sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 30%;
+}
+
+.messages-chat-container {
+  width: 100%;
+}
+
+.messages-chat-header {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+
+  .user-info {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+  }
+
+  .avatar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    p {
+      margin: 0;
+      margin-left: 10px;
+    }
+  }
 }

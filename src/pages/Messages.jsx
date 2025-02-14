@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { API_URL } from "../config/apiConfig.js";
 import axios from "axios";
 import { AuthContext } from "../contexts/auth.context.jsx";
+import { MessageContext } from "../contexts/message.context.jsx";
 import MessagesSidebar from "../components/MessagesSidebar.jsx";
 import MessagesNoChatSelected from "../components/MessagesNoChatSelected.jsx";
 import MessagesChatContainer from "../components/MessagesChatContainer.jsx";
@@ -9,11 +10,15 @@ import "../styles/Messages.css";
 
 const Messages = () => {
   const { user } = useContext(AuthContext);
-  const [messages, setMessages] = useState([]);
-  const [otherUsers, setOtherUsers] = useState([]);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [isUsersLoading, setIsUsersLoading] = useState(false);
-  // const [isMessagesLoading, setIsMessagesLoading] = useState(false);
+  const {
+    messages,
+    setMessages,
+    otherUsers,
+    setOtherUsers,
+    selectedUser,
+    setSelectedUser,
+    setIsUsersLoading,
+  } = useContext(MessageContext);
 
   useEffect(() => {
     async function fetchUsers() {
@@ -60,8 +65,8 @@ const Messages = () => {
 
   return (
     <div className="messages-container">
-      <MessagesSidebar otherUsers={otherUsers} />
-      {!selectedUser ? <MessagesNoChatSelected /> : <MessagesChatContainer />}
+      <MessagesSidebar />
+      {!selectedUser ? <MessagesNoChatSelected /> : <MessagesChatContainer messages={messages} />}
     </div>
   );
 };

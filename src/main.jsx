@@ -8,6 +8,7 @@ import { AddressWrapper } from "./contexts/address.context.jsx";
 import { BrowserRouter as Router } from "react-router-dom";
 import { CartWrapper } from "./contexts/cart.context.jsx";
 import { ToastProviderWrapper } from "./contexts/toast.context.jsx";
+import { MessageProviderWrapper } from "./contexts/message.context.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -15,9 +16,11 @@ createRoot(document.getElementById("root")).render(
       <AuthWrapper>
         <ToastProviderWrapper>
           <AddressWrapper>
-            <CartWrapper>
-              <App />
-            </CartWrapper>
+            <MessageProviderWrapper>
+              <CartWrapper>
+                <App />
+              </CartWrapper>
+            </MessageProviderWrapper>
           </AddressWrapper>
         </ToastProviderWrapper>
       </AuthWrapper>
