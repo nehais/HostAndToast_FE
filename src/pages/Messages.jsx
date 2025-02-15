@@ -24,7 +24,7 @@ const Messages = () => {
 
   // Get query parameters
   const [searchParams] = useSearchParams();
-  const receiverId = searchParams.get("receiverId"); // Extract receiverId from query params
+  const recieverId = searchParams.get("recieverId"); // Extract receiverId from query params
 
   // Handle mobile view based on window width
   useEffect(() => {
@@ -57,9 +57,11 @@ const Messages = () => {
 
         setOtherUsers(uniqueOtherUsers);
 
+        console.log("recieverId:", recieverId);
         // If receiverId is in the URL, select that user; otherwise, default to the first user
-        if (receiverId) {
-          const selectedFromUrl = uniqueOtherUsers.find((user) => user._id === receiverId);
+        if (recieverId) {
+          const selectedFromUrl = uniqueOtherUsers.find((user) => user._id === recieverId);
+          console.log("Selected from URL:", selectedFromUrl);
           setSelectedUser(selectedFromUrl || uniqueOtherUsers[0]);
         } else {
           setSelectedUser(uniqueOtherUsers[0]);
@@ -71,7 +73,7 @@ const Messages = () => {
       }
     }
     fetchUsers();
-  }, [user, receiverId]); // Add receiverId to dependencies to react to URL changes
+  }, [user, recieverId]); // Add receiverId to dependencies to react to URL changes
 
   useEffect(() => {
     if (!socket) return;

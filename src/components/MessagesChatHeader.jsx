@@ -4,7 +4,7 @@ import ProfileIcon from "../assets/profile.png";
 
 const MessagesChatHeader = () => {
   const { selectedUser, setSelectedUser } = useContext(MessageContext);
-  console.log(selectedUser);
+  // console.log(selectedUser);
 
   return (
     <div className="messages-chat-header">
