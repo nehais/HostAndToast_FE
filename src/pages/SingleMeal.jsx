@@ -9,6 +9,7 @@ import lunchBoxIcon from "../assets/lunch-box.png";
 import hostedIcon from "../assets/meeting-alt.png";
 import euroIcon from "../assets/euro.png";
 import profileIcon from "../assets/profile.png";
+import chatIcon from "../assets/messages.png";
 import { AuthContext } from "../contexts/auth.context.jsx";
 import Rating from "../components/Rating.jsx";
 import { useToast } from "../contexts/toast.context.jsx";
@@ -76,7 +77,7 @@ const SingleMeal = () => {
       try {
         const { data } = await axios.get(`${API_URL}/api/ratings/meals/${mealId}`);
         setRatings(data);
-        // console.log("Ratings", data);
+        console.log("Ratings", data);
       } catch (error) {
         console.log("Error fetching ratings", error.response?.data?.message || error.message);
       }
@@ -194,6 +195,22 @@ const SingleMeal = () => {
       show: true,
       confirmation: true,
     }));
+  }
+
+  function handleGetInContact() {
+    const createMessage = async () => {
+      try {
+        const { data } = await axios.post(`${API_URL}/api/messages/empty`, {
+          receiverId: host._id,
+          senderId: user._id,
+        });
+        // console.log("Message created", data);
+        nav(`/messages?recieverId=${host._id}`);
+      } catch (error) {
+        console.log("Error creating message", error.response.data.message);
+      }
+    };
+    createMessage();
   }
 
   if (!meal) return <div>Loading...</div>;
@@ -337,6 +354,9 @@ const SingleMeal = () => {
               </div>
             </div>
           </Link>
+          <button className="contact-btn" onClick={handleGetInContact}>
+            Get in contact
+          </button>
         </div>
       </div>
       <div className="container ratings-container">
