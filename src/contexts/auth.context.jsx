@@ -83,25 +83,26 @@ const AuthWrapper = ({ children }) => {
   };
 
   const connectSocket = () => {
+    if (!user._id) return; // Ensure user ID is available before connecting
+
     console.log("Connecting socket...");
-    const socketInstance = io(API_URL);
+    const socketInstance = io(API_URL, { transports: ["websocket"] }); // Force WebSocket transport
 
     // Listen for successful connection
     socketInstance.on("connect", () => {
       console.log("Socket connected:", socketInstance.id);
-      setSocket(socketInstance); // Set the socket instance after it's connected
+      socketInstance.emit("registerUser", user._id); // Now correctly using socketInstance
+      setSocket(socketInstance);
     });
 
-    // Listen for connection errors
-    socketInstance.on("connect_error", (error) => {
-      console.log("Socket connection failed:", error);
-      setSocket(null); // Reset socket state if connection fails
-    });
-
-    // Listen for disconnection
+    // Handle disconnections
     socketInstance.on("disconnect", (reason) => {
       console.log("Socket disconnected:", reason);
-      setSocket(null); // Optionally set socket to null if disconnected
+      setSocket(null);
+    });
+
+    socketInstance.on("connect_error", (error) => {
+      console.error("Socket connection error:", error);
     });
   };
 
