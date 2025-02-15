@@ -6,11 +6,10 @@ import { MessageContext } from "../contexts/message.context.jsx";
 import MessagesSidebar from "../components/MessagesSidebar.jsx";
 import MessagesChatContainer from "../components/MessagesChatContainer.jsx";
 import "../styles/Messages.css";
-import { use } from "react";
+import { useSearchParams } from "react-router-dom"; // Import useSearchParams
 
 const Messages = () => {
   const [showSidebar, setShowSidebar] = useState(true);
-  // const [showChat, setShowChat] = useState(true);
   const [mobileView, setMobileView] = useState(false); // State for mobile view
   const { user, socket } = useContext(AuthContext);
   const {
@@ -23,16 +22,17 @@ const Messages = () => {
     setIsUsersLoading,
   } = useContext(MessageContext);
 
+  // Get query parameters
+  const [searchParams] = useSearchParams();
+  const receiverId = searchParams.get("receiverId"); // Extract receiverId from query params
+
   // Handle mobile view based on window width
   useEffect(() => {
     const handleResize = () => {
-      setMobileView(window.innerWidth <= 768); // Set to true if the window width is less than or equal to 768px
+      setMobileView(window.innerWidth <= 768);
     };
-    // Run on component mount
     handleResize();
-    // Add event listener on resize
     window.addEventListener("resize", handleResize);
-    // Cleanup event listener on component unmount
     return () => {
       window.removeEventListener("resize", handleResize);
     };
@@ -46,16 +46,24 @@ const Messages = () => {
       try {
         const res = await axios.get(`${API_URL}/api/messages/user/${user._id}`);
         setMessages(res.data);
-        const otherUsers = res.data.map((message) => {
-          return message.senderId._id === user._id ? message.receiverId : message.senderId;
-        });
-        const uniqueOtherUsers = Array.from(new Set(otherUsers.map((user) => user._id))).map(
-          (id) => {
-            return otherUsers.find((user) => user._id === id);
-          }
+
+        const otherUsers = res.data.map((message) =>
+          message.senderId._id === user._id ? message.receiverId : message.senderId
         );
+
+        const uniqueOtherUsers = Array.from(new Set(otherUsers.map((user) => user._id))).map((id) =>
+          otherUsers.find((user) => user._id === id)
+        );
+
         setOtherUsers(uniqueOtherUsers);
-        setSelectedUser(uniqueOtherUsers[0]);
+
+        // If receiverId is in the URL, select that user; otherwise, default to the first user
+        if (receiverId) {
+          const selectedFromUrl = uniqueOtherUsers.find((user) => user._id === receiverId);
+          setSelectedUser(selectedFromUrl || uniqueOtherUsers[0]);
+        } else {
+          setSelectedUser(uniqueOtherUsers[0]);
+        }
       } catch (error) {
         console.log("Error getting users", error);
       } finally {
@@ -63,20 +71,18 @@ const Messages = () => {
       }
     }
     fetchUsers();
-  }, [user]);
+  }, [user, receiverId]); // Add receiverId to dependencies to react to URL changes
 
   useEffect(() => {
     if (!socket) return;
 
-    // Listen for new messages from socket
     socket.on("receiveMessage", (newMessage) => {
       console.log("Received message:", newMessage);
-      // Update messages state with the new message
       setMessages((prevMessages) => [...prevMessages, newMessage]);
     });
 
     return () => {
-      socket.off("receiveMessage"); // Cleanup when the component is unmounted
+      socket.off("receiveMessage");
     };
   }, [socket]);
 
@@ -87,13 +93,7 @@ const Messages = () => {
 
         <div className="messages-container">
           {!showSidebar && (
-            <button
-              onClick={() => {
-                // setShowChat(showSidebar);
-                setShowSidebar(!showSidebar);
-              }}
-              className="hide-sidebar"
-            >
+            <button onClick={() => setShowSidebar(!showSidebar)} className="hide-sidebar">
               Show contacts
             </button>
           )}

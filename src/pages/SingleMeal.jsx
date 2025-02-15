@@ -205,7 +205,7 @@ const SingleMeal = () => {
           senderId: user._id,
         });
         // console.log("Message created", data);
-        nav(`/messages`);
+        nav(`/messages?recieverId=${host._id}`);
       } catch (error) {
         console.log("Error creating message", error.response.data.message);
       }
