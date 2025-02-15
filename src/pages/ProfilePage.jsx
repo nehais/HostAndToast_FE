@@ -7,7 +7,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { AuthContext } from "../contexts/auth.context";
 import { useToast } from "../contexts/toast.context.jsx";
-import UserProfileInfo from "../components/UserProfileInfo.jsx";
+import ProfileUserInfo from "../components/ProfileUserInfo.jsx";
 import ProfileDashboard from "../components/ProfileDashboard.jsx";
 
 const ProfilePage = ({ setShowSpinner }) => {
@@ -215,7 +215,7 @@ const ProfilePage = ({ setShowSpinner }) => {
   return (
     <div className="profile-page">
       {/*User Profile Info */}
-      <UserProfileInfo
+      <ProfileUserInfo
         newProfData={newProfData}
         setNewProfData={setNewProfData}
         handleSubmit={handleSubmit}

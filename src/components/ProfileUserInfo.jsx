@@ -4,14 +4,14 @@ import { useState } from "react";
 
 import { uploadToCloudinary } from "../utils/cloudinaryUpload.js";
 
-import AddressSearch from "../components/AddressSearch.jsx";
-import StarRating from "../components/StarRating.jsx";
+import AddressSearch from "./AddressSearch.jsx";
+import StarRating from "./StarRating.jsx";
 import { Dropdown } from "react-bootstrap";
 import Button from "react-bootstrap/Button";
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-const UserProfileInfo = ({
+const ProfileUserInfo = ({
   newProfData,
   setNewProfData,
   handleSubmit,
@@ -95,7 +95,10 @@ const UserProfileInfo = ({
                 onChange={handleImgUpload}
                 className="profile-input-img"
               />
-              <StarRating initialValue={userRating ? userRating : 0} editable={false} />
+              <StarRating
+                initialValue={userRating ? userRating : 0}
+                editable={false}
+              />
             </div>
 
             <div className="profile-info">
@@ -189,9 +192,17 @@ const UserProfileInfo = ({
 
           <OverlayTrigger
             placement="bottom"
-            overlay={<Tooltip id="update-profile-tooltip">Update your User profile</Tooltip>}
+            overlay={
+              <Tooltip id="update-profile-tooltip">
+                Update your User profile
+              </Tooltip>
+            }
           >
-            <Button variant="success" className="upd-profile-button button-shadow" type="submit">
+            <Button
+              variant="success"
+              className="upd-profile-button button-shadow"
+              type="submit"
+            >
               Update Your Profile
             </Button>
           </OverlayTrigger>
@@ -214,4 +225,4 @@ const UserProfileInfo = ({
   );
 };
 
-export default UserProfileInfo;
+export default ProfileUserInfo;
