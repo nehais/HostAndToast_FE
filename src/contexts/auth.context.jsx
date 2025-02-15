@@ -2,6 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
+import { use } from "react";
 
 const AuthContext = createContext();
 
@@ -123,6 +124,10 @@ const AuthWrapper = ({ children }) => {
       });
     }
   }, [socket]);
+
+  useEffect(() => {
+    console.log("Profile data updated", profileData);
+  }, [profileData]);
 
   return (
     <AuthContext.Provider
