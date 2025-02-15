@@ -126,11 +126,11 @@
 /*Mobile Screen*/
 @media screen and (max-device-width: 425px) {
   .meal-list-card {
-    width: 350px;
+    width: 330px;
   }
 
   .meal-list-details {
-    flex-basis: 70%;
+    flex-basis: 50%;
   }
 }
 
@@ -206,4 +206,29 @@
   height: 80px;
   padding: 10px;
   margin-top: 10px;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .meal-card-font {
+    font-size: 0.8em;
+  }
+  .meal-card-Hfont {
+    font-size: 1em;
+  }
+
+  .meal-list-button {
+    background-size: 20px !important;
+    width: 20px !important;
+    height: 20px !important;
+    padding: 0px !important;
+  }
+
+  .meal-list-button-img {
+    width: 15px;
+  }
+
+  .message-button {
+    margin-left: 5px;
+  }
 }

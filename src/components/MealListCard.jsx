@@ -219,11 +219,11 @@ const MealListCard = ({
       <div className="meal-list-details">
         <p className="meal-list-cuisine">{meal.cuisine}</p>
         <Link to={`/meals/${meal._id}`}>
-          <h4>{meal.title}</h4>
+          <h4 className="meal-card-Hfont">{meal.title}</h4>
         </Link>
         <div>
           {order && (
-            <p>
+            <p className="meal-card-font">
               {meal.price * order.plates}€ for {order.plates} Plates
             </p>
           )}
@@ -235,7 +235,13 @@ const MealListCard = ({
             />
           )}
         </div>
-        <p className={isToday && active ? "is-today-highlight" : ""}>
+        <p
+          className={
+            isToday && active
+              ? "meal-card-font is-today-highlight"
+              : "meal-card-font"
+          }
+        >
           {displayTime}
         </p>
       </div>
@@ -244,7 +250,7 @@ const MealListCard = ({
       <div className="meal-list-desc">
         {!order && (
           <>
-            <p>{meal.price}€ Per Plate</p>
+            <p className="meal-card-font">{meal.price}€ Per Plate</p>
             {active && (
               <>
                 <p className="badge bg-success">
@@ -265,10 +271,10 @@ const MealListCard = ({
                 <img
                   src={meal.user.imageUrl ? meal.user.imageUrl : ProfileIcon}
                   alt="Chef Icon"
-                  className="profile-img"
+                  className="profile-img meal-list-button"
                 />{" "}
               </Link>
-              <p>
+              <p className="meal-card-font">
                 <strong>Chef</strong> {meal.user.username}
               </p>
 

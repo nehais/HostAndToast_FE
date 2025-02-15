@@ -200,6 +200,7 @@
 @media screen and (max-device-width: 425px) {
   .stats {
     font-size: 0.75em;
+    padding: 10px 5px;
   }
 }
 
@@ -234,4 +235,12 @@
   color: red;
   font-style: normal;
   font-weight: bold;
+}
+
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .notification-active,
+  .notification-inactive {
+    font-size: 0.8em;
+  }
 }
