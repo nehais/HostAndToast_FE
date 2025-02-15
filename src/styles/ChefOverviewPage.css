@@ -2,7 +2,7 @@
   display: block;
   width: 100vw;
   height: 85vh;
-  overflow-y: auto;
+  /* overflow-y: auto; */
 }
 
 .chef-overview {

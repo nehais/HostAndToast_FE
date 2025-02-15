@@ -4,11 +4,14 @@ import axios from "axios";
 import { AuthContext } from "../contexts/auth.context.jsx";
 import { MessageContext } from "../contexts/message.context.jsx";
 import MessagesSidebar from "../components/MessagesSidebar.jsx";
-import MessagesNoChatSelected from "../components/MessagesNoChatSelected.jsx";
 import MessagesChatContainer from "../components/MessagesChatContainer.jsx";
 import "../styles/Messages.css";
+import { use } from "react";
 
 const Messages = () => {
+  const [showSidebar, setShowSidebar] = useState(true);
+  // const [showChat, setShowChat] = useState(true);
+  const [mobileView, setMobileView] = useState(false); // State for mobile view
   const { user, socket } = useContext(AuthContext);
   const {
     messages,
@@ -19,6 +22,21 @@ const Messages = () => {
     setSelectedUser,
     setIsUsersLoading,
   } = useContext(MessageContext);
+
+  // Handle mobile view based on window width
+  useEffect(() => {
+    const handleResize = () => {
+      setMobileView(window.innerWidth <= 768); // Set to true if the window width is less than or equal to 768px
+    };
+    // Run on component mount
+    handleResize();
+    // Add event listener on resize
+    window.addEventListener("resize", handleResize);
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   useEffect(() => {
     async function fetchUsers() {
@@ -37,6 +55,7 @@ const Messages = () => {
           }
         );
         setOtherUsers(uniqueOtherUsers);
+        setSelectedUser(uniqueOtherUsers[0]);
       } catch (error) {
         console.log("Error getting users", error);
       } finally {
@@ -62,9 +81,32 @@ const Messages = () => {
   }, [socket]);
 
   return (
-    <div className="messages-container">
-      <MessagesSidebar />
-      {!selectedUser ? <MessagesNoChatSelected /> : <MessagesChatContainer messages={messages} />}
+    <div className="messages-wrapper">
+      <div className="messages">
+        <h1>Your Messages</h1>
+
+        <div className="messages-container">
+          {!showSidebar && (
+            <button
+              onClick={() => {
+                // setShowChat(showSidebar);
+                setShowSidebar(!showSidebar);
+              }}
+              className="hide-sidebar"
+            >
+              Show contacts
+            </button>
+          )}
+          {showSidebar && (
+            <MessagesSidebar
+              mobileView={mobileView}
+              showSidebar={showSidebar}
+              setShowSidebar={setShowSidebar}
+            />
+          )}
+          {(!showSidebar || !mobileView) && <MessagesChatContainer messages={messages} />}
+        </div>
+      </div>
     </div>
   );
 };

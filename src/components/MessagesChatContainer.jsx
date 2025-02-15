@@ -45,15 +45,16 @@ const MessagesChatContainer = () => {
 
   return (
     <div className="main-content-messages">
+      <MessagesChatHeader />
       <div className="messages-chat-container">
-        <MessagesChatHeader />
         <div className="messages-chat">
           {messages
             .filter(
               (message) =>
                 // Show only messages with the selected user
-                message.senderId._id === selectedUser._id ||
-                message.receiverId._id === selectedUser._id
+                (message.senderId._id === selectedUser._id ||
+                  message.receiverId._id === selectedUser._id) &&
+                message.text !== "" // Exclude empty messages
             )
             .map((message) => {
               return message.senderId._id === user._id ? (
