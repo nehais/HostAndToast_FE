@@ -66,6 +66,7 @@
   border: 1px solid white;
   border-radius: 50%;
   background-color: white;
+  object-fit: cover;
 }
 
 .col-field-prof-img {

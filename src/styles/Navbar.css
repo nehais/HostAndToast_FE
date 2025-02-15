@@ -81,6 +81,7 @@
   height: 35px;
   border-radius: 50%;
   border: 2px solid #003459;
+  object-fit: cover;
 }
 
 .profile-drop-down {
