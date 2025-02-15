@@ -157,6 +157,16 @@
   align-items: center;
 }
 
+.message-button {
+  margin-left: 10px;
+  background-image: url(../assets/messages.png);
+  background-size: 25px;
+  background-repeat: no-repeat;
+  width: 25px;
+  height: 25px;
+  cursor: pointer;
+}
+
 .pickup-button {
   background-image: url(../assets/pick.png);
   background-size: 25px;

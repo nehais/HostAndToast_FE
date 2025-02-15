@@ -3,13 +3,12 @@ import EditIcon from "../assets/edit.png";
 import DeleteIcon from "../assets/delete.png";
 import EditDisabledIcon from "../assets/edit-disabled.png";
 import DeleteDisabledIcon from "../assets/delete-disabled.png";
-import PickIcon from "../assets/pick.png";
 
 import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
 
 import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import ImageCarousel from "./ImageCarousel";
 import { format } from "date-fns";
 
@@ -43,6 +42,7 @@ const MealListCard = ({
     confirmation: false,
   });
   const { profileData } = useContext(AuthContext);
+  const nav = useNavigate();
 
   useEffect(() => {
     //Order Card & Rating available
@@ -165,6 +165,19 @@ const MealListCard = ({
       );
   }
 
+  async function startMessaging() {
+    try {
+      //Create a empty message contact with the Chef
+      const emptyMsg = { senderId: profileData._id, receiverId: meal.user._id };
+      await axios.post(`${API_URL}/api/messages/empty/`, emptyMsg);
+
+      //Navigate to the Messages & connect to the Chef
+      nav(`/messages?recieverId=${meal.user._id}`);
+    } catch (error) {
+      handleError("Error during rating order:", error);
+    }
+  }
+
   const isPickedAvl = () => {
     if (order && active) {
       const currentTime = new Date(); // Get the current date and time
@@ -177,11 +190,11 @@ const MealListCard = ({
     return false;
   };
 
-  const showInMapClicked = (lat, long) => {
+  function showInMapClicked(lat, long) {
     window.open(
       "https://www.google.com/maps/dir/?api=1&destination=" + lat + "," + long
     );
-  };
+  }
 
   function handleError(logMsg, error) {
     console.log(logMsg, error?.response?.data?.message);
@@ -247,18 +260,29 @@ const MealListCard = ({
         )}
         {order && (
           <>
-            <Link to={`/chef/${meal.user._id}`}>
-              <div className="meal-chef-details">
+            <div className="meal-chef-details">
+              <Link to={`/chef/${meal.user._id}`}>
                 <img
                   src={meal.user.imageUrl ? meal.user.imageUrl : ProfileIcon}
                   alt="Chef Icon"
                   className="profile-img"
-                />
-                <p>
-                  <strong>Chef</strong> {meal.user.username}
-                </p>
-              </div>
-            </Link>
+                />{" "}
+              </Link>
+              <p>
+                <strong>Chef</strong> {meal.user.username}
+              </p>
+
+              <OverlayTrigger
+                placement="right"
+                overlay={<Tooltip id="adr-tooltip">Chat with the Chef</Tooltip>}
+              >
+                <button
+                  className="message-button meal-list-button"
+                  onClick={startMessaging}
+                ></button>
+              </OverlayTrigger>
+            </div>
+
             {active && (
               <>
                 <div className="meal-chef-details">
