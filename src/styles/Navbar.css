@@ -28,6 +28,13 @@
   animation: rotateY360 3s ease-in-out; /* Apply animation on load */
 }
 
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .logo-icon {
+    width: 55px;
+  }
+}
+
 @keyframes rotateY360 {
   from {
     transform: rotateY(0deg); /* Start at 0 degrees */

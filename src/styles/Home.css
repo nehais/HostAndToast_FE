@@ -166,6 +166,13 @@
   width: 35px;
 }
 
+/*Mobile Screen*/
+@media screen and (max-device-width: 425px) {
+  .go-button {
+    font-size: 0.8em;
+  }
+}
+
 .disabled-go {
   color: white;
   background-color: #b1b8bc;
