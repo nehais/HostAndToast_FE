@@ -29,6 +29,37 @@ const AuthWrapper = ({ children }) => {
     }
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    // Fetch & store the Profile Data
+    async function getUserProfile() {
+      try {
+        const { data } = await axios.get(`${API_URL}/auth/users/${user._id}`);
+        setProfileData({
+          _id: data._id || "",
+          username: data.username || "",
+          email: data.email || "",
+          address: data.address || {},
+          imageUrl: data.imageUrl || "",
+          description: data.description || "",
+          specialty: data.specialty || "",
+        });
+      } catch (error) {
+        setProfileData({
+          username: "",
+          email: "",
+          address: {},
+          imageUrl: "",
+          description: "",
+          specialty: "",
+        });
+        console.error("Error getting User", error.response?.data?.message);
+      }
+    }
+    if (user._id) {
+      getUserProfile();
+    }
+  }, [user._id]); // Track only `_id`
+
   const authenticateUser = async () => {
     const theToken = localStorage.getItem("authToken");
     if (theToken) {
