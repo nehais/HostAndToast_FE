@@ -53,6 +53,7 @@
 .carousel-img {
   width: 100px;
   height: 100px;
+  object-fit: cover;
 }
 
 /*Mobile Screen*/
@@ -63,6 +64,7 @@
   .carousel-img {
     width: 50px;
     height: 50px;
+    object-fit: cover;
   }
 }
 
