@@ -81,6 +81,10 @@
   flex-basis: 40%;
 }
 
+.open {
+  cursor: pointer;
+}
+
 /*Mobile Screen*/
 @media screen and (max-device-width: 425px) {
   .meal-list-cuisine {

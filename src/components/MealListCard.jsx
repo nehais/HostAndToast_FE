@@ -14,12 +14,13 @@ import { format } from "date-fns";
 
 import GenModal from "./GenModal";
 import StarRating from "./StarRating.jsx";
+import MealListCustInfo from "./MealListCustInfo.jsx";
 import { AuthContext } from "../contexts/auth.context";
 import { useToast } from "../contexts/toast.context.jsx";
+import { CartContext } from "../contexts/cart.context.jsx";
+
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
-
-import { CartContext } from "../contexts/cart.context.jsx";
 
 const MealListCard = ({
   meal,
@@ -34,6 +35,7 @@ const MealListCard = ({
   const [displayTime, setDisplayTime] = useState("");
   const [comment, setComment] = useState(""); // Comment for order Rating
   const [orderRate, setOrderRate] = useState(0); // Order Rating
+  const [mealOrderInfo, setMealOrderInfo] = useState([]); // Order Info
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [genMessageModal, setGenMessageModal] = useState({
     header: "",
@@ -69,7 +71,12 @@ const MealListCard = ({
     }
   }, [meal.pickupTime]);
 
+  useEffect(() => {
+    getMealOrderInfo();
+  }, [meal._id]);
+
   function handleDeleteClick(e) {
+    if (meal.booked) return;
     let message = "Are you sure, you want to Delete the Meal?";
 
     if (order) {
@@ -205,6 +212,40 @@ const MealListCard = ({
     });
   }
 
+  async function getMealOrderInfo() {
+    try {
+      let { data } = await axios.get(
+        `${API_URL}/api/orders/customer/${meal._id}`
+      );
+      setMealOrderInfo(data);
+    } catch (error) {
+      handleError("Error during rating order:", error);
+    }
+  }
+
+  function openCustomers() {
+    if (mealOrderInfo.length <= 0) return;
+
+    setGenMessageModal({
+      header: "List of Customers",
+      message: (
+        <div>
+          {mealOrderInfo.map((order) => (
+            <MealListCustInfo key={order.user._id} user={order.user} />
+          ))}
+        </div>
+      ),
+      size: "sm",
+      show: true,
+      confirmation: false,
+    });
+  }
+
+  function handleEdit() {
+    if (meal.booked) return;
+    nav(`/handle-meal?mode=Edit&Id=${meal._id}`);
+  }
+
   return (
     <div
       key={meal._id}
@@ -257,7 +298,10 @@ const MealListCard = ({
                   {meal.plates} Plates Available
                 </p>
 
-                <span className="badge bg-warning">
+                <span
+                  className={`badge bg-warning ${meal.booked ? "open" : " "}`}
+                  onClick={openCustomers}
+                >
                   {meal.booked} Plates Booked
                 </span>
               </>
@@ -365,18 +409,17 @@ const MealListCard = ({
             </Tooltip>
           }
         >
-          <Link to={`/handle-meal?mode=Edit&Id=${meal._id}`}>
-            <button
-              hidden={hideActions || order ? true : false}
-              className="meal-list-button"
-            >
-              <img
-                src={meal.booked ? EditDisabledIcon : EditIcon}
-                alt="Edit Icon"
-                className="meal-list-button-img"
-              />
-            </button>
-          </Link>
+          <button
+            hidden={hideActions || order ? true : false}
+            className="meal-list-button"
+            onClick={handleEdit}
+          >
+            <img
+              src={meal.booked ? EditDisabledIcon : EditIcon}
+              alt="Edit Icon"
+              className="meal-list-button-img"
+            />
+          </button>
         </OverlayTrigger>
         {/* Delete Button */}
         <OverlayTrigger

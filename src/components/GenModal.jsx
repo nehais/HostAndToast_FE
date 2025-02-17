@@ -25,7 +25,12 @@ const GenModal = ({ messageObj, handleClose, handleAction }) => {
   }
 
   return (
-    <Modal show={messageObj.show} onHide={handleClose} centered>
+    <Modal
+      show={messageObj.show}
+      onHide={handleClose}
+      centered
+      size={messageObj.size ? messageObj.size : "md"}
+    >
       <Modal.Header closeButton>
         <Modal.Title>{messageObj.header}</Modal.Title>
       </Modal.Header>
