@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // Default calendar styles
 import { API_URL } from "../config/apiConfig.js";
@@ -8,6 +8,7 @@ import "../styles/ChefOverviewPage.css";
 import MealCard from "../components/MealCard";
 import profileIcon from "../assets/profile.png";
 import StarRating from "../components/StarRating.jsx";
+import { AuthContext } from "../contexts/auth.context.jsx";
 
 const ChefOverviewPage = () => {
   const { chefId } = useParams();
@@ -17,6 +18,8 @@ const ChefOverviewPage = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [userRating, setUserRating] = useState(null);
   const [numberOfRatings, setNumberOfRatings] = useState(0);
+  const { user } = useContext(AuthContext);
+  const nav = useNavigate();
 
   // Fetch the chef data
   useEffect(() => {
@@ -94,6 +97,22 @@ const ChefOverviewPage = () => {
     })
   );
 
+  function handleGetInContact() {
+    const createMessage = async () => {
+      try {
+        const { data } = await axios.post(`${API_URL}/api/messages/empty`, {
+          receiverId: chef._id,
+          senderId: user._id,
+        });
+        // console.log("Message created", data);
+        nav(`/messages?recieverId=${chef._id}`);
+      } catch (error) {
+        console.log("Error creating message", error.response.data.message);
+      }
+    };
+    createMessage();
+  }
+
   // Filter the meals based on the selected date.
   // If no date is selected, show all meals.
   const filteredMeals = selectedDate
@@ -116,11 +135,16 @@ const ChefOverviewPage = () => {
             <div className="user-info">
               <h1>{chef.username && chef.username}</h1>
               <p className="created-info">User since {formatDateTime(chef.createdAt)}</p>
-              <h4>{chef.description}</h4>
+              {chef.description && <h4>{chef.description}</h4>}
               <div className="rating">
                 <StarRating initialValue={userRating ? userRating : 0} editable={false} />
                 <p>Rating based on {numberOfRatings} reviews</p>
               </div>
+              {user._id !== chef._id && (
+                <button className="contact-btn" onClick={handleGetInContact}>
+                  Get in contact
+                </button>
+              )}
             </div>
           )}
         </div>

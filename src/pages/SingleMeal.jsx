@@ -167,8 +167,12 @@ const SingleMeal = () => {
         console.log("Error creating the order", error);
       }
     };
-
-    addToCart();
+    if (user.isLoggedIn) {
+      addToCart();
+    } else {
+      // nav("/");
+      setToast({ msg: `Please log in to add meals to your cart!`, type: "danger" });
+    }
   };
 
   const handleEditMeal = () => {
@@ -354,9 +358,11 @@ const SingleMeal = () => {
               </div>
             </div>
           </Link>
-          <button className="contact-btn" onClick={handleGetInContact}>
-            Get in contact
-          </button>
+          {host._id !== user._id && (
+            <button className="contact-btn" onClick={handleGetInContact}>
+              Get in contact
+            </button>
+          )}
         </div>
       </div>
       <div className="container ratings-container">

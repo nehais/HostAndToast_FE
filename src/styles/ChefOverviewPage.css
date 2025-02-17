@@ -64,6 +64,14 @@
         background-color: rgb(242, 204, 22);
         padding: 0 2px;
       }
+
+      button {
+        background-color: #003459;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 5px;
+      }
     }
   }
 

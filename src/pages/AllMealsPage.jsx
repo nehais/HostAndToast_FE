@@ -48,7 +48,7 @@ const AllMealsPage = () => {
   useEffect(() => {
     async function getMeals() {
       try {
-        const { data } = await axios.get(`${API_URL}/api/meals`);
+        const { data } = await axios.get(`${API_URL}/api/meals/active`);
         setMeals(data);
       } catch (error) {
         console.log("Error fetching meals", error.response.data.message);
