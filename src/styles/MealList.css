@@ -78,7 +78,7 @@
 
 .meal-list-desc {
   text-align: justify;
-  flex-basis: 40%;
+  flex-basis: 42%;
 }
 
 .open {
@@ -156,7 +156,7 @@
 }
 
 .meal-list-buttons {
-  flex-basis: 10%;
+  flex-basis: 8%;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -164,7 +164,6 @@
 }
 
 .message-button {
-  margin-left: 10px;
   background-image: url(../assets/messages.png);
   background-size: 25px;
   background-repeat: no-repeat;
@@ -212,6 +211,10 @@
   margin-top: 10px;
 }
 
+.meal-card-font {
+  font-size: 0.9em;
+}
+
 /*Mobile Screen*/
 @media screen and (max-device-width: 425px) {
   .meal-card-font {
@@ -230,9 +233,5 @@
 
   .meal-list-button-img {
     width: 15px;
-  }
-
-  .message-button {
-    margin-left: 5px;
   }
 }
