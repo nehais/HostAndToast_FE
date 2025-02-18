@@ -126,9 +126,9 @@ const AuthWrapper = ({ children }) => {
     }
   }, [socket]);
 
-  useEffect(() => {
-    console.log("Profile data updated", profileData);
-  }, [profileData]);
+  // useEffect(() => {
+  //   console.log("Profile data updated", profileData);
+  // }, [profileData]);
 
   return (
     <AuthContext.Provider
