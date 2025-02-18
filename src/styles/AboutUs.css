@@ -1,0 +1,59 @@
+.about-us {
+  text-align: center;
+  width: 100%;
+
+  .container {
+    background-color: rgba(203, 217, 222, 0.9);
+    padding: 40px;
+    margin: 40px auto;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  h1 {
+    margin: 20px 0;
+
+    @media screen and (max-width: 425px) {
+      font-size: 1.5rem;
+      margin: 10px 0;
+    }
+  }
+
+  p {
+    max-width: 550px;
+  }
+
+  h2 {
+    margin: 0 0 20px;
+  }
+
+  .team {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+
+    img {
+      width: 200px;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      margin: 20px;
+    }
+    button {
+      background-color: #003459;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+
+      a {
+        text-decoration: none;
+        color: white;
+      }
+    }
+  }
+}
