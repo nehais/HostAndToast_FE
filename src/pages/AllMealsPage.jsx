@@ -7,8 +7,6 @@ import { API_URL } from "../config/apiConfig.js";
 import Map from "../components/Map.jsx";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-// import { AddressContext } from "../contexts/address.context.jsx";
-// import { LatLngBounds } from "leaflet"; // for bounds checking
 
 const AllMealsPage = () => {
   const [meals, setMeals] = useState([]);
@@ -18,14 +16,12 @@ const AllMealsPage = () => {
     price: 20, // initial price (will adjust once meals load)
     cuisine: [], // selected cuisines; on initial load, all cuisines are selected
     pickupDate: null, // selected pickup date; null means no date filter
-    preferences: [],
+    preferences: [], // selected preferences; initially empty
   });
   const [initialCuisineSet, setInitialCuisineSet] = useState(false);
   // New state for the current map bounds.
   const [mapBounds, setMapBounds] = useState(null);
   const [showFilters, setShowFilters] = useState(true);
-
-  // const { address } = useContext(AddressContext);
 
   const allPreferences = [
     { value: "Vegan", label: "Vegan 🌿" },
@@ -36,7 +32,7 @@ const AllMealsPage = () => {
     { value: "No Gluten", label: "No Gluten 🍞" },
   ];
 
-  // Helper: Compare two dates ignoring time.
+  // --- Helper Function to Check if Two Dates are the Same Day ---
   const isSameDay = (d1, d2) => {
     return (
       d1.getFullYear() === d2.getFullYear() &&
@@ -45,6 +41,7 @@ const AllMealsPage = () => {
     );
   };
 
+  // --- Check Device Width ---
   useEffect(() => {
     function checkDeviceWidth() {
       if (window.innerWidth < 820) {
@@ -85,7 +82,6 @@ const AllMealsPage = () => {
       if (meal.price > filters.price) return false;
       if (filters.pickupDate && !isSameDay(new Date(meal.pickupTime), filters.pickupDate))
         return false;
-      // NEW: Only include meals within the current map bounds if they exist.
       if (mapBounds) {
         const lat = meal.user.address.lat;
         const lng = meal.user.address.long;
@@ -133,9 +129,7 @@ const AllMealsPage = () => {
     }
   }, [meals, allCuisines, initialCuisineSet]);
 
-  // --- Auto-update Cuisine Filter Based on Map Bounds ---
-  // Instead of only unchecking (filtering) out unavailable cuisines,
-  // we now set the cuisine filter to include all cuisines available in the current map area.
+  // --- Update Cuisine Filter ---
   useEffect(() => {
     const availableCuisines = allCuisines.filter((cuisine) => (cuisineCounts[cuisine] || 0) > 0);
     setFilters((prev) => ({
@@ -146,16 +140,10 @@ const AllMealsPage = () => {
 
   // --- Update Filtered Meals ---
   useEffect(() => {
-    console.log("Aktive Filter", filters, "filters.preferences", filters.preferences);
-    console.log("Meals:", meals);
-
     const filtered = meals.filter((meal) => {
-      console.log("meal.allergies", meal.allergies); // Log to verify
-
       if (meal.price > filters.price) return false;
       if (filters.cuisine.length > 0 && !filters.cuisine.includes(meal.cuisine)) return false;
 
-      // Ensure the meal contains all selected preferences (which match allergies)
       if (
         filters.preferences.length > 0 &&
         !filters.preferences.every((preference) => (meal.allergies || []).includes(preference))
@@ -170,12 +158,10 @@ const AllMealsPage = () => {
       return true;
     });
 
-    console.log("Filtered Meals:", filtered); // Debugging output
     setFilteredMeals(filtered);
   }, [filters, meals]);
 
-  // --- Update Visible Meals Based on Map Bounds ---
-  // Only show meals that are in the current map bounds.
+  // --- Update Visible Meals ---
   const visibleMeals = useMemo(() => {
     if (!mapBounds) return filteredMeals; // If no bounds yet, show all filtered meals.
     return filteredMeals.filter((meal) => {
@@ -186,8 +172,7 @@ const AllMealsPage = () => {
     });
   }, [filteredMeals, mapBounds]);
 
-  // --- Update Map Markers ---
-  // Now compute markers based on visibleMeals.
+  // --- Update Markers ---
   useEffect(() => {
     const allMarkers = visibleMeals.map((meal) => ({
       geocode: [meal.user.address.lat, meal.user.address.long],
@@ -271,6 +256,8 @@ const AllMealsPage = () => {
                       />
                       <span>{filters.price} €</span>
                     </div>
+
+                    {/* Cuisine Filter */}
                   </label>
                   Cuisine Filter
                   <div>
@@ -338,11 +325,9 @@ const AllMealsPage = () => {
                               value={preference}
                               checked={filters.preferences.includes(preference.value)}
                               onChange={() => {
-                                console.log("preference.value", preference.value);
                                 let newPref = [...filters.preferences];
                                 if (newPref.includes(preference.value)) {
                                   newPref = newPref.filter((c) => c !== preference.value);
-                                  console.log("newPref", newPref);
                                 } else {
                                   newPref.push(preference.value);
                                 }
@@ -373,11 +358,9 @@ const AllMealsPage = () => {
 
         <div id="right-column">
           <div id="map">
-            {/* Pass the handleBoundsChange callback to the Map */}
             <Map markers={markers} onBoundsChange={handleBoundsChange} />
           </div>
           <div id="all-cards">
-            {/* Render only the meals currently in view on the map */}
             {visibleMeals.map((meal) => (
               <MealCard key={meal._id} meal={meal} />
             ))}

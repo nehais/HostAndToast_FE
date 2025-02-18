@@ -44,7 +44,6 @@ const SingleMeal = () => {
         setMeal(data);
         setNumberImages(data.imageUrl.length);
         setHost(data.user);
-        // console.log("Meal", data);
       } catch (error) {
         console.log("Error fetching meal", error.response.data.message);
       }
@@ -60,7 +59,6 @@ const SingleMeal = () => {
       try {
         const { data } = await axios.get(`${API_URL}/auth/users/${meal.user}`);
         setHost(data);
-        // console.log("Host", data);
       } catch (error) {
         console.log("Error fetching user", error.response?.data?.message || error.message);
       }
@@ -94,14 +92,13 @@ const SingleMeal = () => {
       try {
         const { data } = await axios.get(`${API_URL}/auth/users/rating/${host._id}`);
         setUserRating(data.averageRating);
-        // console.log("User rating", data);
       } catch (error) {
         console.log("Error fetching user rating", error.response?.data?.message || error.message);
       }
     };
 
     getUserRating();
-  }, [host]); // Ensure useEffect re-runs when user changes
+  }, [host]);
 
   // Format the date and time
   const formatDateTime = (isoString, shortWeekday = false) => {
@@ -111,7 +108,6 @@ const SingleMeal = () => {
     // Short or full weekday name
     const weekdayFormat = shortWeekday ? "short" : "long";
 
-    // Format the date as "Wed, 20.02.25" or "Wednesday, 20.02.25"
     const formattedDate = `${date.toLocaleDateString("en-GB", {
       weekday: weekdayFormat,
     })}, ${date.toLocaleDateString("en-GB", {
@@ -137,7 +133,7 @@ const SingleMeal = () => {
     console.log("Add to cart");
 
     const mealId = meal._id;
-    const plates = Number(event.target.quantity.value); // Ensure it's a number
+    const plates = Number(event.target.quantity.value);
     const price = meal.price;
     const userId = user._id;
 
@@ -154,11 +150,7 @@ const SingleMeal = () => {
         console.log("Order created", data);
 
         console.log("Cart before update", cart);
-        // Ensure safe state update
-        // setCart((prevCart) => ({
-        //   ...prevCart, // Preserve existing properties
-        //   counter: prevCart.counter + plates, // Update the counter correctly
-        // }));
+
         updateCartCounter(plates);
         console.log("Cart updated", cart);
 
