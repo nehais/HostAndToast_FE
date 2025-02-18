@@ -226,6 +226,7 @@ const AllMealsPage = () => {
       price: allMaxPrice,
       cuisine: allCuisines,
       pickupDate: null,
+      preferences: [],
     });
   };
 
