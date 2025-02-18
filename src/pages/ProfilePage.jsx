@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from "react";
 
 import { AuthContext } from "../contexts/auth.context";
 import { useToast } from "../contexts/toast.context.jsx";
+import GenModal from "../components/GenModal";
 import ProfileUserInfo from "../components/ProfileUserInfo.jsx";
 import ProfileDashboard from "../components/ProfileDashboard.jsx";
 
@@ -14,6 +15,12 @@ const ProfilePage = ({ setShowSpinner }) => {
   const { user, profileData, setProfileData, setUser } =
     useContext(AuthContext);
   const { setToast } = useToast(); //Use setToast context to set message
+  const [genMessageModal, setGenMessageModal] = useState({
+    header: "",
+    message: "",
+    show: false,
+    confirmation: false,
+  });
   const [refreshProfile, setRefreshProfile] = useState(0);
   const [userRating, setUserRating] = useState(0);
   const [newProfData, setNewProfData] = useState({
@@ -66,7 +73,7 @@ const ProfilePage = ({ setShowSpinner }) => {
 
       filterByPickupTime(data);
     } catch (error) {
-      //handleError("Error fetching meals: ", error);
+      handleError("Error fetching All Chef Meals: ", error);
     }
   }
 
@@ -102,7 +109,7 @@ const ProfilePage = ({ setShowSpinner }) => {
         totalRevenue: data.totalRevenue,
       });
     } catch (error) {
-      //handleError("Error fetching stats: ", error);
+      handleError("Error fetching stats: ", error);
     }
   }
 
@@ -115,7 +122,7 @@ const ProfilePage = ({ setShowSpinner }) => {
 
       filterOrderByStatus(data);
     } catch (error) {
-      //handleError("Error fetching meals: ", error);
+      handleError("Error fetching Customer Orders: ", error);
     }
   }
 
@@ -162,10 +169,7 @@ const ProfilePage = ({ setShowSpinner }) => {
       );
       setUserRating(data.averageRating);
     } catch (error) {
-      console.log(
-        "Error fetching user rating",
-        error.response?.data?.message || error.message
-      );
+      handleError("Error fetching user rating: ", error);
     }
   }
 
@@ -208,8 +212,17 @@ const ProfilePage = ({ setShowSpinner }) => {
       setToast({ msg: "User Profile updated", type: "success" });
     } catch (error) {
       setShowSpinner((prev) => !prev);
-      //handleError("Update Meal Error: ", error);
+      handleError("Update User Profile error: ", error);
     }
+  }
+
+  function handleError(logMsg, error) {
+    console.log(logMsg, error?.response?.data?.message);
+    setGenMessageModal({
+      header: "Error",
+      message: logMsg + error?.response?.data?.message,
+      show: true,
+    });
   }
 
   return (
@@ -221,6 +234,7 @@ const ProfilePage = ({ setShowSpinner }) => {
         handleSubmit={handleSubmit}
         setShowSpinner={setShowSpinner}
         userRating={userRating}
+        handleError={handleError}
       />
 
       {/*User Dashboard for Chef / Buyer */}
@@ -232,6 +246,12 @@ const ProfilePage = ({ setShowSpinner }) => {
         platesBought={customerStats.platesBought}
         totalPurchase={customerStats.totalPurchase}
         setRefreshProfile={setRefreshProfile}
+      />
+
+      {/* Error Modal */}
+      <GenModal
+        messageObj={genMessageModal}
+        handleClose={(prev) => setGenMessageModal({ ...prev, show: false })}
       />
     </div>
   );
