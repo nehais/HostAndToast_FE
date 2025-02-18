@@ -18,6 +18,7 @@ const AllMealsPage = () => {
     price: 20, // initial price (will adjust once meals load)
     cuisine: [], // selected cuisines; on initial load, all cuisines are selected
     pickupDate: null, // selected pickup date; null means no date filter
+    preferences: [],
   });
   const [initialCuisineSet, setInitialCuisineSet] = useState(false);
   // New state for the current map bounds.
@@ -25,6 +26,15 @@ const AllMealsPage = () => {
   const [showFilters, setShowFilters] = useState(true);
 
   // const { address } = useContext(AddressContext);
+
+  const allPreferences = [
+    { value: "Vegan", label: "Vegan 🌿" },
+    { value: "Vegetarian", label: "Vegetarian 🥕" },
+    { value: "No Peanuts", label: "No Peanuts 🥜" },
+    { value: "No Shellfish", label: "No Shellfish 🦐" },
+    { value: "No Dairy", label: "No Dairy 🥛" },
+    { value: "No Gluten", label: "No Gluten 🍞" },
+  ];
 
   // Helper: Compare two dates ignoring time.
   const isSameDay = (d1, d2) => {
@@ -136,13 +146,31 @@ const AllMealsPage = () => {
 
   // --- Update Filtered Meals ---
   useEffect(() => {
+    console.log("Aktive Filter", filters, "filters.preferences", filters.preferences);
+    console.log("Meals:", meals);
+
     const filtered = meals.filter((meal) => {
+      console.log("meal.allergies", meal.allergies); // Log to verify
+
       if (meal.price > filters.price) return false;
-      if (filters.cuisine.length === 0 || !filters.cuisine.includes(meal.cuisine)) return false;
-      if (filters.pickupDate && !isSameDay(new Date(meal.pickupTime), filters.pickupDate))
+      if (filters.cuisine.length > 0 && !filters.cuisine.includes(meal.cuisine)) return false;
+
+      // Ensure the meal contains all selected preferences (which match allergies)
+      if (
+        filters.preferences.length > 0 &&
+        !filters.preferences.every((preference) => (meal.allergies || []).includes(preference))
+      ) {
         return false;
+      }
+
+      if (filters.pickupDate && !isSameDay(new Date(meal.pickupTime), filters.pickupDate)) {
+        return false;
+      }
+
       return true;
     });
+
+    console.log("Filtered Meals:", filtered); // Debugging output
     setFilteredMeals(filtered);
   }, [filters, meals]);
 
@@ -294,6 +322,36 @@ const AllMealsPage = () => {
                         highlightDates={availablePickupDates}
                         isClearable
                       />
+                    </label>
+                  </div>
+                  {/* Preferences Filter */}
+                  <div>
+                    <label>
+                      <legend>Preferences</legend>
+                      {allPreferences.map((preference, index) => (
+                        <div key={index}>
+                          <label>
+                            <input
+                              type="checkbox"
+                              name="preferences"
+                              value={preference}
+                              checked={filters.preferences.includes(preference.value)}
+                              onChange={() => {
+                                console.log("preference.value", preference.value);
+                                let newPref = [...filters.preferences];
+                                if (newPref.includes(preference.value)) {
+                                  newPref = newPref.filter((c) => c !== preference.value);
+                                  console.log("newPref", newPref);
+                                } else {
+                                  newPref.push(preference.value);
+                                }
+                                setFilters((prev) => ({ ...prev, preferences: newPref }));
+                              }}
+                            />
+                            {preference.label}
+                          </label>
+                        </div>
+                      ))}
                     </label>
                   </div>
                   {/* Reset Filters Button */}

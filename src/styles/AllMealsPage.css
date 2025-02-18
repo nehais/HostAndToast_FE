@@ -118,10 +118,9 @@
 
   .cuisine-label {
     display: flex;
-
-    input {
-      margin-right: 5px;
-    }
+  }
+  input {
+    margin-right: 5px;
   }
 
   .one-cuisine {
