@@ -83,8 +83,8 @@ const MessagesChatContainer = () => {
                 </div>
               );
             })}
-          <MessagesInput />
         </div>
+        <MessagesInput />
       </div>
     </div>
   );
