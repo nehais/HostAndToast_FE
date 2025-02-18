@@ -160,6 +160,12 @@ const AddUpdMeal = ({ setShowSpinner }) => {
   function useMeal(meal) {
     setUseMealID(meal._id);
 
+    const currentTime = new Date(); // Get the current date and time
+    const pickupTime =
+      new Date(meal.pickupTime) < currentTime
+        ? currentTime
+        : new Date(meal.pickupTime);
+
     setMealFormData({
       title: meal.title || "",
       cuisine: meal.cuisine || "",
@@ -167,7 +173,7 @@ const AddUpdMeal = ({ setShowSpinner }) => {
       imageUrl: meal.imageUrl || [],
       allergies: meal.allergies || [],
       plates: meal.plates || 1,
-      pickupTime: meal.pickupTime || "",
+      pickupTime: pickupTime || "",
       hosted: false,
       price: meal.price || 1,
     });
