@@ -156,15 +156,22 @@ const AddUpdMeal = ({ setShowSpinner }) => {
     }
   }
 
+  const formatDateTimeLocal = (date) => {
+    return new Date(date).toISOString().slice(0, 16); // Removes seconds and timezone
+  };
+
   //Use an Older Meal
   function useMeal(meal) {
     setUseMealID(meal._id);
 
     const currentTime = new Date(); // Get the current date and time
-    const pickupTime =
-      new Date(meal.pickupTime) < currentTime
-        ? currentTime
-        : new Date(meal.pickupTime);
+    let pickupTime;
+    if (meal.pickupTime) {
+      pickupTime =
+        new Date(meal.pickupTime) < currentTime
+          ? formatDateTimeLocal(currentTime)
+          : formatDateTimeLocal(meal.pickupTime);
+    }
 
     setMealFormData({
       title: meal.title || "",
