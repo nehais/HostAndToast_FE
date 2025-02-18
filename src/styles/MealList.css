@@ -200,6 +200,10 @@
   transform: scale(1.25);
 }
 
+.disabled-button:hover {
+  transform: scale(1);
+}
+
 .meal-list-button-img {
   width: 20px;
 }
