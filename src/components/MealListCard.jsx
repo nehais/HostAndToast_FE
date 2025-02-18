@@ -411,7 +411,9 @@ const MealListCard = ({
         >
           <button
             hidden={hideActions || order ? true : false}
-            className="meal-list-button"
+            className={`meal-list-button ${
+              meal.booked ? " disabled-button" : ""
+            }`}
             onClick={handleEdit}
           >
             <img
@@ -434,7 +436,9 @@ const MealListCard = ({
         >
           <button
             hidden={hideActions}
-            className="meal-list-button"
+            className={`meal-list-button ${
+              meal.booked ? " disabled-button" : ""
+            }`}
             onClick={() => {
               handleDeleteClick();
             }}
