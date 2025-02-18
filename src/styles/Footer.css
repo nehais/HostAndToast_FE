@@ -28,3 +28,16 @@
 .toast-text {
   font-size: medium;
 }
+
+.about-us-footer {
+  position: absolute;
+  right: 30px;
+
+  font-size: 0.8em;
+  color: rgb(29, 80, 162);
+}
+
+.about-us-footer:hover {
+  color: rgba(29, 80, 162, 0.807);
+  transform: scale(1.15);
+}

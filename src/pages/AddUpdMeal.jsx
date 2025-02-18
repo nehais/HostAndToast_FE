@@ -169,7 +169,7 @@ const AddUpdMeal = ({ setShowSpinner }) => {
     if (meal.pickupTime) {
       pickupTime =
         new Date(meal.pickupTime) < currentTime
-          ? formatDateTimeLocal(currentTime)
+          ? ""
           : formatDateTimeLocal(meal.pickupTime);
     }
 
