@@ -3,6 +3,7 @@ import GitHubLogo from "../assets/gitOpen.png";
 
 import { Link } from "react-router-dom";
 import ToastMessage from "./ToastMessage.jsx";
+import AboutUs from "../pages/AboutUs.jsx";
 
 const Footer = ({ toast }) => {
   return (
@@ -11,6 +12,9 @@ const Footer = ({ toast }) => {
         <img src={GitHubLogo} alt="GitHub" className="github-logo" />
       </Link>
 
+      <Link className="about-us-footer">
+        <AboutUs />
+      </Link>
       {/*Show Delete Toast Message*/}
       <ToastMessage className="footer-toast"></ToastMessage>
     </div>
