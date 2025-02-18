@@ -17,6 +17,7 @@ const ProfileUserInfo = ({
   handleSubmit,
   setShowSpinner,
   userRating,
+  handleError,
 }) => {
   const [profileOpen, setProfileOpen] = useState(true);
 
@@ -62,8 +63,7 @@ const ProfileUserInfo = ({
       }
     } catch (error) {
       setShowSpinner((prev) => !prev); //Show custom spinner during the upload
-
-      console.error("File upload failed:", error);
+      handleError("File upload failed: ", error);
     }
   }
 

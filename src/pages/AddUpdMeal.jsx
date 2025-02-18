@@ -70,7 +70,7 @@ const AddUpdMeal = ({ setShowSpinner }) => {
         const { data } = await axios.get(`${API_URL}/api/meals/${Id}`);
         useMeal(data);
       } catch (error) {
-        console.log("Error fetching meal", error.response.data.message);
+        handleError("Error fetching meal: ", error);
       }
     };
     getMeal();
