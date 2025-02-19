@@ -150,6 +150,12 @@ const AddUpdMeal = ({ setShowSpinner }) => {
       setShowSpinner((prev) => !prev);
       console.log("All User Meals fetched", data);
       setMeals(data);
+      if (data.length <= 0) {
+        setToast({
+          msg: "No previous Meals exists for the user",
+          type: "danger",
+        });
+      }
     } catch (error) {
       setShowSpinner((prev) => !prev);
       handleError("Error fetching meals: ", error);
