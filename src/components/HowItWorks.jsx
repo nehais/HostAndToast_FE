@@ -1,7 +1,7 @@
-import slide1 from "../assets/01_how_it_works_post.jfif";
-import slide2 from "../assets/02_how_it_works_book.jfif";
-import slide3 from "../assets/03_how_it_works_cook.jfif";
-import slide4 from "../assets/04_how_it_works_pick.jfif";
+import slide1 from "../assets/01_how_it_works_post.jpg";
+import slide2 from "../assets/02_how_it_works_book.jpg";
+import slide3 from "../assets/03_how_it_works_cook.jpg";
+import slide4 from "../assets/04_how_it_works_pick.jpg";
 import { useEffect, useState } from "react";
 
 const HowItWorks = () => {
