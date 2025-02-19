@@ -72,10 +72,7 @@ const AddressSearch = ({ componentId, handleAdrChange }) => {
         setSuggestions(results);
         setShowDropdown(true);
       } catch (error) {
-        console.error(
-          "Error fetching autocomplete address suggestions:",
-          error
-        );
+        console.error("Error fetching autocomplete address suggestions:", error);
       }
     } else {
       setSuggestions([]); // Clear suggestions for short input
@@ -105,7 +102,7 @@ const AddressSearch = ({ componentId, handleAdrChange }) => {
 
   return (
     <div
-      className={${
+      className={`${
         componentId === "navbar"
           ? "search-control-container navbar-adr"
           : componentId === "meal-form"
@@ -113,7 +110,7 @@ const AddressSearch = ({ componentId, handleAdrChange }) => {
           : componentId === "profile"
           ? " "
           : "search-control-container"
-      }}
+      }`}
     >
       <input
         type="text"
@@ -121,24 +118,20 @@ const AddressSearch = ({ componentId, handleAdrChange }) => {
         onChange={handleInputChange}
         placeholder="Search for an address..."
         disabled={componentId === "meal-form" ? true : false}
-        className={search-control ${
+        className={`search-control ${
           componentId === "meal-form"
             ? "meal-input input-disabled"
             : componentId === "profile"
             ? "profile-adr-input"
             : " "
-        }}
+        }`}
         onFocus={() => setShowDropdown(true)} // Show dropdown on focus
       />
 
       {showDropdown && suggestions.length > 0 && (
         <ul className="address-drop-down">
           {suggestions.map((suggestion, index) => (
-            <li
-              key={index}
-              onClick={() => handleSuggestionClick(suggestion)}
-              ref={ref}
-            >
+            <li key={index} onClick={() => handleSuggestionClick(suggestion)} ref={ref}>
               {suggestion.label}
             </li>
           ))}
