@@ -7,14 +7,14 @@ import { API_URL } from "../config/apiConfig.js";
 
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import GenModal from "../components/GenModal";
-import { AuthContext } from "../contexts/auth.context.jsx";
-import { useToast } from "../contexts/toast.context.jsx";
-
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
+
+import GenModal from "../components/GenModal";
 import SidePrevMeals from "../components/SidePrevMeals.jsx";
 import MealForm from "../components/MealForm.jsx";
+import { AuthContext } from "../contexts/auth.context.jsx";
+import { useToast } from "../contexts/toast.context.jsx";
 
 const AddUpdMeal = ({ setShowSpinner }) => {
   const [searchParams, setSearchParams] = useSearchParams();

@@ -202,6 +202,7 @@ const ProfilePage = ({ setShowSpinner }) => {
           specialty: data.specialty,
           address: {
             ...prev.address,
+            _id: data.address._id,
             displayName: data.address.displayName,
             lat: data.address.lat,
             long: data.address.long,
