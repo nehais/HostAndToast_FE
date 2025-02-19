@@ -25,7 +25,7 @@ const SingleMeal = () => {
   const [showAllImages, setShowAllImages] = useState(false);
   const [host, setHost] = useState(null);
   const [userRating, setUserRating] = useState(null);
-  const { user } = useContext(AuthContext);
+  const { user, isLoggedIn } = useContext(AuthContext);
   const { setToast } = useToast();
   const nav = useNavigate();
   const [genMessageModal, setGenMessageModal] = useState({
@@ -159,7 +159,7 @@ const SingleMeal = () => {
         console.log("Error creating the order", error);
       }
     };
-    if (user.isLoggedIn) {
+    if (isLoggedIn) {
       addToCart();
     } else {
       // nav("/");
