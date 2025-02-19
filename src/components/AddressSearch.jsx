@@ -1,5 +1,4 @@
 import "leaflet-geosearch/dist/geosearch.css";
-
 import { useContext, useRef, useEffect, useState } from "react";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import { AddressContext } from "../contexts/address.context";
@@ -7,53 +6,14 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/auth.context";
 
 const AddressSearch = ({ componentId, handleAdrChange }) => {
-  const [searchTerm, setSearchTerm] = useState(""); //The display term on the field
-  const [suggestions, setSuggestions] = useState([]); //Holds the suggested address Drop Down
-  const [showDropdown, setShowDropdown] = useState(false); //The ind to show DD of suggested adr
+  const [searchTerm, setSearchTerm] = useState(""); // The display term on the field
+  const [suggestions, setSuggestions] = useState([]); // Holds the suggested addresses
+  const [showDropdown, setShowDropdown] = useState(false); // To control the dropdown visibility
   const { address, setAddress } = useContext(AddressContext);
   const { profileData } = useContext(AuthContext);
   const ref = useRef();
   const nav = useNavigate();
-
-  useEffect(() => {
-    async function fillSuggestions(searchStr) {
-      const results = await provider.search({ query: searchStr });
-      setSuggestions(results);
-    }
-
-    if (address.label) {
-      setSearchTerm(address.label);
-      fillSuggestions(address.label); //Pre-fill the Dropdown
-    }
-  }, [address]);
-
-  useEffect(() => {
-    if (
-      (componentId === "meal-form" || componentId === "profile") &&
-      profileData.address &&
-      profileData.address.displayName
-    ) {
-      //Pre-set the user address for Address field on Meal & Profile form
-      setSearchTerm(profileData.address.displayName);
-    }
-  }, [profileData.address]);
-
-  useEffect(() => {
-    //onClick outside of element close the DD
-    function handleClickOutside(event) {
-      if (ref.current && !ref.current.contains(event.target)) {
-        if (document.activeElement.dataset.componentId === componentId) {
-          setShowDropdown(false); // Close the dropdown
-        }
-      }
-    }
-    // Bind
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      // Clean up on unmount
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [ref]);
+  const debounceTimeout = useRef(null); // Holds the debounce timeout reference
 
   const provider = new OpenStreetMapProvider({
     params: {
@@ -61,28 +21,73 @@ const AddressSearch = ({ componentId, handleAdrChange }) => {
     },
   });
 
-  const handleInputChange = async (e) => {
-    const value = e.target.value;
-    setSearchTerm(value);
-
-    if (value.trim().length > 2) {
-      // Fetch suggestions from the provider
-      try {
-        const results = await provider.search({ query: value });
-        setSuggestions(results);
-        setShowDropdown(true);
-      } catch (error) {
-        console.error("Error fetching autocomplete address suggestions:", error);
-      }
-    } else {
-      setSuggestions([]); // Clear suggestions for short input
+  // Function to fetch address suggestions
+  const fetchSuggestions = async (query) => {
+    if (!query || query.trim().length <= 2) {
+      setSuggestions([]); // Clear suggestions if input is too short
       setShowDropdown(false);
+      return;
+    }
+
+    try {
+      const results = await provider.search({ query });
+      setSuggestions(results);
+      setShowDropdown(true);
+    } catch (error) {
+      console.error("Error fetching address suggestions:", error);
     }
   };
 
+  // Debounce effect to delay API call
+  useEffect(() => {
+    if (debounceTimeout.current) {
+      clearTimeout(debounceTimeout.current);
+    }
+
+    debounceTimeout.current = setTimeout(() => {
+      fetchSuggestions(searchTerm);
+    }, 500); // 500ms delay
+
+    return () => clearTimeout(debounceTimeout.current);
+  }, [searchTerm]);
+
+  // Preset search field when address is available
+  useEffect(() => {
+    if (address.label) {
+      setSearchTerm(address.label);
+    }
+  }, [address]);
+
+  // Set user profile address in the input field (if applicable)
+  useEffect(() => {
+    if (
+      (componentId === "meal-form" || componentId === "profile") &&
+      profileData.address &&
+      profileData.address.displayName
+    ) {
+      setSearchTerm(profileData.address.displayName);
+    }
+  }, [profileData.address]);
+
+  // Handle clicks outside to close dropdown
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
   const handleSuggestionClick = (suggestion) => {
-    setSearchTerm(suggestion.label); // Set the selected suggestion in the input field
-    setShowDropdown(false); // Close the dropdown
+    setSearchTerm(suggestion.label);
+    setShowDropdown(false);
 
     if (componentId === "profile") {
       handleAdrChange(suggestion.label, suggestion.raw.lat, suggestion.raw.lon);
@@ -94,7 +99,6 @@ const AddressSearch = ({ componentId, handleAdrChange }) => {
       });
     }
 
-    //If Address added on home page then navigate to All meals
     if (componentId === "home") {
       nav("/all-meals");
     }
@@ -117,21 +121,21 @@ const AddressSearch = ({ componentId, handleAdrChange }) => {
         value={searchTerm}
         onChange={handleInputChange}
         placeholder="Search for an address..."
-        disabled={componentId === "meal-form" ? true : false}
+        disabled={componentId === "meal-form"}
         className={`search-control ${
           componentId === "meal-form"
             ? "meal-input input-disabled"
             : componentId === "profile"
             ? "profile-adr-input"
-            : " "
+            : ""
         }`}
-        onFocus={() => setShowDropdown(true)} // Show dropdown on focus
+        onFocus={() => setShowDropdown(true)}
       />
 
       {showDropdown && suggestions.length > 0 && (
-        <ul className="address-drop-down">
+        <ul className="address-drop-down" ref={ref}>
           {suggestions.map((suggestion, index) => (
-            <li key={index} onClick={() => handleSuggestionClick(suggestion)} ref={ref}>
+            <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
               {suggestion.label}
             </li>
           ))}
