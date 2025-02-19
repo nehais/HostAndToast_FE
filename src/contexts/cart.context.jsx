@@ -50,7 +50,9 @@ const CartWrapper = ({ children }) => {
       }
     }
 
-    if (isLoggedIn) {
+    if (!isLoggedIn) {
+      updateCartCounter(0, true);
+    } else {
       fetchCart();
     }
   }, [isLoggedIn]);
