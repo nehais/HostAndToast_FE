@@ -36,23 +36,21 @@ const CartWrapper = ({ children }) => {
   };
 
   useEffect(() => {
-    console.log("User changed:", user, isLoggedIn);
+    // console.log("User changed:", user, isLoggedIn);
     async function fetchCart() {
       try {
         const { data } = await axios.get(`${API_URL}/api/orders/user/${user._id}`);
-        console.log("Cart data:", data);
+        // console.log("Cart data:", data);
         const ordersReserved = data.filter((order) => order.status === "RESERVED");
         const cartCounter = ordersReserved.reduce((acc, order) => acc + order.plates, 0);
         updateCartCounter(cartCounter);
-        console.log("Cart counter:", cartCounter);
+        // console.log("Cart counter:", cartCounter);
       } catch (error) {
         console.error("Error fetching cart:", error);
       }
     }
 
-    if (!isLoggedIn) {
-      updateCartCounter(0, true);
-    } else {
+    if (isLoggedIn) {
       fetchCart();
     }
   }, [isLoggedIn]);

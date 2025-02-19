@@ -14,8 +14,8 @@ const ProfileButton = () => {
   };
 
   async function logOut() {
-    localStorage.removeItem("authToken");
     localStorage.removeItem("cart");
+    localStorage.removeItem("authToken");
     await authenticateUser();
   }
 
