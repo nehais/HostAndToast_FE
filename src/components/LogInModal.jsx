@@ -57,9 +57,7 @@ export default function LogInModal({ show, onHide }) {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
-          Log In User
-        </Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter">Log In User</Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
@@ -93,11 +91,7 @@ export default function LogInModal({ show, onHide }) {
           </div>
 
           <div className="signup-buttons">
-            <Button
-              variant="danger"
-              className="button-shadow"
-              onClick={() => cleanHide()}
-            >
+            <Button variant="danger" className="button-shadow" onClick={() => cleanHide()}>
               Cancel
             </Button>
             <Button type="submit" variant="primary" className="button-shadow">
