@@ -163,11 +163,15 @@ const AllMealsPage = () => {
 
   // --- Update Visible Meals ---
   const visibleMeals = useMemo(() => {
-    if (!mapBounds) return filteredMeals; // If no bounds yet, show all filtered meals.
-    return filteredMeals.filter((meal) => {
+    const sortedMeals = [...filteredMeals].sort(
+      (a, b) => new Date(a.pickupTime) - new Date(b.pickupTime)
+    );
+
+    if (!mapBounds) return sortedMeals;
+
+    return sortedMeals.filter((meal) => {
       const lat = meal.user.address.lat;
       const lng = meal.user.address.long;
-      // mapBounds is a Leaflet LatLngBounds, so we can use its contains() method.
       return mapBounds.contains([lat, lng]);
     });
   }, [filteredMeals, mapBounds]);
