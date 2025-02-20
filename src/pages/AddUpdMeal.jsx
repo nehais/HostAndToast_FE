@@ -128,11 +128,11 @@ const AddUpdMeal = ({ setShowSpinner }) => {
   async function addNewMeal() {
     try {
       setShowSpinner((prev) => !prev); //Show custom spinner during add Meal
-      const newMeal = await axios.post(`${API_URL}/api/meals`, mealFormData);
+      const { data } = await axios.post(`${API_URL}/api/meals`, mealFormData);
 
       setShowSpinner((prev) => !prev);
-      console.log("Meal updated", newMeal);
-      nav("/all-meals");
+      console.log("Meal added", data);
+      nav(`/meals/${data._id}`);
     } catch (error) {
       setShowSpinner((prev) => !prev);
       handleError("Add Meal Error: ", error);
