@@ -78,7 +78,7 @@ const ShoppingCartOrderItem = ({ order, onDelete }) => {
       ) : (
         <li>
           <Link to={`/meals/${order.meal._id}`}>
-            <img src={order.meal.imageUrl} alt={order.meal.title} />
+            <img src={order.meal.imageUrl[0]} alt={order.meal.title} />
           </Link>
           <div className="order-info">
             <div className="meal-info">
