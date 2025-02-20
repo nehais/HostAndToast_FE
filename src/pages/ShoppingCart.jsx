@@ -32,7 +32,7 @@ const ShoppingCart = () => {
       };
       fetchOrders();
     } else {
-      console.warn("⚠️ No valid user ID found. Skipping order fetch.");
+      console.warn("No valid user ID found. Skipping order fetch.");
     }
   }, [user]);
 
