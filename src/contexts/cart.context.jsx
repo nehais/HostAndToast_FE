@@ -21,6 +21,7 @@ const CartWrapper = ({ children }) => {
           counter: 0,
         };
         localStorage.setItem("cart", JSON.stringify(updatedCart));
+        console.log("Cart set to zero:", updatedCart);
         return updatedCart;
       });
       return;

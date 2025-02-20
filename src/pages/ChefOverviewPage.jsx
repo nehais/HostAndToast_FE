@@ -39,8 +39,11 @@ const ChefOverviewPage = () => {
   // Fetch the chef's meals (using the chef's _id)
   useEffect(() => {
     const getMeals = async () => {
+      // console.log("Fetching meals by user", chef?._id);
       try {
-        const { data } = await axios.get(`${API_URL}/api/meals/user/${chef?._id}`);
+        // const { data } = await axios.get(`${API_URL}/api/meals/user/${chef?._id}`);
+        const { data } = await axios.get(`${API_URL}/api/meals/active/user/${chef?._id}`);
+        // console.log("Active meals by user", data);
         setMeals(data);
         console.log("Meals", data);
       } catch (error) {
