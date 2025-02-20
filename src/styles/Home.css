@@ -1,6 +1,7 @@
 /*Address Search*/
 .address-container {
   background-image: url("../assets/headerImage.jpg");
+  background-size: contain;
   width: 100vw;
   height: 25vh;
 
