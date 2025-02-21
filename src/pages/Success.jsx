@@ -40,7 +40,7 @@ function Success() {
     if (orders.length > 0) {
       console.log("Payment successful!");
       // Clear the cart
-      setTimeout(() => updateCartCounter(0, true), 500);
+      setTimeout(() => updateCartCounter(0, true), 750);
 
       // Adjust status of orders
       orders.forEach(async (order) => {
