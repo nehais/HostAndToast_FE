@@ -14,7 +14,9 @@ const MealListCustInfo = ({ user }) => {
           className="profile-img meal-list-button"
         />{" "}
       </Link>
-      <span className="meal-card-font">{user.username}</span>
+      <span className="meal-card-font" style={{ width: "30%" }}>
+        {user.username}
+      </span>
     </div>
   );
 };
