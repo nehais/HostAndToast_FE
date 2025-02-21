@@ -17,18 +17,12 @@ import StarRating from "./StarRating.jsx";
 import MealListCustInfo from "./MealListCustInfo.jsx";
 import { AuthContext } from "../contexts/auth.context";
 import { useToast } from "../contexts/toast.context.jsx";
+import { RefreshProfContext } from "../contexts/refreshProf.context.jsx";
 
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
-const MealListCard = ({
-  meal,
-  active,
-  order,
-  hideActions,
-  setRefreshProfile,
-  setShowMeals,
-}) => {
+const MealListCard = ({ meal, active, order, hideActions }) => {
   const { setToast } = useToast(); //Use setToast context to set message
   const [isToday, setIsToday] = useState(false);
   const [displayTime, setDisplayTime] = useState("");
@@ -43,6 +37,7 @@ const MealListCard = ({
     confirmation: false,
   });
   const { profileData } = useContext(AuthContext);
+  const { setRefreshProf } = useContext(RefreshProfContext);
   const nav = useNavigate();
 
   useEffect(() => {
@@ -101,11 +96,12 @@ const MealListCard = ({
             msg: `'${meal.title}' Order was Deleted!`,
             type: "danger",
           });
-          setRefreshProfile((prev) => prev + 1);
-          setShowMeals((prev) => !prev);
+          setRefreshProf((prev) => prev + 1);
           console.log("this is the order", order);
         })
-        .catch((error) => handleError("Error during order deletion:", error));
+        .catch((error) => {
+          handleError("Error during order deletion:", error);
+        });
     } else {
       //Call Delete API to delete the meal
       axios
@@ -115,8 +111,11 @@ const MealListCard = ({
             msg: `'${meal.title}' Meal was Deleted!`,
             type: "danger",
           });
+          setRefreshProf((prev) => prev + 1);
         })
-        .catch((error) => handleError("Error during meal deletion:", error));
+        .catch((error) => {
+          handleError("Error during meal deletion:", error);
+        });
     }
   }
 
@@ -162,7 +161,7 @@ const MealListCard = ({
           msg: `'${meal.title}' Order was Completed. Enjoy!`,
           type: "success",
         });
-        setRefreshProfile((prev) => prev + 1);
+        setRefreshProf((prev) => prev + 1);
       })
       .catch((error) =>
         handleError("Error during order update to Finished:", error)

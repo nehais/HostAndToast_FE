@@ -10,6 +10,7 @@ import { useToast } from "../contexts/toast.context.jsx";
 import GenModal from "../components/GenModal";
 import ProfileUserInfo from "../components/ProfileUserInfo.jsx";
 import ProfileDashboard from "../components/ProfileDashboard.jsx";
+import { RefreshProfContext } from "../contexts/refreshProf.context.jsx";
 
 const ProfilePage = ({ setShowSpinner }) => {
   const { user, profileData, setProfileData, setUser } =
@@ -21,7 +22,7 @@ const ProfilePage = ({ setShowSpinner }) => {
     show: false,
     confirmation: false,
   });
-  const [refreshProfile, setRefreshProfile] = useState(0);
+  const { refreshProf } = useContext(RefreshProfContext);
   const [userRating, setUserRating] = useState(0);
   const [newProfData, setNewProfData] = useState({
     username: "",
@@ -62,7 +63,7 @@ const ProfilePage = ({ setShowSpinner }) => {
     getUserRating(); //Get the users rating
 
     setShowSpinner((prev) => !prev); //Show custom spinner during update Meal
-  }, [profileData._id, refreshProfile]);
+  }, [profileData._id, refreshProf]);
 
   //Gets all meals for the User
   async function getAllChefMeals() {
@@ -246,7 +247,6 @@ const ProfilePage = ({ setShowSpinner }) => {
         totalRevenue={chefStats.totalRevenue}
         platesBought={customerStats.platesBought}
         totalPurchase={customerStats.totalPurchase}
-        setRefreshProfile={setRefreshProfile}
       />
 
       {/* Error Modal */}

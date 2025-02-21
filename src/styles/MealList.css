@@ -219,6 +219,10 @@
   font-size: 0.9em;
 }
 
+.meal-card-Hfont {
+  font-size: 1.25em;
+}
+
 /*Mobile Screen*/
 @media screen and (max-device-width: 425px) {
   .meal-card-font {

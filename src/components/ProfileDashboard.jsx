@@ -13,7 +13,6 @@ const ProfileDashboard = ({
   totalRevenue,
   platesBought,
   totalPurchase,
-  setRefreshProfile,
 }) => {
   const [key, setKey] = useState("chef");
   return (
@@ -81,7 +80,6 @@ const ProfileDashboard = ({
               }
               active={true}
               orders={buyerMeals.activeOrders}
-              setRefreshProfile={setRefreshProfile}
             />
 
             <MealListDropDown

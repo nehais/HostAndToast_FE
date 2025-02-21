@@ -10,7 +10,6 @@ const MealListDropDown = ({
   meals,
   orders,
   hideActions,
-  setRefreshProfile,
 }) => {
   const [showMeals, setShowMeals] = useState(false);
 
@@ -42,7 +41,6 @@ const MealListDropDown = ({
           active={active}
           orders={orders}
           hideActions={hideActions}
-          setRefreshProfile={setRefreshProfile}
           setShowMeals={setShowMeals}
         />
       )}
