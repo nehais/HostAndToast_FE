@@ -18,11 +18,16 @@ function Success() {
 
       const fetchOrders = async () => {
         try {
-          const { data } = await axios.get(`${API_URL}/api/orders/user/${user._id}`);
+          const { data } = await axios.get(
+            `${API_URL}/api/orders/user/${user._id}`
+          );
           console.log("Orders fetched successfully:", data);
           setOrders(data);
         } catch (error) {
-          console.error("Error fetching the orders:", error.response?.data || error.message);
+          console.error(
+            "Error fetching the orders:",
+            error.response?.data || error.message
+          );
         }
       };
       fetchOrders();
@@ -35,7 +40,8 @@ function Success() {
     if (orders.length > 0) {
       console.log("Payment successful!");
       // Clear the cart
-      updateCartCounter(null, true);
+      setTimeout(() => updateCartCounter(0, true), 250);
+
       // Adjust status of orders
       orders.forEach(async (order) => {
         try {
@@ -43,7 +49,10 @@ function Success() {
             status: "PAID",
           });
         } catch (error) {
-          console.error("Error updating order status:", error.response?.data || error.message);
+          console.error(
+            "Error updating order status:",
+            error.response?.data || error.message
+          );
         }
       });
       // Optionally, redirect after a delay
@@ -54,7 +63,9 @@ function Success() {
   return (
     <div className="payment-confirmation-page">
       <h1>✅ Payment Successful!</h1>
-      <p>Thank you for your order. Your payment has been processed successfully.</p>
+      <p>
+        Thank you for your order. Your payment has been processed successfully.
+      </p>
       <p>Redirecting you back home...</p>
     </div>
   );

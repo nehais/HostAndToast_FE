@@ -16,7 +16,9 @@ const CartButton = () => {
         placement="bottom"
         overlay={
           <Tooltip id="cart-tooltip">
-            {cartCounter === 0 ? "Empty Shopping Cart" : `Shopping Cart with ${cartCounter} meals.`}
+            {cartCounter === 0
+              ? "Empty Shopping Cart"
+              : `Shopping Cart with ${cartCounter} meals.`}
           </Tooltip>
         }
       >
@@ -28,7 +30,11 @@ const CartButton = () => {
         >
           <p
             className={` ${
-              cartCounter.toString().length > 1 ? "cart-counter align-counter" : "cart-counter"
+              cartCounter.toString().length > 1
+                ? "cart-counter align-counter"
+                : cartCounter === 1
+                ? "cart-counter one-counter"
+                : "cart-counter"
             }`}
           >
             {cartCounter}

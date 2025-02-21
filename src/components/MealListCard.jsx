@@ -17,7 +17,6 @@ import StarRating from "./StarRating.jsx";
 import MealListCustInfo from "./MealListCustInfo.jsx";
 import { AuthContext } from "../contexts/auth.context";
 import { useToast } from "../contexts/toast.context.jsx";
-import { CartContext } from "../contexts/cart.context.jsx";
 
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
@@ -50,7 +49,6 @@ const MealListCard = ({
     //Order Card & Rating available
     if (order && order.rating) setOrderRate(order.rating.stars);
   }, [order]);
-  const { updateCartCounter } = useContext(CartContext);
 
   useEffect(() => {
     if (meal.pickupTime) {
@@ -106,7 +104,6 @@ const MealListCard = ({
           setRefreshProfile((prev) => prev + 1);
           setShowMeals((prev) => !prev);
           console.log("this is the order", order);
-          updateCartCounter(-order.plates);
         })
         .catch((error) => handleError("Error during order deletion:", error));
     } else {
