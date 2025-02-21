@@ -1,14 +1,17 @@
 // AllMealsPage.jsx
-import { useEffect, useMemo, useState } from "react";
+import { useContext, useEffect, useMemo, useState } from "react";
 import MealCard from "../components/MealCard";
 import "../styles/AllMealsPage.css";
 import axios from "axios";
 import { API_URL } from "../config/apiConfig.js";
 import Map from "../components/Map.jsx";
+import L from "leaflet";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { AddressContext } from "../contexts/address.context.jsx";
 
 const AllMealsPage = () => {
+  const { address } = useContext(AddressContext); //This context holds the searched address
   const [meals, setMeals] = useState([]);
   const [filteredMeals, setFilteredMeals] = useState([]);
   const [markers, setMarkers] = useState([]);
@@ -38,6 +41,26 @@ const AllMealsPage = () => {
       d1.getFullYear() === d2.getFullYear() &&
       d1.getMonth() === d2.getMonth() &&
       d1.getDate() === d2.getDate()
+    );
+  };
+
+  //Initialize MapBound when the address is changed to 20km radius of address.
+  useEffect(() => {
+    // Ensure that address exists and has valid lat/lon values
+    if (!address || !address.lat || !address.lon) return;
+    setMapBounds(
+      createBoundsFromPoint(parseFloat(address.lat), parseFloat(address.lon))
+    );
+  }, [address]);
+
+  // Helper function to create a bounding box around a point for a 20km radius
+  const createBoundsFromPoint = (lat, lon, km = 20) => {
+    const offset = km / 111; // Approximately 0.18 degrees for 20 km
+    const numLat = Number(lat);
+    const numLon = Number(lon);
+    return L.latLngBounds(
+      [numLat - offset, numLon - offset],
+      [numLat + offset, numLon + offset]
     );
   };
 
@@ -80,7 +103,10 @@ const AllMealsPage = () => {
     return meals.filter((meal) => {
       // Price and pickup date filters remain.
       if (meal.price > filters.price) return false;
-      if (filters.pickupDate && !isSameDay(new Date(meal.pickupTime), filters.pickupDate))
+      if (
+        filters.pickupDate &&
+        !isSameDay(new Date(meal.pickupTime), filters.pickupDate)
+      )
         return false;
       if (mapBounds) {
         const lat = meal.user.address.lat;
@@ -103,7 +129,11 @@ const AllMealsPage = () => {
   const availableMealsForPickupDates = useMemo(() => {
     return meals.filter((meal) => {
       if (meal.price > filters.price) return false;
-      if (filters.cuisine.length === 0 || !filters.cuisine.includes(meal.cuisine)) return false;
+      if (
+        filters.cuisine.length === 0 ||
+        !filters.cuisine.includes(meal.cuisine)
+      )
+        return false;
       return true;
     });
   }, [meals, filters.price, filters.cuisine]);
@@ -131,7 +161,9 @@ const AllMealsPage = () => {
 
   // --- Update Cuisine Filter ---
   useEffect(() => {
-    const availableCuisines = allCuisines.filter((cuisine) => (cuisineCounts[cuisine] || 0) > 0);
+    const availableCuisines = allCuisines.filter(
+      (cuisine) => (cuisineCounts[cuisine] || 0) > 0
+    );
     setFilters((prev) => ({
       ...prev,
       cuisine: availableCuisines,
@@ -142,16 +174,22 @@ const AllMealsPage = () => {
   useEffect(() => {
     const filtered = meals.filter((meal) => {
       if (meal.price > filters.price) return false;
-      if (filters.cuisine.length > 0 && !filters.cuisine.includes(meal.cuisine)) return false;
+      if (filters.cuisine.length > 0 && !filters.cuisine.includes(meal.cuisine))
+        return false;
 
       if (
         filters.preferences.length > 0 &&
-        !filters.preferences.every((preference) => (meal.allergies || []).includes(preference))
+        !filters.preferences.every((preference) =>
+          (meal.allergies || []).includes(preference)
+        )
       ) {
         return false;
       }
 
-      if (filters.pickupDate && !isSameDay(new Date(meal.pickupTime), filters.pickupDate)) {
+      if (
+        filters.pickupDate &&
+        !isSameDay(new Date(meal.pickupTime), filters.pickupDate)
+      ) {
         return false;
       }
 
@@ -197,7 +235,8 @@ const AllMealsPage = () => {
   // --- "Show All"/"Uncheck All" Button ---
   const areAllChecked = useMemo(() => {
     return (
-      allCuisines.length > 0 && allCuisines.every((cuisine) => filters.cuisine.includes(cuisine))
+      allCuisines.length > 0 &&
+      allCuisines.every((cuisine) => filters.cuisine.includes(cuisine))
     );
   }, [allCuisines, filters.cuisine]);
 
@@ -229,7 +268,10 @@ const AllMealsPage = () => {
       <div>{/* <h1>All Meals Page</h1> */}</div>
       <div id="all-meals-page">
         <div id="mobile-filter-button">
-          <button className="filter-button" onClick={() => setShowFilters((prev) => !prev)}>
+          <button
+            className="filter-button"
+            onClick={() => setShowFilters((prev) => !prev)}
+          >
             {!showFilters ? "Filter Meals" : "Close Filters"}
           </button>
         </div>
@@ -278,11 +320,16 @@ const AllMealsPage = () => {
                               onChange={() => {
                                 let newCuisines = [...filters.cuisine];
                                 if (newCuisines.includes(cuisine)) {
-                                  newCuisines = newCuisines.filter((c) => c !== cuisine);
+                                  newCuisines = newCuisines.filter(
+                                    (c) => c !== cuisine
+                                  );
                                 } else {
                                   newCuisines.push(cuisine);
                                 }
-                                setFilters((prev) => ({ ...prev, cuisine: newCuisines }));
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  cuisine: newCuisines,
+                                }));
                               }}
                             />
                             <span className="one-cuisine">
@@ -309,7 +356,9 @@ const AllMealsPage = () => {
                       <legend>Pickup Date</legend>
                       <DatePicker
                         selected={filters.pickupDate}
-                        onChange={(date) => setFilters((prev) => ({ ...prev, pickupDate: date }))}
+                        onChange={(date) =>
+                          setFilters((prev) => ({ ...prev, pickupDate: date }))
+                        }
                         placeholderText="Select a pickup date"
                         highlightDates={availablePickupDates}
                         isClearable
@@ -327,15 +376,22 @@ const AllMealsPage = () => {
                               type="checkbox"
                               name="preferences"
                               value={preference}
-                              checked={filters.preferences.includes(preference.value)}
+                              checked={filters.preferences.includes(
+                                preference.value
+                              )}
                               onChange={() => {
                                 let newPref = [...filters.preferences];
                                 if (newPref.includes(preference.value)) {
-                                  newPref = newPref.filter((c) => c !== preference.value);
+                                  newPref = newPref.filter(
+                                    (c) => c !== preference.value
+                                  );
                                 } else {
                                   newPref.push(preference.value);
                                 }
-                                setFilters((prev) => ({ ...prev, preferences: newPref }));
+                                setFilters((prev) => ({
+                                  ...prev,
+                                  preferences: newPref,
+                                }));
                               }}
                             />
                             {preference.label}
