@@ -113,6 +113,7 @@
 }
 
 .prevmeal-container {
+  width: 250px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -126,6 +127,7 @@
 }
 
 .prev-meal-card {
+  width: 125px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;

@@ -47,7 +47,7 @@
   color: white;
   background-color: #233440ba;
   position: absolute;
-  z-index: 1000;
+  z-index: 10000;
 
   li {
     padding: 10px;

@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/auth.context";
 
 const AddressSearch = ({ componentId, handleAdrChange }) => {
+  const [changed, setChanged] = useState(false); // The display term on the field
   const [searchTerm, setSearchTerm] = useState(""); // The display term on the field
   const [suggestions, setSuggestions] = useState([]); // Holds the suggested addresses
   const [showDropdown, setShowDropdown] = useState(false); // To control the dropdown visibility
@@ -40,6 +41,8 @@ const AddressSearch = ({ componentId, handleAdrChange }) => {
 
   // Debounce effect to delay API call
   useEffect(() => {
+    if (!changed) return;
+
     if (debounceTimeout.current) {
       clearTimeout(debounceTimeout.current);
     }
@@ -82,6 +85,7 @@ const AddressSearch = ({ componentId, handleAdrChange }) => {
   }, []);
 
   const handleInputChange = (e) => {
+    setChanged(true);
     setSearchTerm(e.target.value);
   };
 
@@ -106,6 +110,7 @@ const AddressSearch = ({ componentId, handleAdrChange }) => {
 
   return (
     <div
+      onMouseLeave={() => setShowDropdown(false)}
       className={`${
         componentId === "navbar"
           ? "search-control-container navbar-adr"

@@ -6,7 +6,7 @@ const SidePrevMeals = ({ mode, meals, useMeal }) => {
   return (
     <>
       {mode !== "Edit" && meals.length > 0 && sideBarOpen && (
-        <div className="sidebar">
+        <aside className="sidebar">
           <div className="sidebar-header-area">
             <h4>Previous Creations</h4>
             <div
@@ -21,7 +21,7 @@ const SidePrevMeals = ({ mode, meals, useMeal }) => {
               <PrevMealCard key={meal._id} meal={meal} useMeal={useMeal} />
             ))}
           </section>
-        </div>
+        </aside>
       )}
 
       {meals.length > 0 && !sideBarOpen && (
