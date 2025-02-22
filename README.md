@@ -53,7 +53,7 @@ The website is designed keeping the main elements in focus, so it's easier to un
 ### Single Meal Page
 
 - Displays all details about the selected meal, including reviews.</br>
-  <img src="src/assets/readMeImgs/singleMeal.jpg" alt="Single Meal Page" width="400"/></br>
+  <img src="src/assets/readMeImgs/singleMeal.jpg" alt="Single Meal Page" height="450"/></br>
 - Users can either:
   - Add the meal to their shopping cart.
   - View the chef’s profile for more information.
@@ -61,7 +61,7 @@ The website is designed keeping the main elements in focus, so it's easier to un
 ### Chef's Profile Page
 
 - Contains details about the chef, including ratings and reviews.</br>
-  <img src="src/assets/readMeImgs/chefPage.jpg" alt="Chef Page" width="400"/></br>
+  <img src="src/assets/readMeImgs/chefPage.jpg" alt="Chef Page" height="450"/></br>
 - Features a chef’s calendar, showing the days the chef offers meals.
 
 ### Shopping Cart
