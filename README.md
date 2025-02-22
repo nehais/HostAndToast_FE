@@ -1,8 +1,8 @@
 <img src="src/assets/iconLogo.svg" alt="Logo" width="200"/>
 
-# Host And Toast
-
 ## Description
+
+Host and Toast is a platform where home chefs can share their delicious, home-cooked meals, and food lovers can easily book and enjoy them. We provide an authentic dining experience by connecting passionate cooks with those craving homemade food. Our platform supports seamless payments, user ratings for trust and validation, location-based meal discovery, and more—making home-cooked meals accessible to everyone.
 
 ## Tech stack
 
