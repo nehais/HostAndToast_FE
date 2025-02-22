@@ -1,4 +1,4 @@
-![Host & Toast Logo](src/assets/iconLogo.svg)
+<img src="src/assets/iconLogo.svg" alt="Logo" width="200"/>
 
 # Host And Toast
 
@@ -14,7 +14,7 @@ The website is designed keeping the main elements in focus, so it's easier to un
 
 ## Features
 
-- **Authenticated & Authorized Acess**: The website is secured with authenticated routes. User passwords are securely stored, and sessions are verified using JWT tokens for a smooth and secure experience.</br>
+- **Authenticated & Authorized Acess**: The website is secured with authenticated routes. User passwords are securely stored, and sessions are verified using JWT tokens for a smooth and secure experience.</br></br>
 - **Responsive Design**: The website is fully responsive, ensuring all features work seamlessly across all devices and screen sizes.</br>
   <img src="src/assets/readMeImgs/mobile.jpg" alt="Map Page" width="200"/></br></br>
 - **Location Based Search**: Users can search for meals based on their location.</br>
@@ -47,29 +47,43 @@ The website is designed keeping the main elements in focus, so it's easier to un
 - This page lists all meals available within 20km of the entered address.
 - Users can apply filters to refine their search.
 - A calendar filter is also available to show meal availability on specific days.</br>
-  <img src="src/assets/readMeImgs/map.jpg" alt="Map Page" width="500"/></br>
+  <img src="src/assets/readMeImgs/map.jpg" alt="Map Page" width="400"/></br>
   On selecting meal takes the user to the Single Meal Page.
 
 ### Single Meal Page
 
-- Displays all details about the selected meal, including reviews.
+- Displays all details about the selected meal, including reviews.</br>
+  <img src="src/assets/readMeImgs/singleMeal.jpg" alt="Single Meal Page" width="400"/></br>
 - Users can either:
   - Add the meal to their shopping cart.
   - View the chef’s profile for more information.
 
 ### Chef's Profile Page
 
-- Contains details about the chef, including ratings and reviews.
+- Contains details about the chef, including ratings and reviews.</br>
+  <img src="src/assets/readMeImgs/chefPage.jpg" alt="Chef Page" width="400"/></br>
 - Features a chef’s calendar, showing the days the chef offers meals.
 
 ### Shopping Cart
 
-- Users can add meals to their shopping cart before proceeding to checkout.
+- Users can add meals to their shopping cart before proceeding to checkout.</br>
+  <img src="src/assets/readMeImgs/shoppingCart.jpg" alt="Shopping Cart" width="400"/></br>
 - During checkout, users are guided through the payment process. A successful payment marks the order as Paid.
 
 ### Add Meal Page
 
+- Users can list meals with all details and images.
+- Users can also choose to reuse one of their previously listed meals and repost it.</br>
+  <img src="src/assets/readMeImgs/addMeal.jpg" alt="Add Meal" width="400"/></br>
+
 ### User Profile Page
+
+- Users can update their profile details, including their profile picture.</br>
+  <img src="src/assets/readMeImgs/userProfile.jpg" alt="User Profile" width="400"/></br>
+- After updating their profile, users can collapse the profile section and continue to view their Chef and Customer dashboards.</br>
+  <img src="src/assets/readMeImgs/dashboard.jpg" alt="User Dashboard" width="400"/></br>
+  - **Chef’s Dashboard**: Displays all meals booked by customers.
+  - **Customer’s Dashboard:** Displays all meals booked by the user.
 
 </br></br>
 
