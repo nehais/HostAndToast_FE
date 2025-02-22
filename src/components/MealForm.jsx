@@ -37,7 +37,10 @@ const MealForm = ({
     try {
       setShowSpinner((prev) => !prev); //Show custom spinner during the upload
 
-      const { data } = await axios.post(`${API_URL}/api/multiple-uploads`, myFormData);
+      const { data } = await axios.post(
+        `${API_URL}/api/multiple-uploads`,
+        myFormData
+      );
       setShowSpinner((prev) => !prev);
       console.log("image uploaded successfully", data);
 
@@ -64,16 +67,19 @@ const MealForm = ({
 
     setUseMealID("");
 
-    setMealFormData({
-      title: "",
-      cuisine: "Others",
-      description: "",
-      imageUrl: [],
-      allergies: [],
-      plates: 1,
-      pickupTime: "",
-      hosted: false,
-      price: 1,
+    setMealFormData((prev) => {
+      return {
+        ...prev,
+        title: "",
+        cuisine: "Others",
+        description: "",
+        imageUrl: [],
+        allergies: [],
+        plates: 1,
+        pickupTime: "",
+        hosted: false,
+        price: 1,
+      };
     });
   }
 
@@ -128,7 +134,11 @@ const MealForm = ({
               {mealFormData.imageUrl &&
                 mealFormData.imageUrl.map((image, index) => (
                   <div className="meal-image-containter" key={index}>
-                    <img src={image} alt="Uploaded Meal Image" className="form-meal-img" />
+                    <img
+                      src={image}
+                      alt="Uploaded Meal Image"
+                      className="form-meal-img"
+                    />
                     <p onClick={() => clearImg(index)}>X</p>
                   </div>
                 ))}
@@ -178,7 +188,11 @@ const MealForm = ({
                   }))
                 }
               >
-                <Dropdown.Toggle variant="warning" id="cuisine-dropdown" className="meal-input">
+                <Dropdown.Toggle
+                  variant="warning"
+                  id="cuisine-dropdown"
+                  className="meal-input"
+                >
                   {mealFormData.cuisine || "Select a Cuisine"}
                 </Dropdown.Toggle>
 
@@ -279,7 +293,11 @@ const MealForm = ({
           </button>
 
           {/*Sumbit the Meal to List it on the Site*/}
-          <button type="submit" variant="primary" className="meal-submit-button add-meal-button">
+          <button
+            type="submit"
+            variant="primary"
+            className="meal-submit-button add-meal-button"
+          >
             List Your Meal
           </button>
         </div>

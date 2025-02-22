@@ -109,6 +109,7 @@ const AddUpdMeal = ({ setShowSpinner }) => {
   //Updated an existing User meal
   async function updateMeal() {
     try {
+      mealFormData.user = profileData._id; //Make sure the user info is not lost
       setShowSpinner((prev) => !prev); //Show custom spinner during update Meal
       const { data } = await axios.put(
         `${API_URL}/api/meals/${useMealID}`,
@@ -127,6 +128,7 @@ const AddUpdMeal = ({ setShowSpinner }) => {
   //Creates a new User meal
   async function addNewMeal() {
     try {
+      mealFormData.user = profileData._id; //Make sure the user info is not lost
       setShowSpinner((prev) => !prev); //Show custom spinner during add Meal
       const { data } = await axios.post(`${API_URL}/api/meals`, mealFormData);
 
