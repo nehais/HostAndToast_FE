@@ -17,9 +17,9 @@ const AddressSearch = ({ componentId, handleAdrChange }) => {
   const debounceTimeout = useRef(null); // Holds the debounce timeout reference
 
   const provider = new OpenStreetMapProvider({
-    params: {
-      countrycodes: "de", // Restrict results to Germany
-    },
+    //params: {
+    //countrycodes: "de", // Restrict results to Germany
+    //},
   });
 
   // Function to fetch address suggestions
@@ -110,7 +110,7 @@ const AddressSearch = ({ componentId, handleAdrChange }) => {
 
   return (
     <div
-      onMouseLeave={() => setShowDropdown(false)}
+      ref={ref} // Apply ref here
       className={`${
         componentId === "navbar"
           ? "search-control-container navbar-adr"
