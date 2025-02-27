@@ -6,9 +6,8 @@ import { loadStripe } from "@stripe/stripe-js";
 import "../styles/ShoppingCart.css";
 import ShoppingCartOrderItem from "../components/ShoppingCartOrderItem.jsx";
 
-const stripePromise = loadStripe(
-  "pk_test_51QrOHwRTauKEQKJzmifkduiN3LN9cY5epiFf4LXsbgj6Dpvvk1hTDGY4rwv2bsWgkUYCtMg87lFzsnHr8afgaDbA00LxTg767G"
-);
+const FE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || "";
+const stripePromise = loadStripe(FE_KEY);
 
 const ShoppingCart = () => {
   const { user } = useContext(AuthContext);
@@ -22,12 +21,19 @@ const ShoppingCart = () => {
 
       const fetchOrders = async () => {
         try {
-          const { data } = await axios.get(`${API_URL}/api/orders/user/${user._id}`);
+          const { data } = await axios.get(
+            `${API_URL}/api/orders/user/${user._id}`
+          );
           console.log("Orders fetched successfully:", data);
-          const ordersToShow = data.filter((order) => order.status === "RESERVED");
+          const ordersToShow = data.filter(
+            (order) => order.status === "RESERVED"
+          );
           setOrders(ordersToShow);
         } catch (error) {
-          console.error("Error fetching the orders:", error.response?.data || error.message);
+          console.error(
+            "Error fetching the orders:",
+            error.response?.data || error.message
+          );
         }
       };
       fetchOrders();
@@ -37,7 +43,10 @@ const ShoppingCart = () => {
   }, [user]);
 
   useEffect(() => {
-    const total = orders.reduce((acc, order) => acc + order.meal.price * order.plates, 0);
+    const total = orders.reduce(
+      (acc, order) => acc + order.meal.price * order.plates,
+      0
+    );
     setTotal(total);
   }, [orders]);
 
@@ -56,13 +65,16 @@ const ShoppingCart = () => {
 
     setLoading(true);
     try {
-      const { data } = await axios.post(`${API_URL}/api/payment/create-checkout-session`, {
-        items: orders.map((order) => ({
-          name: order.meal.title,
-          price: order.meal.price,
-          quantity: order.plates,
-        })),
-      });
+      const { data } = await axios.post(
+        `${API_URL}/api/payment/create-checkout-session`,
+        {
+          items: orders.map((order) => ({
+            name: order.meal.title,
+            price: order.meal.price,
+            quantity: order.plates,
+          })),
+        }
+      );
 
       console.log("Received Stripe Session ID:", data.id); // Debugging
 
@@ -108,7 +120,11 @@ const ShoppingCart = () => {
                 </p>
               </div>
               {/* Checkout Button */}
-              <button onClick={handleCheckout} disabled={loading} className="checkout-button">
+              <button
+                onClick={handleCheckout}
+                disabled={loading}
+                className="checkout-button"
+              >
                 {loading ? "Processing..." : "Checkout"}
               </button>
             </div>

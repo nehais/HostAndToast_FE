@@ -92,7 +92,7 @@ The website is designed keeping the main elements in focus, so it's easier to un
 - Git clone the below project
 
 ```bash
-  git clone https://github.com/girsy01/HostAndToast_FE.git
+  git clone https://github.com/nehais/HostAndToast_FE.git
 ```
 
 - install the packages
@@ -111,4 +111,4 @@ The website is designed keeping the main elements in focus, so it's easier to un
 
 The API is hosted on Render and available at below github link. Please refer its Read Me for the Model & API Routes details.
 
-https://github.com/girsy01/HostAndToast_BE
+https://github.com/nehais/HostAndToast_BE.git
